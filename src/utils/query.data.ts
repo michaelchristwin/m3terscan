@@ -1,5 +1,3 @@
-"use server";
-
 import { Client, cacheExchange, fetchExchange, gql } from "@urql/core";
 
 const client = new Client({
@@ -24,7 +22,7 @@ const QUERY = gql`
   }
 `;
 
-async function fetchFromArweave() {
+export async function fetchFromArweave() {
   try {
     const { data, error } = await client.query(QUERY, {});
     if (error) {
@@ -39,11 +37,11 @@ async function fetchFromArweave() {
         return response.json();
       })
     );
-    console.log(dataArray);
+    //console.log(dataArray);
     return dataArray;
   } catch (error) {
     console.error(error);
   }
 }
 
-fetchFromArweave();
+//fetchFromArweave()
