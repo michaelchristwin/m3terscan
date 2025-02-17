@@ -1,10 +1,15 @@
-import { Component, createResource, For, Suspense } from "solid-js";
+import { Component, createResource, For, onMount, Suspense } from "solid-js";
 import { fetchFromArweave } from "../utils/query.data";
+import init, { fetch_data } from "../pkg/wasm_filter.js";
 import "../App.css";
 
 const Index: Component = () => {
   const [m3ters] = createResource(fetchFromArweave);
-
+  onMount(async () => {
+    await init();
+    const data = await fetch_data();
+    console.log(data);
+  });
   return (
     <main class="text-center mx-auto text-gray-700 p-4">
       <ul>
