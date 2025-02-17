@@ -34,7 +34,14 @@ export async function fetchFromArweave() {
       edges.map(async (edge: any) => {
         const nodeId = edge.node.id;
         const response = await fetch(`https://ar-io.net/${nodeId}`);
-        return response.json();
+        const data = await response.json();
+        const details = JSON.parse(data.input.payload[0]);
+        return {
+          meter_id: details[0],
+          usage: details[1],
+          rate: details[2],
+          extra: details[3],
+        };
       })
     );
     //console.log(dataArray);

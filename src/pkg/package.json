@@ -1,0 +1,15 @@
+{
+  "name": "wasm-filter",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "wasm_filter_bg.wasm",
+    "wasm_filter.js",
+    "wasm_filter.d.ts"
+  ],
+  "main": "wasm_filter.js",
+  "types": "wasm_filter.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
