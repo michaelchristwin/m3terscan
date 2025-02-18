@@ -3,9 +3,15 @@ import { lazy, ParentComponent } from "solid-js";
 import { render } from "solid-js/web";
 import { Router } from "@solidjs/router";
 import "./index.css";
+import Navbar from "./components/Navbar";
 
 const Layout: ParentComponent = (props) => {
-  return <div>{props.children}</div>;
+  return (
+    <div class="px-6 py-3">
+      <Navbar />
+      {props.children}
+    </div>
+  );
 };
 
 const routes = [

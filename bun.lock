@@ -8,6 +8,7 @@
         "@solidjs/router": "^0.15.3",
         "@tailwindcss/vite": "^4.0.6",
         "@urql/core": "^5.1.0",
+        "m3ters": "^1.0.6",
         "solid-js": "^1.9.4",
         "tailwindcss": "^4.0.6",
       },
@@ -299,7 +300,11 @@
 
     "lightningcss-win32-x64-msvc": ["lightningcss-win32-x64-msvc@1.29.1", "", { "os": "win32", "cpu": "x64" }, "sha512-NygcbThNBe4JElP+olyTI/doBNGJvLs3bFCRPdvuCcxZCcCZ71B858IHpdm7L1btZex0FvCmM17FK98Y9MRy1Q=="],
 
+    "loose-envify": ["loose-envify@1.4.0", "", { "dependencies": { "js-tokens": "^3.0.0 || ^4.0.0" }, "bin": { "loose-envify": "cli.js" } }, "sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q=="],
+
     "lru-cache": ["lru-cache@5.1.1", "", { "dependencies": { "yallist": "^3.0.2" } }, "sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w=="],
+
+    "m3ters": ["m3ters@1.0.6", "", { "dependencies": { "seedrandom": "^3.0.5" }, "peerDependencies": { "react": "^18.2.0", "react-dom": "^18.2.0" } }, "sha512-x6Dvokj96A1Wq9EWORBv512hxU39oD+mt5c5TaN6bIeuztWeTjfWVO95g+wk9P4Q3Dm1uxtkuEaHm5lCy8fy5A=="],
 
     "merge-anything": ["merge-anything@5.1.7", "", { "dependencies": { "is-what": "^4.1.8" } }, "sha512-eRtbOb1N5iyH0tkQDAoQ4Ipsp/5qSR79Dzrz8hEPxRX10RWWR/iQXdoKmBSRCThY1Fh5EhISDtpSc93fpxUniQ=="],
 
@@ -315,7 +320,15 @@
 
     "postcss": ["postcss@8.5.2", "", { "dependencies": { "nanoid": "^3.3.8", "picocolors": "^1.1.1", "source-map-js": "^1.2.1" } }, "sha512-MjOadfU3Ys9KYoX0AdkBlFEF1Vx37uCCeN4ZHnmwm9FfpbsGWMZeBLMmmpY+6Ocqod7mkdZ0DT31OlbsFrLlkA=="],
 
+    "react": ["react@18.3.1", "", { "dependencies": { "loose-envify": "^1.1.0" } }, "sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ=="],
+
+    "react-dom": ["react-dom@18.3.1", "", { "dependencies": { "loose-envify": "^1.1.0", "scheduler": "^0.23.2" }, "peerDependencies": { "react": "^18.3.1" } }, "sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw=="],
+
     "rollup": ["rollup@4.34.6", "", { "dependencies": { "@types/estree": "1.0.6" }, "optionalDependencies": { "@rollup/rollup-android-arm-eabi": "4.34.6", "@rollup/rollup-android-arm64": "4.34.6", "@rollup/rollup-darwin-arm64": "4.34.6", "@rollup/rollup-darwin-x64": "4.34.6", "@rollup/rollup-freebsd-arm64": "4.34.6", "@rollup/rollup-freebsd-x64": "4.34.6", "@rollup/rollup-linux-arm-gnueabihf": "4.34.6", "@rollup/rollup-linux-arm-musleabihf": "4.34.6", "@rollup/rollup-linux-arm64-gnu": "4.34.6", "@rollup/rollup-linux-arm64-musl": "4.34.6", "@rollup/rollup-linux-loongarch64-gnu": "4.34.6", "@rollup/rollup-linux-powerpc64le-gnu": "4.34.6", "@rollup/rollup-linux-riscv64-gnu": "4.34.6", "@rollup/rollup-linux-s390x-gnu": "4.34.6", "@rollup/rollup-linux-x64-gnu": "4.34.6", "@rollup/rollup-linux-x64-musl": "4.34.6", "@rollup/rollup-win32-arm64-msvc": "4.34.6", "@rollup/rollup-win32-ia32-msvc": "4.34.6", "@rollup/rollup-win32-x64-msvc": "4.34.6", "fsevents": "~2.3.2" }, "bin": { "rollup": "dist/bin/rollup" } }, "sha512-wc2cBWqJgkU3Iz5oztRkQbfVkbxoz5EhnCGOrnJvnLnQ7O0WhQUYyv18qQI79O8L7DdHrrlJNeCHd4VGpnaXKQ=="],
+
+    "scheduler": ["scheduler@0.23.2", "", { "dependencies": { "loose-envify": "^1.1.0" } }, "sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ=="],
+
+    "seedrandom": ["seedrandom@3.0.5", "", {}, "sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg=="],
 
     "semver": ["semver@6.3.1", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA=="],
 

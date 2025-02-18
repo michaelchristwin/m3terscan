@@ -13,6 +13,7 @@
     "@solidjs/router": "^0.15.3",
     "@tailwindcss/vite": "^4.0.6",
     "@urql/core": "^5.1.0",
+    "m3ters": "^1.0.6",
     "solid-js": "^1.9.4",
     "tailwindcss": "^4.0.6"
   },
