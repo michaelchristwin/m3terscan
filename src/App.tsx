@@ -7,7 +7,7 @@ import Navbar from "./components/Navbar";
 
 const Layout: ParentComponent = (props) => {
   return (
-    <div class="px-6 py-3">
+    <div class="px-6 py-3 w-[100vw] h-[100vh]">
       <Navbar />
       {props.children}
     </div>
