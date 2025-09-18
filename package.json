@@ -20,6 +20,7 @@
     "@vercel/react-router": "^1.2.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "d3": "^7.9.0",
     "isbot": "^5.1.27",
     "lucide-react": "^0.544.0",
     "m3ter-graphql-client": "^2.1.2",
@@ -38,6 +39,7 @@
   "devDependencies": {
     "@react-router/dev": "^7.7.1",
     "@tailwindcss/vite": "^4.1.4",
+    "@types/d3": "^7.4.3",
     "@types/node": "^20",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",

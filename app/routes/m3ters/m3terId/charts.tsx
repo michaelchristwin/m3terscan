@@ -1,4 +1,3 @@
-import { m3terClient } from "~/m3terClient";
 import type { Route } from "./+types/charts";
 import { useLoaderData } from "react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -13,8 +12,9 @@ import {
 import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 import { chunkArray } from "~/utils/query-utils";
 import BarChartSkeleton from "~/components/skeletons/BarChartSkeleton";
-
-export const description = "An interactive bar chart";
+import { LoaderCircle } from "lucide-react";
+import HeatMap from "~/components/Heatmap";
+import { fetchChartData } from "~/queries";
 
 const chartConfig = {
   energy: {
@@ -26,13 +26,6 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const fetchChartData = (m3terId: number) => {
-  return m3terClient.v2.dataPoints.getMeterDataPoints({
-    meterNumber: m3terId,
-    nonces: Array.from({ length: 96 }, (_, i) => i + 1),
-  });
-};
-
 export async function loader({ params }: Route.LoaderArgs) {
   const initialData = await fetchChartData(Number(params.m3terId));
   const m3terId = Number(params.m3terId);
@@ -41,8 +34,8 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function Charts({}: Route.ComponentProps) {
   const { initialData, m3terId } = useLoaderData<typeof loader>();
-  const { data, error } = useSuspenseQuery({
-    queryKey: ["chartData"],
+  const { data, isRefetching, error } = useSuspenseQuery({
+    queryKey: ["chartData", m3terId],
     queryFn: () => fetchChartData(m3terId),
     initialData,
     refetchInterval: 15 * 60 * 1000, // 15 minutes
@@ -62,8 +55,8 @@ export default function Charts({}: Route.ComponentProps) {
     });
 
   return (
-    <div className="w-full h-full flex">
-      <div className="flex-1 px-[19px] pt-[37px] pb-[41px] bg-[var(--background-primary)] rounded-lg h-full">
+    <div className="w-full h-full grid grid-cols-1 lg:grid-cols-[10fr_2fr] pb-[50px]">
+      <div className="px-[30px] pt-[37px] pb-[41px] bg-[var(--background-primary)] rounded-lg h-full mx-4">
         <Suspense fallback={<BarChartSkeleton />}>
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -72,9 +65,19 @@ export default function Charts({}: Route.ComponentProps) {
             className="text-[var(--text-secondary)]"
           >
             <div className="flex items-center mb-6">
-              <h3>Energy usage by hour</h3>
+              <h3 className="text-foreground text-[16px]">
+                Energy usage by hour
+              </h3>
             </div>
-            <div className="h-100">
+            <div className="h-105 relative">
+              {isRefetching && (
+                <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
+                  <div className="flex flex-col items-center gap-3">
+                    <LoaderCircle className="h-[30px] w-[30px] md:h-[40px] md:w-[40px] text-[var(--icon-color)] animate-spin" />
+                    <p className="text-sm text-neutral-400">Updating data...</p>
+                  </div>
+                </div>
+              )}
               {!error && chartData.length > 0 && (
                 <>
                   <ChartContainer
@@ -132,11 +135,11 @@ export default function Charts({}: Route.ComponentProps) {
                   <div className="flex w-full items-center gap-x-5 mt-[23px] pl-[70px]">
                     <div className="flex items-center gap-x-1.5">
                       <div className="w-[7px] h-[7px] bg-[#28B750] rounded-full" />
-                      <span>High</span>
+                      <span className="text-[12px]">High</span>
                     </div>
                     <div className="flex items-center gap-x-1.5">
                       <div className="w-[7px] h-[7px] bg-[#EB822A] rounded-full" />
-                      <span>Low</span>
+                      <span className="text-[12px]">Low</span>
                     </div>
                   </div>
                 </>
@@ -144,8 +147,9 @@ export default function Charts({}: Route.ComponentProps) {
             </div>
           </motion.div>
         </Suspense>
+        <HeatMap />
       </div>
-      <div className="w-[300px] hidden md:block"></div>
+      <div className=""></div>
     </div>
   );
 }
