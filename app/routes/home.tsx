@@ -4,7 +4,7 @@ import { TrendingUp } from "lucide-react";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
+    { title: "M3terscan" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }

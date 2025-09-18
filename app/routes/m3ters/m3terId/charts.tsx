@@ -41,7 +41,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function Charts({}: Route.ComponentProps) {
   const { initialData, m3terId } = useLoaderData<typeof loader>();
-  const { data, isFetching, error } = useSuspenseQuery({
+  const { data, error } = useSuspenseQuery({
     queryKey: ["chartData"],
     queryFn: () => fetchChartData(m3terId),
     initialData,
