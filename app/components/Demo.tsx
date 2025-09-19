@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { range, interpolateRgb, scaleSequential, scaleBand, extent } from "d3";
 import { useState } from "react";
 import styles from "./demo.module.css";
 
@@ -59,29 +59,26 @@ export const Renderer = ({
   const boundsWidth = width - MARGIN.right - MARGIN.left;
   const boundsHeight = height - MARGIN.top - MARGIN.bottom;
 
-  let [min = 0, max = 0] = d3.extent(data.map((d) => d.totalEnergy)); // get min/max
+  let [min = 0, max = 0] = extent(data.map((d) => d.totalEnergy)); // get min/max
   if (min === max) {
     max = min + 1; // avoid collapsed domain
   }
 
-  const colorScale = d3
-    .scaleSequential()
+  const colorScale = scaleSequential()
     .domain([min, max])
-    .interpolator(d3.interpolateRgb("#FBE6D4", "#EB822A"));
+    .interpolator(interpolateRgb("#FBE6D4", "#EB822A"));
 
   const allShapes = data.map((value, i) => {
     const row = i % nRows;
     const col = Math.floor(i / nRows);
 
-    const xScale = d3
-      .scaleBand()
-      .domain(d3.range(nCols).map(String))
+    const xScale = scaleBand()
+      .domain(range(nCols).map(String))
       .range([0, boundsWidth])
       .padding(0.1);
 
-    const yScale = d3
-      .scaleBand()
-      .domain(d3.range(nRows).map(String))
+    const yScale = scaleBand()
+      .domain(range(nRows).map(String))
       .range([0, boundsHeight])
       .padding(0.1);
 
