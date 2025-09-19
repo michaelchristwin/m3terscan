@@ -9,12 +9,13 @@ import {
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
 import { NavLink, useParams, useLocation } from "react-router";
-
-import { ChartLine } from "lucide-react";
-import { BsClipboardCheck } from "react-icons/bs";
-import { MdOutlineShoppingCart } from "react-icons/md";
-import { GoPulse } from "react-icons/go";
-import { RiGeminiLine } from "react-icons/ri";
+import {
+  ChartLine,
+  Activity,
+  ShoppingCart,
+  ClipboardCheck,
+  Sparkles,
+} from "lucide-react";
 
 const data = (m3terId: string) => {
   const navMain = [
@@ -26,22 +27,22 @@ const data = (m3terId: string) => {
     {
       title: "Overview",
       url: `/m3ters/${m3terId}/overview`,
-      icon: BsClipboardCheck,
+      icon: ClipboardCheck,
     },
     {
       title: "Trades",
       url: `/m3ters/${m3terId}/trades`,
-      icon: MdOutlineShoppingCart,
+      icon: ShoppingCart,
     },
     {
       title: "Activity",
       url: `/m3ters/${m3terId}/activity`,
-      icon: GoPulse,
+      icon: Activity,
     },
     {
       title: "Ask M3ter AI",
       url: `/m3ters/${m3terId}/ask-ai`,
-      icon: RiGeminiLine,
+      icon: Sparkles,
     },
   ];
   return navMain;
