@@ -1,63 +1,21 @@
 import { ViewToggle } from "./ViewToggle";
-// import { useSuspenseQuery } from "@tanstack/react-query";
-// import { useParams } from "react-router";
-// import { fetchHeatmapData } from "~/queries";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useParams } from "react-router";
+import { fetchHeatmapData } from "~/queries";
 import { Demo } from "./Demo";
+import { groupByWeek, splitIntoGroups } from "~/utils/query-utils";
+import { Suspense } from "react";
 
 function HeatMap() {
-  //   const { m3terId } = useParams();
-  //   const { data } = useSuspenseQuery({
-  //     queryKey: ["heatmapData"],
-  //     queryFn: () => fetchHeatmapData(new Date(2025, 0, 1), Number(m3terId), 30),
-  //     refetchInterval: 15 * 60 * 1000, // 15 minutes
-  //     staleTime: 15 * 60 * 1000,
-  //   });
-
-  const nCol = 10;
-  const nRow = 5;
-
-  const alphabet = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z",
-  ];
-
-  type HeatmapData = { x: string; y: string; value: number }[];
-
-  let data2: HeatmapData = [];
-
-  for (let x = 0; x < nCol; x++) {
-    for (let y = 0; y < nRow; y++) {
-      data2.push({
-        x: alphabet[x],
-        y: alphabet[y],
-        value: Math.random() * 40,
-      });
-    }
-  }
+  const { m3terId } = useParams();
+  const { data } = useSuspenseQuery({
+    queryKey: ["heatmapData"],
+    queryFn: () => fetchHeatmapData(new Date(2025, 0, 1), Number(m3terId), 100),
+    refetchInterval: 15 * 60 * 1000, // 15 minutes
+    staleTime: 15 * 60 * 1000,
+  });
+  const sortedData = groupByWeek(data);
+  const chunkedData = splitIntoGroups(sortedData, 4);
 
   return (
     <div className="p-6 bg-background text-foreground rounded-lg mt-5 h-[482px]">
@@ -67,7 +25,38 @@ function HeatMap() {
           <ViewToggle />
         </div>
       </div>
-      <Demo data={data2} width={700} height={400} />
+      <Suspense>
+        <div className="grid grid-cols-3 w-full gap-y-3 place-items-center">
+          <Demo
+            nRows={4}
+            data={chunkedData[0]}
+            nCols={4}
+            width={300}
+            height={170}
+          />
+          <Demo
+            nRows={4}
+            data={chunkedData[1]}
+            nCols={4}
+            width={300}
+            height={170}
+          />
+          <Demo
+            nRows={4}
+            data={chunkedData[2]}
+            nCols={4}
+            width={300}
+            height={170}
+          />
+          <Demo
+            nRows={4}
+            data={chunkedData[3]}
+            nCols={4}
+            width={300}
+            height={170}
+          />
+        </div>
+      </Suspense>
     </div>
   );
 }

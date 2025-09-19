@@ -21,6 +21,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "d3": "^7.9.0",
+    "date-fns": "^4.1.0",
     "isbot": "^5.1.27",
     "lucide-react": "^0.544.0",
     "m3ter-graphql-client": "^2.1.2",

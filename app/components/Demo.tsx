@@ -1,31 +1,35 @@
+import * as d3 from "d3";
 import { useState } from "react";
 import styles from "./demo.module.css";
-import { useMemo } from "react";
-import * as d3 from "d3";
 
 type HeatmapProps = {
   width: number;
   height: number;
-  data: { x: string; y: string; value: number }[];
+  data: { totalEnergy: number; week: number }[];
+  nCols: number;
+  nRows: number; // how many columns you want in the heatmap
 };
 
 export type InteractionData = {
-  xLabel: string;
-  yLabel: string;
+  row: number;
+  col: number;
   xPos: number;
   yPos: number;
-  value: number;
+  week: number;
+  totalEnergy: number;
 };
 
-export const Demo = ({ width, height, data }: HeatmapProps) => {
+export const Demo = ({ width, height, data, nCols, nRows }: HeatmapProps) => {
   const [hoveredCell, setHoveredCell] = useState<InteractionData | null>(null);
 
   return (
     <div style={{ position: "relative" }}>
       <Renderer
+        nRows={nRows}
         width={width}
         height={height}
         data={data}
+        nCols={nCols}
         setHoveredCell={setHoveredCell}
       />
       <Tooltip interactionData={hoveredCell} width={width} height={height} />
@@ -38,7 +42,9 @@ const MARGIN = { top: 10, right: 50, bottom: 30, left: 50 };
 type RendererProps = {
   width: number;
   height: number;
-  data: { x: string; y: string; value: number }[];
+  data: { totalEnergy: number; week: number }[];
+  nCols: number;
+  nRows: number;
   setHoveredCell: (hoveredCell: InteractionData | null) => void;
 };
 
@@ -46,113 +52,66 @@ export const Renderer = ({
   width,
   height,
   data,
+  nCols,
+  nRows,
   setHoveredCell,
 }: RendererProps) => {
-  // The bounds (=area inside the axis) is calculated by substracting the margins
   const boundsWidth = width - MARGIN.right - MARGIN.left;
   const boundsHeight = height - MARGIN.top - MARGIN.bottom;
 
-  const allYGroups = useMemo(() => [...new Set(data.map((d) => d.y))], [data]);
-  const allXGroups = useMemo(() => [...new Set(data.map((d) => d.x))], [data]);
+  let [min = 0, max = 0] = d3.extent(data.map((d) => d.totalEnergy)); // get min/max
+  if (min === max) {
+    max = min + 1; // avoid collapsed domain
+  }
 
-  const [min = 0, max = 0] = d3.extent(data.map((d) => d.value)); // extent can return [undefined, undefined], default to [0,0] to fix types
-
-  const xScale = useMemo(() => {
-    return d3
-      .scaleBand()
-      .range([0, boundsWidth])
-      .domain(allXGroups)
-      .padding(0.01);
-  }, [data, width]);
-
-  const yScale = useMemo(() => {
-    return d3
-      .scaleBand()
-      .range([boundsHeight, 0])
-      .domain(allYGroups)
-      .padding(0.01);
-  }, [data, height]);
-
-  var colorScale = d3
+  const colorScale = d3
     .scaleSequential()
-    .interpolator(d3.interpolateInferno)
-    .domain([min, max]);
+    .domain([min, max])
+    .interpolator(d3.interpolateRgb("#FBE6D4", "#EB822A"));
 
-  // Build the rectangles
-  const allShapes = data.map((d, i) => {
-    const x = xScale(d.x);
-    const y = yScale(d.y);
+  const allShapes = data.map((value, i) => {
+    const row = i % nRows;
+    const col = Math.floor(i / nRows);
 
-    if (d.value === null || !x || !y) {
-      return;
-    }
+    const xScale = d3
+      .scaleBand()
+      .domain(d3.range(nCols).map(String))
+      .range([0, boundsWidth])
+      .padding(0.1);
+
+    const yScale = d3
+      .scaleBand()
+      .domain(d3.range(nRows).map(String))
+      .range([0, boundsHeight])
+      .padding(0.1);
+
+    const x = xScale(String(col)) as number;
+    const y = yScale(String(row)) as number;
+    const cellWidth = xScale.bandwidth();
+    const cellHeight = yScale.bandwidth();
 
     return (
       <rect
         key={i}
-        r={4}
-        x={xScale(d.x)}
-        y={yScale(d.y)}
-        width={xScale.bandwidth()}
-        height={yScale.bandwidth()}
-        opacity={1}
-        fill={colorScale(d.value)}
-        rx={5}
-        stroke={"white"}
-        onMouseEnter={(e) => {
+        x={x}
+        y={y}
+        width={cellWidth}
+        height={cellHeight}
+        fill={colorScale(value.totalEnergy)}
+        stroke="white"
+        onMouseEnter={() =>
           setHoveredCell({
-            xLabel: "group " + d.x,
-            yLabel: "group " + d.y,
-            xPos: x + xScale.bandwidth() + MARGIN.left,
-            yPos: y + xScale.bandwidth() / 2 + MARGIN.top,
-            value: Math.round(d.value * 100) / 100,
-          });
-        }}
+            row,
+            col,
+            xPos: x + cellWidth + MARGIN.left,
+            yPos: y + cellHeight / 2 + MARGIN.top,
+            totalEnergy: value.totalEnergy,
+            week: value.week,
+          })
+        }
         onMouseLeave={() => setHoveredCell(null)}
         cursor="pointer"
       />
-    );
-  });
-
-  const xLabels = allXGroups.map((name, i) => {
-    const x = xScale(name);
-
-    if (!x) {
-      return null;
-    }
-
-    return (
-      <text
-        key={i}
-        x={x + xScale.bandwidth() / 2}
-        y={boundsHeight + 10}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontSize={10}
-      >
-        {name}
-      </text>
-    );
-  });
-
-  const yLabels = allYGroups.map((name, i) => {
-    const y = yScale(name);
-
-    if (!y) {
-      return null;
-    }
-
-    return (
-      <text
-        key={i}
-        x={-5}
-        y={y + yScale.bandwidth() / 2}
-        textAnchor="end"
-        dominantBaseline="middle"
-        fontSize={10}
-      >
-        {name}
-      </text>
     );
   });
 
@@ -161,11 +120,9 @@ export const Renderer = ({
       <g
         width={boundsWidth}
         height={boundsHeight}
-        transform={`translate(${[MARGIN.left, MARGIN.top].join(",")})`}
+        transform={`translate(${MARGIN.left},${MARGIN.top})`}
       >
         {allShapes}
-        {xLabels}
-        {yLabels}
       </g>
     </svg>
   );
@@ -178,12 +135,9 @@ type TooltipProps = {
 };
 
 const Tooltip = ({ interactionData, width, height }: TooltipProps) => {
-  if (!interactionData) {
-    return null;
-  }
+  if (!interactionData) return null;
 
   return (
-    // Wrapper div: a rect on top of the viz area
     <div
       style={{
         width,
@@ -194,7 +148,6 @@ const Tooltip = ({ interactionData, width, height }: TooltipProps) => {
         pointerEvents: "none",
       }}
     >
-      {/* The actual box with dark background */}
       <div
         className={styles.tooltip}
         style={{
@@ -203,9 +156,11 @@ const Tooltip = ({ interactionData, width, height }: TooltipProps) => {
           top: interactionData.yPos,
         }}
       >
-        <TooltipRow label={"x"} value={interactionData.xLabel} />
-        <TooltipRow label={"y"} value={interactionData.yLabel} />
-        <TooltipRow label={"value"} value={String(interactionData.value)} />
+        <TooltipRow label="Week" value={String(interactionData.week)} />
+        <TooltipRow
+          label="Revenue"
+          value={(interactionData.totalEnergy * 0.6).toFixed(2)}
+        />
       </div>
     </div>
   );
