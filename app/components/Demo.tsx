@@ -1,4 +1,6 @@
-import { range, interpolateRgb, scaleSequential, scaleBand, extent } from "d3";
+import { range, extent } from "d3-array";
+import { interpolateRgb } from "d3-interpolate";
+import { scaleSequential, scaleBand } from "d3-scale";
 import { useState } from "react";
 import styles from "./demo.module.css";
 
