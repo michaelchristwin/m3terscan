@@ -1,64 +1,184 @@
-import { ViewToggle } from "./ViewToggle";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "react-router";
-import { fetchHeatmapData } from "~/queries";
-import { Demo } from "./Demo";
-import { groupByWeek, splitIntoGroups } from "~/utils/query-utils";
-import { Suspense } from "react";
+import { range, extent } from "d3-array";
+import { interpolateRgb } from "d3-interpolate";
+import { scaleSequential, scaleBand } from "d3-scale";
+import { useState } from "react";
 
-function HeatMap() {
-  const { m3terId } = useParams();
-  const { data } = useSuspenseQuery({
-    queryKey: ["heatmapData"],
-    queryFn: () => fetchHeatmapData(new Date(2025, 0, 1), Number(m3terId), 100),
-    refetchInterval: 15 * 60 * 1000, // 15 minutes
-    staleTime: 15 * 60 * 1000,
-  });
-  const sortedData = groupByWeek(data);
-  const chunkedData = splitIntoGroups(sortedData, 4);
+type HeatmapProps = {
+  width: number;
+  height: number;
+  data: { totalEnergy: number; week: number }[];
+  nCols: number;
+  nRows: number; // how many columns you want in the heatmap
+};
+
+export type InteractionData = {
+  row: number;
+  col: number;
+  xPos: number;
+  yPos: number;
+  week: number;
+  totalEnergy: number;
+};
+
+export const Heatmap = ({
+  width,
+  height,
+  data,
+  nCols,
+  nRows,
+}: HeatmapProps) => {
+  const [hoveredCell, setHoveredCell] = useState<InteractionData | null>(null);
 
   return (
-    <div className="p-6 bg-background text-foreground rounded-lg mt-5 h-[482px]">
-      <div className="">
-        <div className="text-center flex justify-between items-center mb-3">
-          <h3 className="text-foreground text-[16px]">Revenue Heatmap</h3>
-          <ViewToggle />
-        </div>
-      </div>
-      <Suspense>
-        <div className="grid grid-cols-3 w-full gap-y-3 place-items-center">
-          <Demo
-            nRows={4}
-            data={chunkedData[0]}
-            nCols={4}
-            width={300}
-            height={170}
-          />
-          <Demo
-            nRows={4}
-            data={chunkedData[1]}
-            nCols={4}
-            width={300}
-            height={170}
-          />
-          <Demo
-            nRows={4}
-            data={chunkedData[2]}
-            nCols={4}
-            width={300}
-            height={170}
-          />
-          <Demo
-            nRows={4}
-            data={chunkedData[3]}
-            nCols={4}
-            width={300}
-            height={170}
-          />
-        </div>
-      </Suspense>
+    <div style={{ position: "relative" }}>
+      <Renderer
+        nRows={nRows}
+        width={width}
+        height={height}
+        data={data}
+        nCols={nCols}
+        setHoveredCell={setHoveredCell}
+      />
+      <Tooltip interactionData={hoveredCell} width={width} height={height} />
     </div>
   );
-}
+};
 
-export default HeatMap;
+const MARGIN = { top: 5, right: 0, bottom: 30, left: 0 };
+
+type RendererProps = {
+  width: number;
+  height: number;
+  data: { totalEnergy: number; week: number }[];
+  nCols: number;
+  nRows: number;
+  setHoveredCell: (hoveredCell: InteractionData | null) => void;
+};
+
+export const Renderer = ({
+  width,
+  height,
+  data,
+  nCols,
+  nRows,
+  setHoveredCell,
+}: RendererProps) => {
+  const boundsWidth = width - MARGIN.right - MARGIN.left;
+  const boundsHeight = height - MARGIN.top - MARGIN.bottom;
+
+  let [min = 0, max = 0] = extent(data.map((d) => d.totalEnergy)); // get min/max
+  if (min === max) {
+    max = min + 1; // avoid collapsed domain
+  }
+
+  const colorScale = scaleSequential()
+    .domain([min, max])
+    .interpolator(interpolateRgb("#FBE6D4", "#EB822A"));
+
+  const allShapes = data.map((value, i) => {
+    const row = i % nRows;
+    const col = Math.floor(i / nRows);
+
+    const xScale = scaleBand()
+      .domain(range(nCols).map(String))
+      .range([0, boundsWidth])
+      .padding(0.1);
+
+    const yScale = scaleBand()
+      .domain(range(nRows).map(String))
+      .range([0, boundsHeight])
+      .padding(0.1);
+
+    const x = xScale(String(col)) as number;
+    const y = yScale(String(row)) as number;
+    const cellWidth = xScale.bandwidth();
+    const cellHeight = yScale.bandwidth();
+
+    return (
+      <rect
+        key={i}
+        x={x}
+        y={y}
+        width={cellWidth}
+        height={cellHeight}
+        fill={colorScale(value.totalEnergy)}
+        stroke="white"
+        onMouseEnter={() =>
+          setHoveredCell({
+            row,
+            col,
+            xPos: x + cellWidth + MARGIN.left,
+            yPos: y + cellHeight / 2 + MARGIN.top,
+            totalEnergy: value.totalEnergy,
+            week: value.week,
+          })
+        }
+        onMouseLeave={() => setHoveredCell(null)}
+        cursor="pointer"
+      />
+    );
+  });
+
+  return (
+    <svg width={width} height={height}>
+      <g
+        width={boundsWidth}
+        height={boundsHeight}
+        transform={`translate(${MARGIN.left},${MARGIN.top})`}
+      >
+        {allShapes}
+      </g>
+    </svg>
+  );
+};
+
+type TooltipProps = {
+  interactionData: InteractionData | null;
+  width: number;
+  height: number;
+};
+
+const Tooltip = ({ interactionData, width, height }: TooltipProps) => {
+  if (!interactionData) return null;
+
+  return (
+    <div
+      style={{
+        width,
+        height,
+        position: "absolute",
+        top: 0,
+        left: 0,
+        pointerEvents: "none",
+      }}
+    >
+      <div
+        className="tooltip"
+        style={{
+          position: "absolute",
+          left: interactionData.xPos,
+          top: interactionData.yPos,
+        }}
+      >
+        <TooltipRow label="Week" value={String(interactionData.week)} />
+        <TooltipRow
+          label="Revenue"
+          value={(interactionData.totalEnergy * 0.6).toFixed(2)}
+        />
+      </div>
+    </div>
+  );
+};
+
+type TooltipRowProps = {
+  label: string;
+  value: string;
+};
+
+const TooltipRow = ({ label, value }: TooltipRowProps) => (
+  <div>
+    <b>{label}</b>
+    <span>: </span>
+    <span>{value}</span>
+  </div>
+);

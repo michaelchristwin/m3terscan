@@ -10,11 +10,12 @@ import {
   type ChartConfig,
 } from "~/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
-import { chunkArray } from "~/utils/query-utils";
+import { chunkArray, groupByWeek, splitIntoGroups } from "~/utils/query-utils";
 import BarChartSkeleton from "~/components/skeletons/BarChartSkeleton";
 import { LoaderCircle } from "lucide-react";
-import HeatMap from "~/components/Heatmap";
-import { fetchChartData } from "~/queries";
+import { Heatmap } from "~/components/Heatmap";
+import { fetchChartData, fetchHeatmapData } from "~/queries";
+import { ViewToggle } from "~/components/ViewToggle";
 
 const chartConfig = {
   energy: {
@@ -53,6 +54,15 @@ export default function Charts({}: Route.ComponentProps) {
     .map((energy, i) => {
       return { hour: `${String(i).padStart(2, "0")}:00`, energy };
     });
+
+  const { data: heatMapData } = useSuspenseQuery({
+    queryKey: ["heatmapData"],
+    queryFn: () => fetchHeatmapData(new Date(2025, 0, 1), Number(m3terId), 100),
+    refetchInterval: 15 * 60 * 1000, // 15 minutes
+    staleTime: 15 * 60 * 1000,
+  });
+  const sortedHeatmapData = groupByWeek(heatMapData);
+  const chunkedData = splitIntoGroups(sortedHeatmapData, 4);
 
   return (
     <div className="w-full h-full grid grid-cols-1 lg:grid-cols-[10fr_2fr] pb-[50px]">
@@ -147,7 +157,76 @@ export default function Charts({}: Route.ComponentProps) {
             </div>
           </motion.div>
         </Suspense>
-        <HeatMap />
+        <div className="p-10 bg-background text-foreground rounded-lg mt-5 min-h-[482px]">
+          <div className="">
+            <div className="text-center flex justify-between items-center mb-3">
+              <h3 className="text-foreground text-[14px] md:text-[16px]">
+                Revenue Heatmap
+              </h3>
+              <ViewToggle />
+            </div>
+          </div>
+          <Suspense>
+            <div className="grid lg:grid-cols-2 xl:grid-cols-3 grid-cols-1 w-full gap-y-3 mt-5">
+              <div>
+                <div className="grid grid-cols-3 w-[191px] text-[14px] ml-3">
+                  <p>Jan</p>
+                  <p>Feb</p>
+                  <p>Mar</p>
+                </div>
+                <Heatmap
+                  nRows={4}
+                  data={chunkedData[0]}
+                  nCols={4}
+                  width={250}
+                  height={170}
+                />
+              </div>
+              <div>
+                <div className="grid grid-cols-3 w-[191px] text-[14px] ml-3">
+                  <p>Apr</p>
+                  <p>May</p>
+                  <p>Jun</p>
+                </div>
+                <Heatmap
+                  nRows={4}
+                  data={chunkedData[1]}
+                  nCols={4}
+                  width={250}
+                  height={170}
+                />
+              </div>
+              <div>
+                <div className="grid grid-cols-3 w-[191px] text-[14px] ml-3">
+                  <p>Jul</p>
+                  <p>Aug</p>
+                  <p>Sep</p>
+                </div>
+                <Heatmap
+                  nRows={4}
+                  data={chunkedData[2]}
+                  nCols={4}
+                  width={250}
+                  height={170}
+                />
+              </div>
+              <div>
+                <div className="grid grid-cols-3 w-[191px] text-[14px] ml-3">
+                  <p>Oct</p>
+                  <p>Nov</p>
+                  <p>Dec</p>
+                </div>
+                <Heatmap
+                  nRows={4}
+                  data={chunkedData[3]}
+                  nCols={4}
+                  width={250}
+                  height={170}
+                />
+              </div>
+            </div>
+          </Suspense>
+        </div>
       </div>
       <div className=""></div>
     </div>

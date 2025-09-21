@@ -1,24 +1,24 @@
 import { motion } from "motion/react";
 import { useState } from "react";
-type Mode = "yearly-weeks" | "yearly-days" | "monthly";
+type Mode = "yearly" | "monthly";
 
 export const ViewToggle = () => {
-  const [viewMode, setViewMode] = useState<Mode>("yearly-weeks");
+  const [viewMode, setViewMode] = useState<Mode>("yearly");
 
   const views: {
-    mode: "yearly-weeks" | "yearly-days";
+    mode: "yearly" | "monthly";
     label: string;
-    targetView: "yearly-weeks" | "yearly-days";
+    targetView: "yearly" | "monthly";
   }[] = [
     {
-      mode: "yearly-weeks",
+      mode: "monthly",
       label: "Monthly",
-      targetView: "yearly-weeks",
+      targetView: "monthly",
     },
     {
-      mode: "yearly-days",
+      mode: "yearly",
       label: "Yearly",
-      targetView: "yearly-days",
+      targetView: "yearly",
     },
   ];
 
@@ -36,7 +36,7 @@ export const ViewToggle = () => {
             <button
               key={mode}
               onClick={() => setViewMode(mode)}
-              className={`relative z-10 px-4 py-1.5 rounded-full transition-colors text-sm font-medium`}
+              className={`relative z-10 px-4 py-1.5 rounded-full transition-colors text-[12px] md:text-sm font-medium`}
             >
               {isActive && (
                 <motion.div
