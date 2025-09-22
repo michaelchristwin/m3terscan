@@ -1,9 +1,12 @@
 import { motion } from "motion/react";
-import { useState } from "react";
+import { signal } from "@preact/signals-react";
+import { useSignals } from "@preact/signals-react/runtime";
 type Mode = "yearly" | "monthly";
 
+export const viewMode = signal<Mode>("yearly");
+
 export const ViewToggle = () => {
-  const [viewMode, setViewMode] = useState<Mode>("yearly");
+  useSignals();
 
   const views: {
     mode: "yearly" | "monthly";
@@ -31,11 +34,11 @@ export const ViewToggle = () => {
     >
       <div className="relative flex border border-dashed rounded-full p-1 border-[#4B4B4B]">
         {views.map(({ mode, label }) => {
-          const isActive = viewMode === mode;
+          const isActive = viewMode.value === mode;
           return (
             <button
               key={mode}
-              onClick={() => setViewMode(mode)}
+              onClick={() => (viewMode.value = mode)}
               className={`relative z-10 px-4 py-1.5 rounded-full transition-colors text-[12px] md:text-sm font-medium`}
             >
               {isActive && (
