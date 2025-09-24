@@ -13,13 +13,14 @@ import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 import { chunkArray, groupByWeek, splitIntoGroups } from "~/utils/query-utils";
 import BarChartSkeleton from "~/components/skeletons/BarChartSkeleton";
 import { LoaderCircle } from "lucide-react";
-import { Heatmap } from "~/components/Heatmap";
 import { fetchChartData, fetchHeatmapData } from "~/queries";
 import { viewMode, ViewToggle } from "~/components/ViewToggle";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useSignals } from "@preact/signals-react/runtime";
 import { useComputed } from "@preact/signals-react";
+import CalendarHeatmap from "~/components/CalendarHeatmap";
+import GridHeatmap from "~/components/GridHeatmap";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const chartConfig = {
@@ -60,9 +61,10 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { initialData, m3terId };
 }
 
-export default function Charts({}: Route.ComponentProps) {
+export default function Charts() {
   useSignals();
   const isYearly = useComputed(() => viewMode.value === "yearly");
+  const isMonthly = useComputed(() => viewMode.value === "monthly");
   const { initialData, m3terId } = useLoaderData<typeof loader>();
   const { data, isRefetching, error } = useSuspenseQuery({
     queryKey: ["chartData", m3terId],
@@ -189,7 +191,7 @@ export default function Charts({}: Route.ComponentProps) {
         <div className="p-10 bg-background text-foreground rounded-lg mt-5 min-h-[482px]">
           <div className="">
             <div className="text-center flex justify-between items-center mb-3">
-              <h3 className="text-foreground text-[14px] md:text-[16px]">
+              <h3 className="text-foreground text-[17px] md:text-[19px] font-semibold">
                 Revenue Heatmap
               </h3>
               <ViewToggle />
@@ -197,61 +199,59 @@ export default function Charts({}: Route.ComponentProps) {
           </div>
           <Suspense>
             {isYearly.value && (
-              <div className="grid lg:grid-cols-2 xl:grid-cols-3 grid-cols-1 w-full gap-y-3 mt-5">
+              <div className="grid md:grid-cols-2 grid-cols-1 w-full gap-y-7 mt-5">
                 <div>
-                  <div className="grid grid-cols-3 w-[191px] text-[14px] ml-3">
+                  <div className="grid grid-cols-3 w-[200px] text-[14px] text-center">
                     <p>Jan</p>
                     <p>Feb</p>
                     <p>Mar</p>
                   </div>
-                  <Heatmap
-                    nRows={4}
-                    data={chunkedData[0]}
-                    nCols={4}
-                    width={250}
-                    height={170}
-                  />
+                  <GridHeatmap data={chunkedData[0]} />
                 </div>
                 <div>
-                  <div className="grid grid-cols-3 w-[191px] text-[14px] ml-3">
+                  <div className="grid grid-cols-3 w-[200px] text-[14px] text-center">
                     <p>Apr</p>
                     <p>May</p>
                     <p>Jun</p>
                   </div>
-                  <Heatmap
-                    nRows={4}
-                    data={chunkedData[1]}
-                    nCols={4}
-                    width={250}
-                    height={170}
-                  />
+                  <GridHeatmap data={chunkedData[1]} />
                 </div>
                 <div>
-                  <div className="grid grid-cols-3 w-[191px] text-[14px] ml-3">
+                  <div className="grid grid-cols-3 w-[200px] text-[14px] text-center">
                     <p>Jul</p>
                     <p>Aug</p>
                     <p>Sep</p>
                   </div>
-                  <Heatmap
-                    nRows={4}
-                    data={chunkedData[2]}
-                    nCols={4}
-                    width={250}
-                    height={170}
-                  />
+                  <GridHeatmap data={chunkedData[2]} />
                 </div>
                 <div>
-                  <div className="grid grid-cols-3 w-[191px] text-[14px] ml-3">
+                  <div className="grid grid-cols-3 w-[200px] text-[14px] text-center">
                     <p>Oct</p>
                     <p>Nov</p>
                     <p>Dec</p>
                   </div>
-                  <Heatmap
-                    nRows={4}
-                    data={chunkedData[3]}
-                    nCols={4}
-                    width={250}
-                    height={170}
+                  <GridHeatmap data={chunkedData[3]} />
+                </div>
+              </div>
+            )}
+            {isMonthly.value && (
+              <div className="flex w-full items-center justify-center">
+                <div>
+                  <h3 className="font-medium text-foreground text-center mb-4">
+                    {new Date(2024, 4 - 1).toLocaleString("default", {
+                      month: "long",
+                    })}{" "}
+                    {2024}
+                  </h3>
+                  <CalendarHeatmap
+                    data={[
+                      { date: "2024-03-01", energy: 150 },
+                      { date: "2024-03-05", energy: 200 },
+                      { date: "2024-03-10", energy: 180 },
+                      { date: "2024-03-15", energy: 220 },
+                      { date: "2024-03-20", energy: 190 },
+                      { date: "2024-03-25", energy: 210 },
+                    ]}
                   />
                 </div>
               </div>

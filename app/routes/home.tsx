@@ -1,4 +1,4 @@
-import StatCard from "~/components/StartCard";
+import StatCard from "~/components/StatCard";
 import type { Route } from "./+types/home";
 import { TrendingUp } from "lucide-react";
 
