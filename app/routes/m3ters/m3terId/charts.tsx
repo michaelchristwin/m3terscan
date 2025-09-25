@@ -191,7 +191,7 @@ export default function Charts() {
         <div className="p-10 bg-background text-foreground rounded-lg mt-5 min-h-[482px]">
           <div className="">
             <div className="text-center flex justify-between items-center mb-3">
-              <h3 className="text-foreground text-[17px] md:text-[19px] font-semibold">
+              <h3 className="text-foreground text-[17px] md:text-[19px] font-medium">
                 Revenue Heatmap
               </h3>
               <ViewToggle />

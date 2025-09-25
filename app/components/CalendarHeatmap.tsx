@@ -95,12 +95,12 @@ const CalendarHeatmap: React.FC<CalendarHeatmapProps> = ({
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-y-[15px] gap-x-[20px]">
         {calendarData.map((dayData, index) => (
           <div
             key={index}
             className={`
-              w-16 h-10 rounded flex items-center justify-center
+              w-18 h-10 rounded flex items-center justify-center
               text-xs font-medium transition-all duration-200
               ${
                 dayData
