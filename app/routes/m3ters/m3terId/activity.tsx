@@ -15,9 +15,10 @@ import { Await, useLoaderData } from "react-router";
 import { formatDistanceToNow } from "date-fns";
 import { formatAddress } from "~/lib/utils";
 import TableSkeleton from "~/components/skeletons/TableSkeleton";
+const MotionTableRow = motion.create(TableRow);
 
 const tableHeaders = ["Time", "Energy", "Signature", "Value", "Status"];
-const MotionTableRow = motion.create(TableRow);
+
 export const loader = ({ params }: Route.LoaderArgs) => {
   const dataPromise = m3terClient.v2.dataPoints.getMeterDataPoints({
     meterNumber: Number(params.m3terId),
@@ -25,7 +26,7 @@ export const loader = ({ params }: Route.LoaderArgs) => {
   return { dataPromise };
 };
 
-function Activity() {
+function Activity({ params }: Route.ComponentProps) {
   const { dataPromise } = useLoaderData<typeof loader>();
   return (
     <motion.div
@@ -34,6 +35,15 @@ function Activity() {
       transition={{ duration: 0.5 }}
       className="p-4"
     >
+      <title>Actvities of M3ter {params.m3terId} | M3terscan</title>
+      <meta
+        property="og:title"
+        content={`Actvities of M3ter ${params.m3terId} | M3terscan`}
+      />
+      <meta
+        name="description"
+        content={`Actvities of M3ter ${params.m3terId}`}
+      />
       <div className="flex items-center justify-between mb-4">
         <motion.h3
           initial={{ opacity: 0 }}

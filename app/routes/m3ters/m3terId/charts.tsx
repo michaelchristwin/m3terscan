@@ -61,7 +61,7 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { initialData, m3terId };
 }
 
-export default function Charts() {
+export default function Charts({ params }: Route.ComponentProps) {
   useSignals();
   const isYearly = useComputed(() => viewMode.value === "yearly");
   const isMonthly = useComputed(() => viewMode.value === "monthly");
@@ -97,6 +97,11 @@ export default function Charts() {
 
   return (
     <div className="w-full h-full grid grid-cols-1 lg:grid-cols-[10fr_2fr] pb-[50px]">
+      <title>Charts for M3ter {params.m3terId} | M3terscan</title>
+      <meta
+        name="description"
+        content={`Charts to represent useful data for m3ter ${params.m3terId}`}
+      />
       <div className="px-[30px] pt-[37px] pb-[41px] bg-[var(--background-primary)] rounded-lg h-full mx-4">
         <Suspense fallback={<BarChartSkeleton />}>
           <motion.div
