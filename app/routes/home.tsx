@@ -1,6 +1,27 @@
 import StatCard from "~/components/StatCard";
 import type { Route } from "./+types/home";
 import { TrendingUp } from "lucide-react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -10,8 +31,58 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
+  const data = {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    datasets: [
+      {
+        label: "First Line",
+        data: [10, 25, 15, 30, 22, 40],
+        borderColor: "#FD8852",
+        backgroundColor: "#FD8852",
+        borderWidth: 1,
+        pointRadius: 0,
+      },
+      {
+        label: "Second Line",
+        data: [5, 15, 10, 20, 12, 25],
+        borderColor: "#AEC7ED",
+        backgroundColor: "#AEC7ED",
+        borderDash: [6, 6], // <-- dashed line
+        borderWidth: 1,
+        pointRadius: 0,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top" as const,
+        // align: "start" as const,
+        labels: {
+          usePointStyle: true, // <-- round markers in legend
+          pointStyle: "circle",
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false, // <-- removes vertical grid lines
+        },
+      },
+      y: {
+        grid: {
+          display: false, // <-- removes horizontal grid lines
+        },
+      },
+    },
+  };
+
   return (
-    <main className="w-full h-full px-[63px]">
+    <main className="w-full h-full px-[63px] mt-5">
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-5">
         <StatCard title="Total revenue" value="$25K" />
         <StatCard title="Total revenue" value="$25K" />
@@ -30,6 +101,9 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="h-[360px] bg-[var(--background-primary)] p-6 rounded-2xl">
+        <Line data={data} options={options} />
       </div>
     </main>
   );
