@@ -69,3 +69,21 @@ export function groupByWeek(data: MeterDataPointEdgeV2[]) {
   }
   return final;
 }
+
+export function filterByMonthYear(
+  data: MeterDataPointEdgeV2[],
+  year: number,
+  month: number
+) {
+  return data.filter((item) => {
+    const d = new Date(item.node?.timestamp as number);
+    return d.getFullYear() === year && d.getMonth() === month;
+  });
+}
+
+export function formatDateLocal(year: number, month: number, day: number) {
+  const y = year.toString();
+  const m = (month + 1).toString().padStart(2, "0"); // month is 0-based
+  const d = day.toString().padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
