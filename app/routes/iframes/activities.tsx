@@ -20,7 +20,7 @@ const MotionTableRow = motion.create(TableRow);
 
 const tableHeaders = ["Time", "Energy", "Signature", "Value", "Status"];
 
-export async function action({ request }: Route.ActionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const colorScheme = url.searchParams.get("colorScheme");
 
