@@ -13,6 +13,8 @@ export default [
       index("routes/m3ters/m3terId/index.tsx"),
       route("activity", "routes/m3ters/m3terId/activity.tsx"),
       route("charts", "routes/m3ters/m3terId/charts.tsx"),
+      route("overview", "routes/m3ters/m3terId/overview.tsx"),
+      route("ask-ai", "routes/m3ters/m3terId/ask-ai.tsx"),
     ]),
   ]),
 ] satisfies RouteConfig;

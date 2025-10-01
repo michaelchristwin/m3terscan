@@ -1,6 +1,6 @@
 const TableSkeleton = ({ rows = 5, columns = 5 }) => {
   return (
-    <div className="w-full max-w-4xl mx-auto p-6">
+    <div className="w-full mx-auto p-6">
       <div className="rounded-md border">
         <div className="overflow-hidden">
           <table className="w-full">

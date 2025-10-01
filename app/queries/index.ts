@@ -1,63 +1,48 @@
-import { readContract } from "@wagmi/core";
-import { fromHex } from "viem";
-import { config } from "~/config/wagmi";
-import { stateContract } from "~/config/contracts";
-import { m3terClient } from "~/config/m3terClient";
-import { getQuarterHoursSince } from "~/utils/query-utils";
+export interface ChartsData {
+  hour: string;
+  energy: number;
+}
 
-export const fetchChartData = async (m3terId: number) => {
-  const result = await readContract(config, {
-    ...stateContract,
-    functionName: "nonce",
-    args: [BigInt(m3terId)],
-  });
-  const currentNonce = fromHex(result, "number");
+export interface WeeklyData {
+  data: {
+    week: number;
+    totalEnergy: number;
+  }[][];
+}
 
-  // Then get the last 96 nonces (24 hours)
-  const startNonce = Math.max(1, currentNonce - 95); // -95 because we include currentNonce
-  const nonces = Array.from({ length: 96 }, (_, i) => startNonce + i);
-  return m3terClient.v2.dataPoints.getMeterDataPoints({
-    meterNumber: m3terId,
-    nonces: nonces,
-  });
-};
+export interface MonthlyData {
+  data: {
+    date: string;
+    energy: number;
+  }[];
+}
 
-export const fetchHeatmapData = async (
-  startDate: Date,
-  m3terId: number,
-  totalDays: number
-) => {
-  // Get current nonce from blockchain
-  const result = await readContract(config, {
-    ...stateContract,
-    functionName: "nonce",
-    args: [BigInt(m3terId)],
-  });
-  const currentNonce = fromHex(result, "number");
-
-  // Calculate how many 15-minute intervals since startDate
-  const intervalsSinceStart = getQuarterHoursSince(startDate);
-
-  // Calculate the nonce range
-  const startNonce = Math.max(1, currentNonce - intervalsSinceStart);
-  const nonceMove = totalDays * 96; // 96 intervals per day (24 * 4)
-  const endNonce = Math.min(currentNonce, startNonce + nonceMove);
-
-  // Validate range
-  if (startNonce > endNonce) {
-    throw new Error("Invalid nonce range: startNonce > endNonce");
-  }
-
-  // Generate the correct nonce range array
-  const nonceRange = Array.from(
-    { length: endNonce - startNonce + 1 },
-    (_, i) => startNonce + i
+export async function getDailyCharts(m3terId: string) {
+  const reponse = await fetch(
+    `https://m3terscan-api.onrender.com/m3ter/${m3terId}/daily`
   );
+  const initialData: ChartsData[] = await reponse.json();
+  return initialData;
+}
 
-  const dataPromise = m3terClient.v2.dataPoints.getMeterDataPoints({
-    meterNumber: m3terId,
-    nonces: nonceRange,
-  });
+export async function getWeeklyCharts(m3terId: string, year: number) {
+  const reponse = await fetch(
+    `https://m3terscan-api.onrender.com/m3ter/${m3terId}/weekly?year=${year}`
+  );
+  const data: WeeklyData = await reponse.json();
 
-  return dataPromise;
-};
+  return data;
+}
+
+export async function getMonthlyData(
+  m3terId: string,
+  year: number,
+  month: number
+) {
+  const reponse = await fetch(
+    `https://m3terscan-api.onrender.com/m3ter/${m3terId}/monthly?year=${year}&month=${month}`
+  );
+  const data: MonthlyData = await reponse.json();
+
+  return data.data;
+}
