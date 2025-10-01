@@ -1,6 +1,6 @@
 const TableSkeleton = ({ rows = 5, columns = 5 }) => {
   return (
-    <div className="w-full mx-auto p-6">
+    <div className="w-screen mx-auto" suppressHydrationWarning>
       <div className="rounded-md border">
         <div className="overflow-hidden">
           <table className="w-full">
@@ -32,7 +32,7 @@ const TableSkeleton = ({ rows = 5, columns = 5 }) => {
       </div>
 
       {/* Optional: Pagination Skeleton */}
-      <div className="flex items-center justify-between px-2 py-4">
+      {/* <div className="flex items-center justify-between px-2 py-4">
         <Skeleton className="h-4 w-[100px]" />
         <div className="flex items-center space-x-2">
           <Skeleton className="h-8 w-8" />
@@ -40,7 +40,7 @@ const TableSkeleton = ({ rows = 5, columns = 5 }) => {
           <Skeleton className="h-8 w-8" />
           <Skeleton className="h-8 w-8" />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -26,7 +26,18 @@ export const loader = ({ params }: Route.LoaderArgs) => {
   return { dataPromise };
 };
 
-function Activity({ params }: Route.ComponentProps) {
+export const meta = ({ params }: Route.MetaArgs) => {
+  return [
+    { title: `Actvities of M3ter ${params.m3terId} | M3terscan` },
+    { name: "description", content: `Actvities of M3ter ${params.m3terId}` },
+    {
+      name: "og:title",
+      content: `Actvities of M3ter ${params.m3terId} | M3terscan`,
+    },
+  ];
+};
+
+function Activity() {
   const { dataPromise } = useLoaderData<typeof loader>();
   return (
     <motion.div
@@ -35,22 +46,13 @@ function Activity({ params }: Route.ComponentProps) {
       transition={{ duration: 0.5 }}
       className="p-4"
     >
-      <title>Actvities of M3ter {params.m3terId} | M3terscan</title>
-      <meta
-        property="og:title"
-        content={`Actvities of M3ter ${params.m3terId} | M3terscan`}
-      />
-      <meta
-        name="description"
-        content={`Actvities of M3ter ${params.m3terId}`}
-      />
       <div className="flex items-center justify-between mb-4">
         <motion.h3
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          Activity
+          Activities
         </motion.h3>
 
         <SlidersHorizontal

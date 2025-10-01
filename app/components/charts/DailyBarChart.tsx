@@ -4,7 +4,15 @@ import { motion } from "motion/react";
 import { Bar } from "react-chartjs-2";
 import { getDailyCharts } from "~/queries";
 
-function DailyBarChart({ m3terId }: { m3terId: string }) {
+function DailyBarChart({
+  m3terId,
+  colorHigh = null,
+  colorLow = null,
+}: {
+  m3terId: string;
+  colorLow: string | null;
+  colorHigh?: string | null;
+}) {
   const {
     data: chartData,
     isRefetching,
@@ -17,8 +25,10 @@ function DailyBarChart({ m3terId }: { m3terId: string }) {
   });
 
   const colors = chartData.map((entry, index) => {
-    if (index === 0) return "#28B750"; // first bar default green
-    return entry.energy < chartData[index - 1].energy ? "#EB822A" : "#28B750";
+    if (index === 0) return colorHigh || "#28B750"; // first bar default green
+    return entry.energy < chartData[index - 1].energy
+      ? colorLow || "#EB822A"
+      : colorHigh || "#28B750";
   });
   const barChartData = {
     labels: chartData.map((d) => d.hour),

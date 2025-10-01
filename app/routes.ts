@@ -17,4 +17,9 @@ export default [
       route("ask-ai", "routes/m3ters/m3terId/ask-ai.tsx"),
     ]),
   ]),
+  route("iframes", "routes/iframes/iframes.tsx", [
+    index("routes/iframes/index.tsx"),
+    route("bar-chart", "routes/iframes/bar-chart.tsx"),
+    route("activities", "routes/iframes/activities.tsx"),
+  ]),
 ] satisfies RouteConfig;
