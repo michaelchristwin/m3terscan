@@ -13,7 +13,7 @@ import { formatDistanceToNow } from "date-fns";
 import { formatAddress } from "~/lib/utils";
 import TableSkeleton from "~/components/skeletons/TableSkeleton";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { data, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import { setColorScheme } from "~/.server/cookies";
 import type { Route } from "./+types/activities";
 const MotionTableRow = motion.create(TableRow);
@@ -24,9 +24,20 @@ export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const colorScheme = url.searchParams.get("colorScheme");
 
-  return data(null, {
-    headers: { "Set-Cookie": await setColorScheme(colorScheme || "light") },
+  const data = { colorScheme: colorScheme || "light" };
+
+  const response = new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
+  response.headers.set(
+    "Set-Cookie",
+    await setColorScheme(colorScheme || "light")
+  );
+
+  return response;
 }
 
 function Activities() {

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { data, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import DailyBarChart from "~/components/charts/DailyBarChart";
 import BarChartSkeleton from "~/components/skeletons/BarChartSkeleton";
 import {
@@ -26,9 +26,20 @@ export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const colorScheme = url.searchParams.get("colorScheme");
 
-  return data(null, {
-    headers: { "Set-Cookie": await setColorScheme(colorScheme || "light") },
+  const data = { colorScheme: colorScheme || "light" };
+
+  const response = new Response(JSON.stringify(data), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
+  response.headers.set(
+    "Set-Cookie",
+    await setColorScheme(colorScheme || "light")
+  );
+
+  return response;
 }
 
 function BarCharts() {
