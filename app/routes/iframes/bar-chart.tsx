@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { useSearchParams } from "react-router";
+import { data, useSearchParams } from "react-router";
 import DailyBarChart from "~/components/charts/DailyBarChart";
 import BarChartSkeleton from "~/components/skeletons/BarChartSkeleton";
 import {
@@ -11,6 +11,8 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
+import type { Route } from "./+types/bar-chart";
+import { setColorScheme } from "~/.server/cookies";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -19,6 +21,15 @@ ChartJS.register(
   CategoryScale,
   LinearScale
 );
+
+export async function action({ request }: Route.ActionArgs) {
+  const url = new URL(request.url);
+  const colorScheme = url.searchParams.get("colorScheme");
+
+  return data(null, {
+    headers: { "Set-Cookie": await setColorScheme(colorScheme || "light") },
+  });
+}
 
 function BarCharts() {
   const [searchParams, _] = useSearchParams();

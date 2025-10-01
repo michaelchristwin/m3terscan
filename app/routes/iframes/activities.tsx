@@ -13,10 +13,21 @@ import { formatDistanceToNow } from "date-fns";
 import { formatAddress } from "~/lib/utils";
 import TableSkeleton from "~/components/skeletons/TableSkeleton";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useSearchParams } from "react-router";
+import { data, useSearchParams } from "react-router";
+import { setColorScheme } from "~/.server/cookies";
+import type { Route } from "./+types/activities";
 const MotionTableRow = motion.create(TableRow);
 
 const tableHeaders = ["Time", "Energy", "Signature", "Value", "Status"];
+
+export async function action({ request }: Route.ActionArgs) {
+  const url = new URL(request.url);
+  const colorScheme = url.searchParams.get("colorScheme");
+
+  return data(null, {
+    headers: { "Set-Cookie": await setColorScheme(colorScheme || "light") },
+  });
+}
 
 function Activities() {
   const [searchParams, _] = useSearchParams();
