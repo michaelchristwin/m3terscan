@@ -29,7 +29,7 @@ function BarCharts() {
     return;
   }
   return (
-    <div className="w-full">
+    <div className="w-full p-3">
       <Suspense fallback={<BarChartSkeleton />}>
         <DailyBarChart
           m3terId={m3terId}
