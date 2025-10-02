@@ -11,6 +11,7 @@ import {
   LinearScale,
 } from "chart.js";
 import IframeBarChart from "~/components/charts/IframeBarChart";
+import clsx from "clsx";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -31,7 +32,12 @@ function BarCharts() {
     return;
   }
   return (
-    <div className="w-full p-3">
+    <div
+      className={clsx(
+        colorScheme === "dark" && dark ? [dark, "text-white"] : "bg-background",
+        "w-full p-3"
+      )}
+    >
       <Suspense fallback={<BarChartSkeleton />}>
         <IframeBarChart
           m3terId={m3terId}

@@ -1,4 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
+import clsx from "clsx";
 import { LoaderCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { Bar } from "react-chartjs-2";
@@ -27,7 +28,8 @@ function IframeBarChart({
     refetchInterval: 15 * 60 * 1000, // 15 minutes
     staleTime: 15 * 60 * 1000,
   });
-
+  // console.log("colorScheme: ", colorScheme);
+  // console.log("Dark: ", dark);
   const colors = chartData.map((entry, index) => {
     if (index === 0) return colorHigh || "#28B750"; // first bar default green
     return entry.energy < chartData[index - 1].energy
@@ -77,10 +79,21 @@ function IframeBarChart({
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`text-[var(--text-secondary)] ${colorScheme === "dark" && dark ? dark : "bg-background"}`}
+      className={clsx(
+        colorScheme === "dark" && dark
+          ? [dark, "text-white"]
+          : ["bg-background", "text-[var(--text-secondary)]"]
+      )}
     >
       <div className="flex items-center mb-6">
-        <h3 className="text-foreground text-[16px]">Energy usage by hour</h3>
+        <h3
+          className={clsx(
+            colorScheme === "dark" && dark ? "text-white" : "text-foreground",
+            "text-[16px]"
+          )}
+        >
+          Energy usage by hour
+        </h3>
       </div>
       <div className="h-105 relative">
         {isRefetching && (
