@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { useSearchParams } from "react-router";
-import DailyBarChart from "~/components/charts/DailyBarChart";
 import BarChartSkeleton from "~/components/skeletons/BarChartSkeleton";
 import {
   Chart as ChartJS,
@@ -11,8 +10,7 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
-import type { Route } from "./+types/bar-chart";
-import { setColorScheme } from "~/.server/cookies";
+import IframeBarChart from "~/components/charts/IframeBarChart";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -22,41 +20,25 @@ ChartJS.register(
   LinearScale
 );
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const url = new URL(request.url);
-  const colorScheme = url.searchParams.get("colorScheme");
-
-  const data = { colorScheme: colorScheme || "light" };
-
-  const response = new Response(JSON.stringify(data), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  response.headers.set(
-    "Set-Cookie",
-    await setColorScheme(colorScheme || "light")
-  );
-
-  return response;
-}
-
 function BarCharts() {
   const [searchParams, _] = useSearchParams();
   const m3terId = searchParams.get("m3terId");
   const colorLow = searchParams.get("colorLow");
   const colorHigh = searchParams.get("colorHigh");
+  const colorScheme = searchParams.get("colorScheme") || "light";
+  const dark = searchParams.get("dark");
   if (!m3terId) {
     return;
   }
   return (
     <div className="w-full p-3">
       <Suspense fallback={<BarChartSkeleton />}>
-        <DailyBarChart
+        <IframeBarChart
           m3terId={m3terId}
           colorHigh={colorHigh}
           colorLow={colorLow}
+          colorScheme={colorScheme}
+          dark={dark}
         />
       </Suspense>
     </div>

@@ -71,12 +71,13 @@ function Activity() {
               ))}
             </TableRow>
           </TableHeader>
-          <TableBody className="text-[12px]">
-            <AnimatePresence>
-              <Suspense fallback={<TableSkeleton />}>
-                <Await resolve={dataPromise}>
-                  {(data) =>
-                    data.map((item, index) => (
+
+          <AnimatePresence>
+            <Suspense fallback={<TableSkeleton />}>
+              <Await resolve={dataPromise}>
+                {(data) => (
+                  <TableBody className="text-[12px]">
+                    {data.map((item, index) => (
                       <MotionTableRow
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -114,12 +115,12 @@ function Activity() {
                           Valid
                         </TableCell>
                       </MotionTableRow>
-                    ))
-                  }
-                </Await>
-              </Suspense>
-            </AnimatePresence>
-          </TableBody>
+                    ))}
+                  </TableBody>
+                )}
+              </Await>
+            </Suspense>
+          </AnimatePresence>
         </Table>
       </div>
     </motion.div>

@@ -80,7 +80,7 @@ export default function Charts({ params }: Route.ComponentProps) {
     <div className="w-full h-full grid grid-cols-1 lg:grid-cols-[10fr_2fr] pb-[50px]">
       <div className="px-[30px] pt-[37px] pb-[41px] bg-[var(--background-primary)] rounded-lg h-full mx-4">
         <Suspense fallback={<BarChartSkeleton />}>
-          <DailyBarChart m3terId={m3terId} colorLow={null} colorHigh={null} />
+          <DailyBarChart m3terId={m3terId} />
         </Suspense>
         <div className="p-10 bg-background text-foreground rounded-lg mt-5 min-h-[482px]">
           <div className="">

@@ -14,38 +14,16 @@ import { formatAddress } from "~/lib/utils";
 import TableSkeleton from "~/components/skeletons/TableSkeleton";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router";
-import { setColorScheme } from "~/.server/cookies";
-import type { Route } from "./+types/activities";
 const MotionTableRow = motion.create(TableRow);
 
 const tableHeaders = ["Time", "Energy", "Signature", "Value", "Status"];
-
-export async function loader({ request }: Route.LoaderArgs) {
-  const url = new URL(request.url);
-  const colorScheme = url.searchParams.get("colorScheme");
-
-  const data = { colorScheme: colorScheme || "light" };
-
-  const response = new Response(JSON.stringify(data), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  response.headers.set(
-    "Set-Cookie",
-    await setColorScheme(colorScheme || "light")
-  );
-
-  return response;
-}
 
 function Activities() {
   const [searchParams, _] = useSearchParams();
   const m3terId = searchParams.get("m3terId");
   return (
     <div className="">
-      <Table className="text-left" suppressHydrationWarning>
+      <Table className="text-left">
         <TableHeader className="text-[13px] font-semibold">
           <TableRow className="bg-[var(--background-secondary)]">
             {tableHeaders.map((v) => (
@@ -58,7 +36,7 @@ function Activities() {
 
         {m3terId && (
           <Suspense fallback={<TableSkeleton />}>
-            <TableBody className="text-[12px]" suppressHydrationWarning>
+            <TableBody className="text-[12px]">
               <AnimatePresence>
                 <ChiComponent m3terId={m3terId} />
               </AnimatePresence>

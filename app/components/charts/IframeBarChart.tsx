@@ -4,7 +4,19 @@ import { motion } from "motion/react";
 import { Bar } from "react-chartjs-2";
 import { getDailyCharts } from "~/queries";
 
-function DailyBarChart({ m3terId }: { m3terId: string }) {
+function IframeBarChart({
+  m3terId,
+  colorHigh = null,
+  colorLow = null,
+  colorScheme,
+  dark,
+}: {
+  m3terId: string;
+  colorLow: string | null;
+  colorHigh?: string | null;
+  colorScheme: string;
+  dark: string | null;
+}) {
   const {
     data: chartData,
     isRefetching,
@@ -17,8 +29,10 @@ function DailyBarChart({ m3terId }: { m3terId: string }) {
   });
 
   const colors = chartData.map((entry, index) => {
-    if (index === 0) return "#28B750"; // first bar default green
-    return entry.energy < chartData[index - 1].energy ? "#EB822A" : "#28B750";
+    if (index === 0) return colorHigh || "#28B750"; // first bar default green
+    return entry.energy < chartData[index - 1].energy
+      ? colorLow || "#EB822A"
+      : colorHigh || "#28B750";
   });
   const barChartData = {
     labels: chartData.map((d) => d.hour),
@@ -63,7 +77,7 @@ function DailyBarChart({ m3terId }: { m3terId: string }) {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="text-[var(--text-secondary)]"
+      className={`text-[var(--text-secondary)] ${colorScheme === "dark" && dark ? dark : "bg-background"}`}
     >
       <div className="flex items-center mb-6">
         <h3 className="text-foreground text-[16px]">Energy usage by hour</h3>
@@ -99,4 +113,4 @@ function DailyBarChart({ m3terId }: { m3terId: string }) {
   );
 }
 
-export default DailyBarChart;
+export default IframeBarChart;
