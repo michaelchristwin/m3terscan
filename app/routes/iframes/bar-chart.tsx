@@ -27,7 +27,7 @@ function BarCharts() {
   const colorHigh = searchParams.get("colorHigh");
   const colorScheme = searchParams.get("colorScheme") || "light";
   const dark = searchParams.get("dark");
-  const darkT = "#" + dark;
+
   if (!m3terId) {
     return;
   }
@@ -35,7 +35,7 @@ function BarCharts() {
     <div
       style={{
         backgroundColor:
-          colorScheme === "dark" && dark ? darkT : "var(--background)",
+          colorScheme === "dark" && dark ? dark : "var(--background)",
         color:
           colorScheme === "dark" && dark ? "white" : "var(--text-secondary)",
       }}

@@ -27,7 +27,7 @@ function IframeBarChart({
     refetchInterval: 15 * 60 * 1000, // 15 minutes
     staleTime: 15 * 60 * 1000,
   });
-  const darkT = "#" + dark;
+
   console.log("colorScheme: ", colorScheme);
   console.log("Dark: ", dark);
 
@@ -82,7 +82,7 @@ function IframeBarChart({
       transition={{ duration: 0.5, ease: "easeOut" }}
       style={{
         backgroundColor:
-          colorScheme === "dark" && dark ? darkT : "var(--background)",
+          colorScheme === "dark" && dark ? dark : "var(--background)",
         color:
           colorScheme === "dark" && dark ? "white" : "var(--text-secondary)",
       }}
