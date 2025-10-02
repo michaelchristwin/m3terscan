@@ -11,6 +11,7 @@ import {
   LinearScale,
 } from "chart.js";
 import IframeBarChart from "~/components/charts/IframeBarChart";
+import { decodeParam } from "~/utils/query-utils";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -23,10 +24,10 @@ ChartJS.register(
 function BarCharts() {
   const [searchParams, _] = useSearchParams();
   const m3terId = searchParams.get("m3terId");
-  const colorLow = searchParams.get("colorLow");
-  const colorHigh = searchParams.get("colorHigh");
+  const colorLow = decodeParam(searchParams.get("colorLow"));
+  const colorHigh = decodeParam(searchParams.get("colorHigh"));
   const colorScheme = searchParams.get("colorScheme") || "light";
-  const dark = decodeURIComponent(searchParams.get("dark") as string);
+  const dark = decodeParam(searchParams.get("dark"));
 
   if (!m3terId) {
     return;

@@ -14,6 +14,7 @@ import { formatAddress } from "~/lib/utils";
 import TableSkeleton from "~/components/skeletons/TableSkeleton";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router";
+import { decodeParam } from "~/utils/query-utils";
 const MotionTableRow = motion.create(TableRow);
 
 const tableHeaders = ["Time", "Energy", "Signature", "Value", "Status"];
@@ -21,13 +22,30 @@ const tableHeaders = ["Time", "Energy", "Signature", "Value", "Status"];
 function Activities() {
   const [searchParams, _] = useSearchParams();
   const m3terId = searchParams.get("m3terId");
-  const dark = decodeURIComponent(searchParams.get("dark") as string);
-  console.log(dark);
+  const colorScheme = searchParams.get("colorScheme") || "light";
+  const dark = decodeParam(searchParams.get("dark"));
+  const even = decodeParam(searchParams.get("even"));
+  const odd = decodeParam(searchParams.get("odd"));
+
   return (
-    <div className="">
+    <div
+      style={{
+        backgroundColor:
+          colorScheme === "dark" && dark ? dark : "var(--background)",
+        color:
+          colorScheme === "dark" && dark ? "white" : "var(--text-secondary)",
+      }}
+    >
       <Table className="text-left">
         <TableHeader className="text-[13px] font-semibold">
-          <TableRow className="bg-[var(--background-secondary)]">
+          <TableRow
+            style={{
+              backgroundColor:
+                colorScheme === "dark" && dark
+                  ? dark
+                  : "var(--background-secondary)",
+            }}
+          >
             {tableHeaders.map((v) => (
               <TableHead className="text-[var(--icon-color)] p-4" key={v}>
                 {v}
@@ -40,7 +58,12 @@ function Activities() {
           <Suspense fallback={<TableSkeleton />}>
             <TableBody className="text-[12px]">
               <AnimatePresence>
-                <ChiComponent m3terId={m3terId} />
+                <ChiComponent
+                  m3terId={m3terId}
+                  even={even}
+                  odd={odd}
+                  colorScheme={colorScheme}
+                />
               </AnimatePresence>
             </TableBody>
           </Suspense>
@@ -52,7 +75,17 @@ function Activities() {
 
 export default Activities;
 
-const ChiComponent = ({ m3terId }: { m3terId: string }) => {
+const ChiComponent = ({
+  m3terId,
+  even,
+  odd,
+  colorScheme,
+}: {
+  m3terId: string;
+  even: string | null;
+  odd: string | null;
+  colorScheme: string;
+}) => {
   const { data } = useSuspenseQuery({
     queryKey: ["activities"],
     queryFn: () =>
@@ -69,7 +102,15 @@ const ChiComponent = ({ m3terId }: { m3terId: string }) => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.3, delay: index * 0.05 }}
-          className="even:bg-[var(--background-primary)] border-0"
+          className="border-0"
+          style={{
+            backgroundColor:
+              colorScheme === "dark"
+                ? index % 2 === 0 && even
+                  ? even
+                  : `${odd || "var(--background-primary)"}`
+                : "var(--background-primary)",
+          }}
           key={index.toString()}
         >
           <TableCell className="p-4">
