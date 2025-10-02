@@ -11,7 +11,6 @@ import {
   LinearScale,
 } from "chart.js";
 import IframeBarChart from "~/components/charts/IframeBarChart";
-import clsx from "clsx";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -28,15 +27,19 @@ function BarCharts() {
   const colorHigh = searchParams.get("colorHigh");
   const colorScheme = searchParams.get("colorScheme") || "light";
   const dark = searchParams.get("dark");
+  const darkT = "#" + dark;
   if (!m3terId) {
     return;
   }
   return (
     <div
-      className={clsx(
-        colorScheme === "dark" && dark ? [dark, "text-white"] : "bg-background",
-        "w-full p-3"
-      )}
+      style={{
+        backgroundColor:
+          colorScheme === "dark" && dark ? darkT : "var(--background)",
+        color:
+          colorScheme === "dark" && dark ? "white" : "var(--text-secondary)",
+      }}
+      className="w-full p-3"
     >
       <Suspense fallback={<BarChartSkeleton />}>
         <IframeBarChart
