@@ -28,9 +28,6 @@ function IframeBarChart({
     staleTime: 15 * 60 * 1000,
   });
 
-  console.log("colorScheme: ", colorScheme);
-  console.log("Dark: ", dark);
-
   const colors = chartData.map((entry, index) => {
     if (index === 0) return colorHigh || "#28B750"; // first bar default green
     return entry.energy < chartData[index - 1].energy

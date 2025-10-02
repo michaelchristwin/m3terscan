@@ -21,6 +21,8 @@ const tableHeaders = ["Time", "Energy", "Signature", "Value", "Status"];
 function Activities() {
   const [searchParams, _] = useSearchParams();
   const m3terId = searchParams.get("m3terId");
+  const dark = decodeURIComponent(searchParams.get("dark") as string);
+  console.log(dark);
   return (
     <div className="">
       <Table className="text-left">

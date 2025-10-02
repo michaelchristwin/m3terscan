@@ -26,7 +26,7 @@ function BarCharts() {
   const colorLow = searchParams.get("colorLow");
   const colorHigh = searchParams.get("colorHigh");
   const colorScheme = searchParams.get("colorScheme") || "light";
-  const dark = searchParams.get("dark");
+  const dark = decodeURIComponent(searchParams.get("dark") as string);
 
   if (!m3terId) {
     return;
