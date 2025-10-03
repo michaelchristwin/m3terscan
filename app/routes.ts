@@ -15,6 +15,7 @@ export default [
       route("charts", "routes/m3ters/m3terId/charts.tsx"),
       route("overview", "routes/m3ters/m3terId/overview.tsx"),
       route("ask-ai", "routes/m3ters/m3terId/ask-ai.tsx"),
+      route("trades", "routes/m3ters/m3terId/trades.tsx"),
     ]),
   ]),
   route("iframes", "routes/iframes/iframes.tsx", [
