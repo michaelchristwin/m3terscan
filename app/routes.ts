@@ -22,6 +22,11 @@ export default [
     route("bar-chart", "routes/iframes/bar-chart.tsx"),
     route("activities", "routes/iframes/activities.tsx"),
   ]),
-  route("proposal/:proposalNumer/hash/:hash", "routes/proposal/index.tsx"),
+  layout("routes/proposal/layout.tsx", [
+    ...prefix("proposal/:proposalNumer/hash/:hash", [
+      index("routes/proposal/index.tsx"),
+    ]),
+  ]),
+
   route("action/set-theme", "routes/action/set-theme.tsx"),
 ] satisfies RouteConfig;

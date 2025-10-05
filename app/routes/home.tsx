@@ -33,7 +33,7 @@ ChartJS.register(
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Home | M3terscan" },
-    { name: "description", content: "Welcome to React Router!" },
+    { name: "description", content: "Welcome to M3terscan!" },
   ];
 }
 
@@ -209,23 +209,6 @@ export default function Home() {
                     </tr>
                   </thead>
                   <RecentBlocks data={recent_blocks} />
-                  {/* <Suspense
-                    fallback={
-                      <tbody>
-                        <motion.tr
-                          key="loading"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <td colSpan={5} className="py-4 text-center text-sm">
-                            Loading...
-                          </td>
-                        </motion.tr>
-                      </tbody>
-                    }
-                  ></Suspense> */}
                 </table>
               </div>
             </div>

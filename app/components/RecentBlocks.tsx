@@ -18,9 +18,9 @@ function RecentBlocks({ data }: { data: BlockData[] }) {
     <tbody className="divide-y divide-[var(--background-secondary)]">
       <AnimatePresence mode="sync">
         {data.length > 0 ? (
-          data.reverse().map((block, index) => (
+          [...data].reverse().map((block, index) => (
             <motion.tr
-              key={block.hash ?? index}
+              key={index}
               custom={index}
               initial="hidden"
               animate="visible"
