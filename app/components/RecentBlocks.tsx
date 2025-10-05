@@ -23,7 +23,7 @@ function RecentBlocks() {
   return (
     <tbody className="divide-y divide-[var(--background-secondary)]">
       <AnimatePresence mode="sync">
-        {data.result.rows.length > 0 ? (
+        {data.result.rows && data.result.rows.length > 0 ? (
           data.result.rows.reverse().map((block: any, index: number) => (
             <motion.tr
               key={block.hash ?? index}

@@ -12,7 +12,7 @@ function ProposalsTable({ hash }: { hash: string }) {
     queryKey: ["proposals"],
     queryFn: () => getProposals(hash),
   });
-  console.log("Data: ", data);
+
   return (
     <TableBody>
       {data.data.map((item: Proposal) => (
