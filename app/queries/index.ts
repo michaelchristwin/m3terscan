@@ -17,13 +17,6 @@ export interface MonthlyData {
   }[];
 }
 
-export interface BlockData {
-  block_time: string;
-  from: string;
-  hash: string;
-  transaction_status: boolean;
-}
-
 export async function getDailyCharts(m3terId: string) {
   const reponse = await fetch(
     `https://m3terscan-api.onrender.com/m3ter/${m3terId}/daily`
@@ -52,20 +45,6 @@ export async function getMonthlyData(
   const data: MonthlyData = await reponse.json();
 
   return data.data;
-}
-
-export async function getRecentBlocks() {
-  const headers = new Headers();
-  headers.append("X-Dune-API-Key", import.meta.env.VITE_DUNE_API_KEY ?? "");
-  const response = await fetch(
-    "https://api.dune.com/api/v1/query/5911866/results?limit=1000",
-    {
-      headers,
-    }
-  );
-
-  const data = await response.json();
-  return data.result.rows as BlockData[];
 }
 
 export async function getProposals(hash: string) {

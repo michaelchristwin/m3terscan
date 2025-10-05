@@ -1,14 +1,8 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "motion/react";
 import { Link } from "react-router";
-import { getRecentBlocks } from "~/queries";
+import type { BlockData } from "~/.server/dune";
 
-function RecentBlocks() {
-  const { data } = useSuspenseQuery({
-    queryKey: ["recentBlocks"],
-    queryFn: () => getRecentBlocks(),
-  });
-
+function RecentBlocks({ data }: { data: BlockData[] }) {
   const rowVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: (i: number) => ({

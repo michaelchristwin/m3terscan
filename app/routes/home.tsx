@@ -14,9 +14,11 @@ import {
 import { Line } from "react-chartjs-2";
 import { motion, AnimatePresence } from "motion/react";
 import { staticBlockData } from "~/mock-data";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import FilterBlocks from "~/components/FilterBlocks";
 import RecentBlocks from "~/components/RecentBlocks";
+import { getRecentBlocks } from "~/.server/dune";
+import { useLoaderData } from "react-router";
 
 ChartJS.register(
   CategoryScale,
@@ -33,6 +35,11 @@ export function meta({}: Route.MetaArgs) {
     { title: "Home | M3terscan" },
     { name: "description", content: "Welcome to React Router!" },
   ];
+}
+
+export async function loader() {
+  const data = await getRecentBlocks();
+  return { data };
 }
 
 export default function Home() {
@@ -101,6 +108,7 @@ export default function Home() {
     setFilters({ status: "", proposer: "" });
     setShowFilters(false);
   };
+  const { data: recent_blocks } = useLoaderData<typeof loader>();
 
   return (
     <main className="w-full h-full px-[63px] mt-5">
@@ -200,7 +208,8 @@ export default function Home() {
                       </th>
                     </tr>
                   </thead>
-                  <Suspense
+                  <RecentBlocks data={recent_blocks} />
+                  {/* <Suspense
                     fallback={
                       <tbody>
                         <motion.tr
@@ -216,9 +225,7 @@ export default function Home() {
                         </motion.tr>
                       </tbody>
                     }
-                  >
-                    <RecentBlocks />
-                  </Suspense>
+                  ></Suspense> */}
                 </table>
               </div>
             </div>
