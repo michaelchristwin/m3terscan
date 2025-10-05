@@ -22,14 +22,20 @@ export function ModeToggle() {
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           onSelect={() =>
-            fetcher.submit({ "color-scheme": "light" }, { method: "post" })
+            fetcher.submit(
+              { "color-scheme": "light" },
+              { method: "post", action: "/action/set-theme" }
+            )
           }
         >
           Light
         </DropdownMenuItem>
         <DropdownMenuItem
           onSelect={() =>
-            fetcher.submit({ "color-scheme": "dark" }, { method: "post" })
+            fetcher.submit(
+              { "color-scheme": "dark" },
+              { method: "post", action: "/action/set-theme" }
+            )
           }
         >
           Dark

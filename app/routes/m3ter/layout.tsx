@@ -6,17 +6,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "~/components/ui/sidebar";
-import { data } from "react-router";
-import type { Route } from "./+types/m3ters";
-import { schema, setColorScheme } from "~/.server/cookies";
-
-export async function action({ request }: Route.ActionArgs) {
-  let formData = await request.formData();
-  let colorScheme = schema.parse(formData.get("color-scheme"));
-  return data(null, {
-    headers: { "Set-Cookie": await setColorScheme(colorScheme) },
-  });
-}
 
 export default function Layout() {
   return (

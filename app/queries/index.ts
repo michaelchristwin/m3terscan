@@ -46,3 +46,25 @@ export async function getMonthlyData(
 
   return data.data;
 }
+
+export async function getRecentBlocks() {
+  const headers = new Headers();
+  headers.append("X-Dune-API-Key", import.meta.env.VITE_DUNE_API_KEY ?? "");
+  const result = await fetch(
+    "https://api.dune.com/api/v1/query/5911866/results?limit=1000",
+    {
+      headers,
+    }
+  );
+
+  const res = await result.json();
+  return res;
+}
+
+export async function getProposals(hash: string) {
+  const response = await fetch(
+    `https://m3terscan-api.onrender.com/proposal?hash=${hash}`
+  );
+  const proposals = await response.json();
+  return proposals;
+}

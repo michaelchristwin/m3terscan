@@ -21,22 +21,22 @@ const data = (m3terId: string) => {
   const navMain = [
     {
       title: "Charts",
-      url: `/m3ters/${m3terId}/charts`,
+      url: `/m3ter/${m3terId}/charts`,
       icon: ChartLine,
     },
     {
       title: "Overview",
-      url: `/m3ters/${m3terId}/overview`,
+      url: `/m3ter/${m3terId}/overview`,
       icon: ClipboardCheck,
     },
     {
       title: "Trades",
-      url: `/m3ters/${m3terId}/trades`,
+      url: `/m3ter/${m3terId}/trades`,
       icon: ShoppingCart,
     },
     {
-      title: "Activity",
-      url: `/m3ters/${m3terId}/activity`,
+      title: "Activities",
+      url: `/m3ter/${m3terId}/activities`,
       icon: Activity,
     },
     {

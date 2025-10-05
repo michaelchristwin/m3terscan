@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
 
-function Iframes() {
+function Index() {
   return <Outlet />;
 }
 
-export default Iframes;
+export default Index;

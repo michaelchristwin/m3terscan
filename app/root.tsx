@@ -1,5 +1,4 @@
 import {
-  data,
   isRouteErrorResponse,
   Links,
   Meta,
@@ -11,7 +10,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { getColorScheme, schema, setColorScheme } from "./.server/cookies";
+import { getColorScheme } from "./.server/cookies";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { config } from "~/config/wagmi";
@@ -34,13 +33,6 @@ export const links: Route.LinksFunction = () => [
 export async function loader({ request }: Route.LoaderArgs) {
   let colorScheme = await getColorScheme(request);
   return { colorScheme };
-}
-export async function action({ request }: Route.ActionArgs) {
-  let formData = await request.formData();
-  let colorScheme = schema.parse(formData.get("color-scheme"));
-  return data(null, {
-    headers: { "Set-Cookie": await setColorScheme(colorScheme) },
-  });
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {

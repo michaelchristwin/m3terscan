@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "motion/react";
 import { SlidersHorizontal } from "lucide-react";
-import type { Route } from "./+types/activity";
+import type { Route } from "./+types/activities";
 import {
   Table,
   TableBody,

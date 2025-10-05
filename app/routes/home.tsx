@@ -14,9 +14,9 @@ import {
 import { Line } from "react-chartjs-2";
 import { motion, AnimatePresence } from "motion/react";
 import { staticBlockData } from "~/mock-data";
-import { useMemo, useState } from "react";
+import { Suspense, useState } from "react";
 import FilterBlocks from "~/components/FilterBlocks";
-import { useNavigate } from "react-router";
+import RecentBlocks from "~/components/RecentBlocks";
 
 ChartJS.register(
   CategoryScale,
@@ -65,9 +65,8 @@ export default function Home() {
     plugins: {
       legend: {
         position: "top" as const,
-        // align: "start" as const,
         labels: {
-          usePointStyle: true, // <-- round markers in legend
+          usePointStyle: true,
           pointStyle: "circle",
         },
       },
@@ -75,18 +74,16 @@ export default function Home() {
     scales: {
       x: {
         grid: {
-          display: false, // <-- removes vertical grid lines
+          display: false,
         },
       },
       y: {
         grid: {
-          display: false, // <-- removes horizontal grid lines
+          display: false,
         },
       },
     },
   };
-
-  const navigate = useNavigate();
 
   const [showAll, setShowAll] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
@@ -104,30 +101,6 @@ export default function Home() {
     setFilters({ status: "", proposer: "" });
     setShowFilters(false);
   };
-  const rowVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.05,
-      },
-    }),
-  };
-
-  const filteredBlocks = useMemo(() => {
-    return staticBlockData.filter((block) => {
-      const statusMatch = !filters.status || block.status === filters.status;
-      const proposerMatch =
-        !filters.proposer ||
-        block.proposer.toLowerCase().includes(filters.proposer.toLowerCase());
-      return statusMatch && proposerMatch;
-    });
-  }, [staticBlockData, filters]);
-
-  const visibleBlocks = useMemo(() => {
-    return showAll ? filteredBlocks : filteredBlocks.slice(0, 5);
-  }, [showAll, filteredBlocks]);
 
   return (
     <main className="w-full h-full px-[63px] mt-5">
@@ -180,7 +153,6 @@ export default function Home() {
                     <SlidersHorizontal />
                   </motion.button>
 
-                  {/* Filter Dropdown */}
                   <AnimatePresence>
                     {showFilters && (
                       <FilterBlocks
@@ -209,11 +181,10 @@ export default function Home() {
             <div className="overflow-x-auto pb-2 -mx-4 px-4">
               <div className="min-w-[600px]">
                 <table className="w-full">
-                  {/* Table Head */}
                   <thead>
                     <tr className="text-left border-b border-[var(--background-secondary)]">
                       <th className="pb-2 pr-4 font-normal whitespace-nowrap">
-                        <small>Block number</small>
+                        <small>Proposals</small>
                       </th>
                       <th className="pb-2 pr-4 font-normal whitespace-nowrap">
                         <small>State Address</small>
@@ -225,73 +196,32 @@ export default function Home() {
                         <small>Date/Time</small>
                       </th>
                       <th className="pb-2 font-normal whitespace-nowrap">
-                        <small>Proposal</small>
+                        <small>Proposer</small>
                       </th>
                     </tr>
                   </thead>
-
-                  {/* Table Body */}
-                  <tbody className="divide-y divide-[var(--background-secondary)]">
-                    <AnimatePresence>
-                      {visibleBlocks.length > 0 ? (
-                        visibleBlocks.map((block, index) => (
-                          <motion.tr
-                            custom={index}
-                            initial="hidden"
-                            animate="visible"
-                            variants={rowVariants}
-                            key={index}
-                            onClick={() =>
-                              navigate(`/m3ters/${block.meterId}/charts`)
-                            }
-                            className="text-sm hover:bg-[var(--background-secondary)] transition-colors"
-                          >
-                            <td className="py-3 pr-4 font-medium whitespace-nowrap">
-                              Block {block.number}
-                            </td>
-                            <td className="py-3 pr-4 truncate max-w-[120px]">
-                              <span>{block.address}</span>
-                            </td>
-                            <td
-                              className={`py-3 pr-4 font-medium whitespace-nowrap ${
-                                block.status === "Successful"
-                                  ? "text-[var(--color-success)]"
-                                  : "text-[var(--color-invalid)]"
-                              }`}
-                            >
-                              {block.status}
-                            </td>
-                            <td className="py-3 pr-4 whitespace-nowrap">
-                              <span>{block.date}</span>
-                              <span className="text-xs font-extralight ml-1">
-                                {block.time}
-                              </span>
-                            </td>
-                            <td className="py-3 whitespace-nowrap text-xs">
-                              {block.proposer}
-                            </td>
-                          </motion.tr>
-                        ))
-                      ) : (
+                  <Suspense
+                    fallback={
+                      <tbody>
                         <motion.tr
+                          key="loading"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
                           transition={{ duration: 0.3 }}
                         >
-                          <td
-                            colSpan={5}
-                            className="py-4 text-center text-sm text-[var(--text-secondary)]"
-                          >
-                            No blocks match your filters
+                          <td colSpan={5} className="py-4 text-center text-sm">
+                            Loading...
                           </td>
                         </motion.tr>
-                      )}
-                    </AnimatePresence>
-                  </tbody>
+                      </tbody>
+                    }
+                  >
+                    <RecentBlocks />
+                  </Suspense>
                 </table>
               </div>
             </div>
-
             <div className="md:hidden text-center mt-2 text-xs text-[var(--text-secondary)]">
               ← Scroll horizontally →
             </div>

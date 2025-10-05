@@ -76,7 +76,7 @@ const GridHeatmap: React.FC<GridHeatmapProps> = ({ data }) => {
   }
 
   return (
-    <div className="bg-white rounded-lg">
+    <div className="bg-background rounded-lg">
       <div className="flex gap-2">
         {gridColumns.map((column, colIndex) => (
           <div key={colIndex} className="flex flex-col gap-2">
