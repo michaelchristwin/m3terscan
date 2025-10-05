@@ -23,8 +23,8 @@ function RecentBlocks() {
   return (
     <tbody className="divide-y divide-[var(--background-secondary)]">
       <AnimatePresence mode="sync">
-        {data.result.rows && data.result.rows.length > 0 ? (
-          data.result.rows.reverse().map((block: any, index: number) => (
+        {data.length > 0 ? (
+          data.reverse().map((block, index) => (
             <motion.tr
               key={block.hash ?? index}
               custom={index}
@@ -35,11 +35,11 @@ function RecentBlocks() {
               className="text-sm hover:bg-[var(--background-secondary)] transition-colors"
             >
               <td className="py-3 pr-4 font-medium whitespace-nowrap">
-                {data.result.rows.length - index}
+                {data.length - index}
               </td>
               <td className="py-3 pr-4 truncate max-w-[120px] text-[var(--icon-color)] hover:underline">
                 <Link
-                  to={`/proposal/${data.result.rows.length - index}/hash/${block.hash}`}
+                  to={`/proposal/${data.length - index}/hash/${block.hash}`}
                   prefetch="intent"
                 >
                   <span>{block.hash}</span>
@@ -56,9 +56,6 @@ function RecentBlocks() {
               </td>
               <td className="py-3 pr-4 whitespace-nowrap">
                 <span>{new Date(block.block_time).toLocaleString()}</span>
-                <span className="text-xs font-extralight ml-1">
-                  {block.time}
-                </span>
               </td>
               <td className="py-3 whitespace-nowrap text-xs">{block.from}</td>
             </motion.tr>
