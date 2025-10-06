@@ -13,7 +13,6 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { motion, AnimatePresence } from "motion/react";
-import { staticBlockData } from "~/mock-data";
 import { useState } from "react";
 import FilterBlocks from "~/components/FilterBlocks";
 import RecentBlocks from "~/components/RecentBlocks";
@@ -143,7 +142,7 @@ export default function Home() {
         <Line data={data} options={options} />
       </div>
       <div className="mt-20 space-y-3">
-        <h3 className="text-xl">Recent Blocks</h3>
+        <h3 className="text-xl">Recent Proposals</h3>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -153,8 +152,8 @@ export default function Home() {
           <motion.div className="flex justify-between items-center mb-4">
             <h3 className="text-sm font-medium">
               {showAll
-                ? `All Blocks (${staticBlockData.length})`
-                : `Last 5 blocks `}
+                ? `All Blocks (${recent_blocks.length})`
+                : `Last 5 proposals`}
             </h3>
             <div className="flex items-center gap-5">
               {showAll && (
@@ -182,7 +181,7 @@ export default function Home() {
                 </motion.div>
               )}
 
-              {staticBlockData.length > 5 && (
+              {recent_blocks.length > 5 && (
                 <a
                   onClick={() => setShowAll(!showAll)}
                   className="text-sm cursor-pointer text-[var(--icon-color)]"

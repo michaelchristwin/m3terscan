@@ -1,4 +1,4 @@
-import * as React from "react";
+import type React from "react";
 
 import {
   Sidebar,
@@ -90,7 +90,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      {/* <SidebarRail /> */}
     </Sidebar>
   );
 }
