@@ -23,9 +23,7 @@ export default [
     route("activities", "routes/iframes/activities.tsx"),
   ]),
   layout("routes/proposal/layout.tsx", [
-    ...prefix("proposal/:proposalNumer/hash/:hash", [
-      index("routes/proposal/index.tsx"),
-    ]),
+    ...prefix("proposal/hash/:hash", [index("routes/proposal/index.tsx")]),
   ]),
 
   route("action/set-theme", "routes/action/set-theme.tsx"),

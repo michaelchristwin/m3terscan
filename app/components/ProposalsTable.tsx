@@ -1,18 +1,11 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { TableBody, TableCell, TableRow } from "./ui/table";
-import { getProposals } from "~/queries";
 
 interface Proposal {
   m3ter_no: number;
   account: string;
   nonce: number;
 }
-function ProposalsTable({ hash }: { hash: string }) {
-  const { data } = useSuspenseQuery({
-    queryKey: ["proposals"],
-    queryFn: () => getProposals(hash),
-  });
-
+function ProposalsTable({ data }: { data: any }) {
   return (
     <TableBody>
       {data.data.map((item: Proposal) => (

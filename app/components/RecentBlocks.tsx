@@ -2,6 +2,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { Link } from "react-router";
 import type { BlockData } from "~/.server/dune";
 import { TableBody, TableCell, TableRow } from "./ui/table";
+import FromCell from "./FromCell";
+import { ExternalLink } from "lucide-react";
 const MotionTableRow = motion.create(TableRow);
 
 function RecentBlocks({ data }: { data: BlockData[] }) {
@@ -17,7 +19,7 @@ function RecentBlocks({ data }: { data: BlockData[] }) {
   };
 
   return (
-    <TableBody className="">
+    <TableBody className="w-full">
       <AnimatePresence mode="sync">
         {data.length > 0 ? (
           [...data].reverse().map((block, index) => (
@@ -28,21 +30,21 @@ function RecentBlocks({ data }: { data: BlockData[] }) {
               animate="visible"
               exit="hidden"
               variants={rowVariants}
-              className="text-sm hover:bg-[var(--background-secondary)] transition-colors"
+              className=""
             >
-              <TableCell className="py-3 pr-4 truncate max-w-[120px] text-[var(--icon-color)] hover:underline">
+              <TableCell className="truncate text-[var(--icon-color)] underline">
                 <Link
-                  to={`/proposal/${data.length - index}/hash/${block.hash}`}
+                  aria-label="Open proposal page"
+                  viewTransition
+                  to={`/proposal/hash/${block.hash}`}
                   prefetch="viewport"
                 >
-                  <span>{block.hash}</span>
+                  {block.hash.slice(0, 9)}…{block.hash.slice(-9)}
                 </Link>
               </TableCell>
-              <TableCell className="py-3 whitespace-nowrap text-xs">
-                {block.from}
-              </TableCell>
+              <FromCell from={block.from} />
               <TableCell
-                className={`py-3 pr-4 font-medium whitespace-nowrap ${
+                className={`font-medium whitespace-nowrap ${
                   block.transaction_status
                     ? "text-[var(--color-success)]"
                     : "text-[var(--color-invalid)]"
@@ -50,8 +52,23 @@ function RecentBlocks({ data }: { data: BlockData[] }) {
               >
                 Successful
               </TableCell>
-              <TableCell className="py-3 pr-4 whitespace-nowrap">
-                <span>{new Date(block.block_time).toLocaleString()}</span>
+              <TableCell className="whitespace-nowrap">
+                {new Date(block.block_time).toLocaleString()}
+              </TableCell>
+              <TableCell className="truncate text-[rgb(106,181,219,1)] underline">
+                <Link
+                  aria-label="Open transaction in etherscan"
+                  viewTransition
+                  to={`https://sepolia.etherscan.io/tx/${block.hash}`}
+                  target="_blank"
+                  prefetch="viewport"
+                  className="flex w-fit items-center space-x-2"
+                >
+                  <span>
+                    {block.hash.slice(0, 9)}…{block.hash.slice(-9)}
+                  </span>
+                  <ExternalLink className="" size={15} />
+                </Link>
               </TableCell>
             </MotionTableRow>
           ))
@@ -65,7 +82,7 @@ function RecentBlocks({ data }: { data: BlockData[] }) {
           >
             <TableCell
               colSpan={5}
-              className="py-4 text-center text-sm text-[var(--text-secondary)]"
+              className="text-center text-sm text-[var(--text-secondary)]"
             >
               No blocks match your filters
             </TableCell>

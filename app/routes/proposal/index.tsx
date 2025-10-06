@@ -1,21 +1,19 @@
 import {
   Table,
-  TableBody,
   TableCaption,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { Suspense } from "react";
+
 import ProposalsTable from "~/components/ProposalsTable";
 import type { Route } from "./+types";
+import { getProposals } from "~/queries";
+import { useLoaderData } from "react-router";
 
-export function headers({ loaderHeaders }: Route.HeadersArgs) {
-  return {
-    ...loaderHeaders,
-    "Cache-Control": "public, max-age=900, stale-while-revalidate=900",
-  };
+export async function loader({ params }: Route.LoaderArgs) {
+  const data = await getProposals(params.hash);
+  return { data };
 }
 
 export function meta() {
@@ -25,11 +23,12 @@ export function meta() {
   ];
 }
 
-function Index({ params }: Route.ActionArgs) {
+function Index() {
   const tablerHeaders = ["M3ter No", "Account", "Nonce"];
+  const { data } = useLoaderData<typeof loader>();
   return (
     <div className="w-[90%] p-4 mx-auto">
-      <Table className="">
+      <Table className="roboto">
         <TableCaption>A table of your proposals.</TableCaption>
         <TableHeader>
           <TableRow>
@@ -40,22 +39,7 @@ function Index({ params }: Route.ActionArgs) {
             ))}
           </TableRow>
         </TableHeader>
-        <Suspense
-          fallback={
-            <TableBody>
-              <TableRow>
-                <TableCell
-                  colSpan={3}
-                  className="text-center italic text-neutral-700"
-                >
-                  Loading...
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          }
-        >
-          <ProposalsTable hash={params.hash} />
-        </Suspense>
+        <ProposalsTable data={data} />
       </Table>
     </div>
   );

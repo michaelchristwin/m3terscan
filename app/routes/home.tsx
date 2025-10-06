@@ -10,6 +10,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  type ChartOptions,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { motion, AnimatePresence } from "motion/react";
@@ -29,13 +30,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-export function headers({ loaderHeaders }: Route.HeadersArgs) {
-  return {
-    ...loaderHeaders,
-    "Cache-Control": "public, max-age=900, stale-while-revalidate=900",
-  };
-}
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -84,20 +78,20 @@ export default function Home() {
           pointStyle: "circle",
         },
       },
+      tooltip: {
+        enabled: true,
+        mode: "nearest" as const, // ✅ literal type, not just string
+        intersect: false,
+        backgroundColor: "rgba(0,0,0,0.7)",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+      },
     },
     scales: {
-      x: {
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        grid: {
-          display: false,
-        },
-      },
+      x: { grid: { display: false } },
+      y: { grid: { display: false } },
     },
-  };
+  } satisfies ChartOptions<"line">;
 
   const [showAll, setShowAll] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
@@ -116,7 +110,13 @@ export default function Home() {
     setShowFilters(false);
   };
   const { data: recent_blocks } = useLoaderData<typeof loader>();
-
+  const tableHeaders = [
+    "Proposal",
+    "Proposer",
+    "Status",
+    "Date/Time",
+    "Etherscan",
+  ];
   return (
     <main className="w-full h-full px-[63px] mt-5">
       <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-5">
@@ -192,32 +192,18 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <div className="relative">
-            <div className="overflow-x-auto pb-2 -mx-4 px-4">
-              <Table className="w-full">
-                <TableHeader>
-                  <TableRow className="text-left border-b border-[var(--background-secondary)]">
-                    <TableHead className="font-normal whitespace-nowrap">
-                      <small>Proposal</small>
-                    </TableHead>
-                    <TableHead className="font-normal whitespace-nowrap">
-                      <small>Proposer</small>
-                    </TableHead>
-                    <TableHead className="font-normal whitespace-nowrap">
-                      <small>Status</small>
-                    </TableHead>
-                    <TableHead className="font-normal whitespace-nowrap">
-                      <small>Date/Time</small>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <RecentBlocks data={recent_blocks} />
-              </Table>
-            </div>
-            <div className="md:hidden text-center mt-2 text-xs text-[var(--text-secondary)]">
-              ← Scroll horizontally →
-            </div>
-          </div>
+          <Table className="w-full table-fixed roboto">
+            <TableHeader>
+              <TableRow className="text-left border-b border-[var(--background-secondary)]">
+                {tableHeaders.map((item, i) => (
+                  <TableHead className="w-[20%]" key={i.toString()}>
+                    <small>{item}</small>
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <RecentBlocks data={recent_blocks} />
+          </Table>
         </motion.div>
       </div>
     </main>
