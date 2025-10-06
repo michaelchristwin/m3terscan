@@ -1,6 +1,8 @@
 import { motion, AnimatePresence } from "motion/react";
 import { Link } from "react-router";
 import type { BlockData } from "~/.server/dune";
+import { TableBody, TableCell, TableRow } from "./ui/table";
+const MotionTableRow = motion.create(TableRow);
 
 function RecentBlocks({ data }: { data: BlockData[] }) {
   const rowVariants = {
@@ -15,11 +17,11 @@ function RecentBlocks({ data }: { data: BlockData[] }) {
   };
 
   return (
-    <tbody className="divide-y divide-[var(--background-secondary)]">
+    <TableBody className="">
       <AnimatePresence mode="sync">
         {data.length > 0 ? (
           [...data].reverse().map((block, index) => (
-            <motion.tr
+            <MotionTableRow
               key={index}
               custom={index}
               initial="hidden"
@@ -28,50 +30,49 @@ function RecentBlocks({ data }: { data: BlockData[] }) {
               variants={rowVariants}
               className="text-sm hover:bg-[var(--background-secondary)] transition-colors"
             >
-              <td className="py-3 pr-4 font-medium whitespace-nowrap">
-                {data.length - index}
-              </td>
-              <td className="py-3 pr-4 truncate max-w-[120px] text-[var(--icon-color)] hover:underline">
+              <TableCell className="py-3 pr-4 truncate max-w-[120px] text-[var(--icon-color)] hover:underline">
                 <Link
                   to={`/proposal/${data.length - index}/hash/${block.hash}`}
-                  prefetch="intent"
+                  prefetch="viewport"
                 >
                   <span>{block.hash}</span>
                 </Link>
-              </td>
-              <td
+              </TableCell>
+              <TableCell className="py-3 whitespace-nowrap text-xs">
+                {block.from}
+              </TableCell>
+              <TableCell
                 className={`py-3 pr-4 font-medium whitespace-nowrap ${
-                  block
+                  block.transaction_status
                     ? "text-[var(--color-success)]"
                     : "text-[var(--color-invalid)]"
                 }`}
               >
                 Successful
-              </td>
-              <td className="py-3 pr-4 whitespace-nowrap">
+              </TableCell>
+              <TableCell className="py-3 pr-4 whitespace-nowrap">
                 <span>{new Date(block.block_time).toLocaleString()}</span>
-              </td>
-              <td className="py-3 whitespace-nowrap text-xs">{block.from}</td>
-            </motion.tr>
+              </TableCell>
+            </MotionTableRow>
           ))
         ) : (
-          <motion.tr
+          <MotionTableRow
             key="empty"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <td
+            <TableCell
               colSpan={5}
               className="py-4 text-center text-sm text-[var(--text-secondary)]"
             >
               No blocks match your filters
-            </td>
-          </motion.tr>
+            </TableCell>
+          </MotionTableRow>
         )}
       </AnimatePresence>
-    </tbody>
+    </TableBody>
   );
 }
 

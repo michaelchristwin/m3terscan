@@ -9,21 +9,20 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { m3terClient } from "~/config/m3terClient";
-import { Suspense } from "react";
-import { Await, useLoaderData } from "react-router";
+import { useLoaderData } from "react-router";
 import { formatDistanceToNow } from "date-fns";
 import { formatAddress } from "~/lib/utils";
-import TableSkeleton from "~/components/skeletons/TableSkeleton";
+
 const MotionTableRow = motion.create(TableRow);
 
 const tableHeaders = ["Time", "Energy", "Signature", "Value", "Status"];
 
-export const loader = ({ params }: Route.LoaderArgs) => {
-  const dataPromise = m3terClient.v2.dataPoints.getMeterDataPoints({
-    meterNumber: Number(params.m3terId),
-  });
-  return { dataPromise };
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const response = await fetch(
+    `https://m3terscan-api.onrender.com/m3ter/${params.m3terId}/activities`
+  );
+  const data = await response.json();
+  return { data };
 };
 
 export const meta = ({ params }: Route.MetaArgs) => {
@@ -38,7 +37,8 @@ export const meta = ({ params }: Route.MetaArgs) => {
 };
 
 function Activity() {
-  const { dataPromise } = useLoaderData<typeof loader>();
+  const { data } = useLoaderData<typeof loader>();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -73,53 +73,38 @@ function Activity() {
           </TableHeader>
 
           <AnimatePresence>
-            <Suspense fallback={<TableSkeleton />}>
-              <Await resolve={dataPromise}>
-                {(data) => (
-                  <TableBody className="text-[12px]">
-                    {data.map((item, index) => (
-                      <MotionTableRow
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.3, delay: index * 0.05 }}
-                        className="even:bg-[var(--background-primary)] border-0"
-                        key={index.toString()}
-                      >
-                        <TableCell className="p-4">
-                          {formatDistanceToNow(
-                            new Date(item.node?.timestamp as number)
-                          )}{" "}
-                          ago
-                        </TableCell>
-                        <TableCell className="p-4">
-                          {item.node?.payload?.energy?.toFixed(2)} kWh
-                        </TableCell>
-                        <TableCell className="p-4">
-                          <span className="lg:hidden block">
-                            {formatAddress(
-                              item.node?.payload?.signature as string
-                            )}
-                          </span>
-                          <span className="hidden lg:block">
-                            {item.node?.payload?.signature}
-                          </span>
-                        </TableCell>
-                        <TableCell className="p-4">
-                          {Number(
-                            (item.node?.payload?.energy as number) * 0.6
-                          ).toFixed(2)}{" "}
-                          USD
-                        </TableCell>
-                        <TableCell className="text-[var(--color-success)] p-4">
-                          Valid
-                        </TableCell>
-                      </MotionTableRow>
-                    ))}
-                  </TableBody>
-                )}
-              </Await>
-            </Suspense>
+            <TableBody className="text-[12px]">
+              {data.data.map((item: any, index: number) => (
+                <MotionTableRow
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  className="even:bg-[var(--background-primary)] border-0"
+                  key={index.toString()}
+                >
+                  <TableCell className="p-4">
+                    {formatDistanceToNow(new Date(item.timestamp as number))}{" "}
+                    ago
+                  </TableCell>
+                  <TableCell className="p-4">
+                    {item.energy.toFixed(2)} kWh
+                  </TableCell>
+                  <TableCell className="p-4">
+                    <span className="2xl:hidden block">
+                      {formatAddress(item.signature as string)}
+                    </span>
+                    <span className="hidden 2xl:block">{item.signature}</span>
+                  </TableCell>
+                  <TableCell className="p-4">
+                    {Number((item.energy as number) * 0.6).toFixed(2)} USD
+                  </TableCell>
+                  <TableCell className="text-[var(--color-success)] p-4">
+                    Valid
+                  </TableCell>
+                </MotionTableRow>
+              ))}
+            </TableBody>
           </AnimatePresence>
         </Table>
       </div>

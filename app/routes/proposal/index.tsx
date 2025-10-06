@@ -11,6 +11,13 @@ import { Suspense } from "react";
 import ProposalsTable from "~/components/ProposalsTable";
 import type { Route } from "./+types";
 
+export function headers({ loaderHeaders }: Route.HeadersArgs) {
+  return {
+    ...loaderHeaders,
+    "Cache-Control": "public, max-age=900, stale-while-revalidate=900",
+  };
+}
+
 export function meta() {
   return [
     { title: "Proposals | M3terscan" },

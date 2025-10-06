@@ -4,7 +4,7 @@ import { getProposals } from "~/queries";
 
 interface Proposal {
   m3ter_no: number;
-  account: number;
+  account: string;
   nonce: number;
 }
 function ProposalsTable({ hash }: { hash: string }) {

@@ -19,6 +19,7 @@ import FilterBlocks from "~/components/FilterBlocks";
 import RecentBlocks from "~/components/RecentBlocks";
 import { getRecentBlocks } from "~/.server/dune";
 import { useLoaderData } from "react-router";
+import { Table, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 
 ChartJS.register(
   CategoryScale,
@@ -29,6 +30,13 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+
+export function headers({ loaderHeaders }: Route.HeadersArgs) {
+  return {
+    ...loaderHeaders,
+    "Cache-Control": "public, max-age=900, stale-while-revalidate=900",
+  };
+}
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -187,30 +195,25 @@ export default function Home() {
 
           <div className="relative">
             <div className="overflow-x-auto pb-2 -mx-4 px-4">
-              <div className="min-w-[600px]">
-                <table className="w-full">
-                  <thead>
-                    <tr className="text-left border-b border-[var(--background-secondary)]">
-                      <th className="pb-2 pr-4 font-normal whitespace-nowrap">
-                        <small>Proposals</small>
-                      </th>
-                      <th className="pb-2 pr-4 font-normal whitespace-nowrap">
-                        <small>State Address</small>
-                      </th>
-                      <th className="pb-2 pr-4 font-normal whitespace-nowrap">
-                        <small>Status</small>
-                      </th>
-                      <th className="pb-2 pr-4 font-normal whitespace-nowrap">
-                        <small>Date/Time</small>
-                      </th>
-                      <th className="pb-2 font-normal whitespace-nowrap">
-                        <small>Proposer</small>
-                      </th>
-                    </tr>
-                  </thead>
-                  <RecentBlocks data={recent_blocks} />
-                </table>
-              </div>
+              <Table className="w-full">
+                <TableHeader>
+                  <TableRow className="text-left border-b border-[var(--background-secondary)]">
+                    <TableHead className="font-normal whitespace-nowrap">
+                      <small>Proposal</small>
+                    </TableHead>
+                    <TableHead className="font-normal whitespace-nowrap">
+                      <small>Proposer</small>
+                    </TableHead>
+                    <TableHead className="font-normal whitespace-nowrap">
+                      <small>Status</small>
+                    </TableHead>
+                    <TableHead className="font-normal whitespace-nowrap">
+                      <small>Date/Time</small>
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <RecentBlocks data={recent_blocks} />
+              </Table>
             </div>
             <div className="md:hidden text-center mt-2 text-xs text-[var(--text-secondary)]">
               ← Scroll horizontally →
