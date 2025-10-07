@@ -8,7 +8,7 @@ function FromCell({ from }: { from: string }) {
   });
 
   return (
-    <TableCell className="whitespace-nowrap">
+    <TableCell className="whitespace-nowrap roboto-mono">
       {data ?? `${from.slice(0, 9)}…${from.slice(-9)}`}
     </TableCell>
   );

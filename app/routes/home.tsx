@@ -111,11 +111,11 @@ export default function Home() {
   };
   const { data: recent_blocks } = useLoaderData<typeof loader>();
   const tableHeaders = [
-    "Proposal",
-    "Proposer",
-    "Status",
-    "Date/Time",
-    "Etherscan",
+    "PROPOSAL",
+    "PROPOSER",
+    "STATUS",
+    "DATE/TIME",
+    "ETHERSCAN",
   ];
   return (
     <main className="w-full h-full px-[63px] mt-5">
@@ -192,9 +192,9 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <Table className="w-full table-fixed roboto">
+          <Table className="w-full table-fixed robot">
             <TableHeader>
-              <TableRow className="text-left border-b border-[var(--background-secondary)]">
+              <TableRow className="text-left font-sans border-b border-[var(--background-secondary)]">
                 {tableHeaders.map((item, i) => (
                   <TableHead className="w-[20%]" key={i.toString()}>
                     <small>{item}</small>

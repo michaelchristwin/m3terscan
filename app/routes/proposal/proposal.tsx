@@ -7,7 +7,7 @@ import {
 } from "~/components/ui/table";
 
 import ProposalsTable from "~/components/ProposalsTable";
-import type { Route } from "./+types";
+import type { Route } from "./+types/proposal";
 import { getProposals } from "~/queries";
 import { useLoaderData } from "react-router";
 
@@ -28,7 +28,7 @@ function Index() {
   const { data } = useLoaderData<typeof loader>();
   return (
     <div className="w-[90%] p-4 mx-auto">
-      <Table className="roboto">
+      <Table className="">
         <TableCaption>A table of your proposals.</TableCaption>
         <TableHeader>
           <TableRow>

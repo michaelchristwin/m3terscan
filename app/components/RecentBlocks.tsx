@@ -4,6 +4,7 @@ import type { BlockData } from "~/.server/dune";
 import { TableBody, TableCell, TableRow } from "./ui/table";
 import FromCell from "./FromCell";
 import { ExternalLink } from "lucide-react";
+import { format } from "date-fns";
 const MotionTableRow = motion.create(TableRow);
 
 function RecentBlocks({ data }: { data: BlockData[] }) {
@@ -32,11 +33,11 @@ function RecentBlocks({ data }: { data: BlockData[] }) {
               variants={rowVariants}
               className=""
             >
-              <TableCell className="truncate text-[var(--icon-color)] underline">
+              <TableCell className="truncate text-[var(--icon-color)] underline roboto-mono">
                 <Link
                   aria-label="Open proposal page"
                   viewTransition
-                  to={`/proposal/hash/${block.hash}`}
+                  to={`/proposal/${block.hash}`}
                   prefetch="viewport"
                 >
                   {block.hash.slice(0, 9)}…{block.hash.slice(-9)}
@@ -53,9 +54,9 @@ function RecentBlocks({ data }: { data: BlockData[] }) {
                 Successful
               </TableCell>
               <TableCell className="whitespace-nowrap">
-                {new Date(block.block_time).toLocaleString()}
+                {format(new Date(block.block_time), "MMM d, yyyy 'at' h:mm a")}
               </TableCell>
-              <TableCell className="truncate text-[rgb(106,181,219,1)] underline">
+              <TableCell className="truncate text-[rgb(106,181,219,1)] underline roboto-mono">
                 <Link
                   aria-label="Open transaction in etherscan"
                   viewTransition
@@ -67,7 +68,7 @@ function RecentBlocks({ data }: { data: BlockData[] }) {
                   <span>
                     {block.hash.slice(0, 9)}…{block.hash.slice(-9)}
                   </span>
-                  <ExternalLink className="" size={15} />
+                  <ExternalLink size={15} />
                 </Link>
               </TableCell>
             </MotionTableRow>

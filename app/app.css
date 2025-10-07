@@ -13,6 +13,7 @@ body {
   font-style: normal;
   scroll-behavior: smooth;
   overscroll-behavior: none;
+  position: relative;
 }
 
 body {
@@ -212,9 +213,8 @@ button {
   border-color: transparent black transparent transparent;
 }
 
-.roboto {
-  font-family: "Roboto", sans-serif;
+.roboto-mono {
+  font-family: "Roboto Mono", monospace;
   font-optical-sizing: auto;
   font-style: normal;
-  font-variation-settings: "wdth" 100;
 }

@@ -6,6 +6,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useNavigation,
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -14,6 +15,7 @@ import { getColorScheme } from "./.server/cookies";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { config } from "~/config/wagmi";
+import { Loader } from "lucide-react";
 
 const queryClient = new QueryClient();
 
@@ -26,7 +28,7 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap",
   },
 ];
 
@@ -36,6 +38,8 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
   let loaderData = useLoaderData<typeof loader>();
   return (
     <html lang="en" className={loaderData?.colorScheme ?? "light"}>
@@ -46,6 +50,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+        {isLoading && (
+          <div className="absolute flex justify-center items-center z-[70] top-0 left-0 h-[200px] w-full transition-all duration-300">
+            {/* Backdrop blur effect */}
+            <div className="absolute inset-0 bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm rounded-b-[70%]" />
+
+            {/* Loader container */}
+            <div className="relative">
+              {/* Outer glow ring */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500/20 to-purple-500/20 dark:from-blue-400/30 dark:to-purple-400/30 blur-xl animate-pulse" />
+
+              {/* Loader background */}
+              <div className="relative bg-white dark:bg-gray-800 rounded-full p-4 shadow-lg dark:shadow-blue-500/10 border border-gray-200 dark:border-gray-700">
+                {/* Spinning icon */}
+                <Loader className="w-8 h-8 text-[var(--icon-color)] animate-spin" />
+              </div>
+            </div>
+
+            {/* Optional: Loading text */}
+            <span className="absolute bottom-10 text-sm font-medium text-gray-600 dark:text-gray-300 animate-pulse">
+              Loading...
+            </span>
+          </div>
+        )}
         {children}
         <ScrollRestoration />
         <Scripts />
