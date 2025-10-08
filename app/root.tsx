@@ -16,8 +16,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { config } from "~/config/wagmi";
 import { Loader } from "lucide-react";
-
-const queryClient = new QueryClient();
+import { useState } from "react";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -53,7 +52,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {isLoading && (
           <div className="absolute flex justify-center items-center z-[70] top-0 left-0 h-[200px] w-full transition-all duration-300">
             {/* Backdrop blur effect */}
-            <div className="absolute inset-0 bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm rounded-b-[70%]" />
+            <div className="absolute inset-0 bg-white/20 dark:bg-gray-900/20 backdrop-blur-sm rounded-b-[70%]" />
 
             {/* Loader container */}
             <div className="relative">
@@ -82,6 +81,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            // With SSR, we usually want to set some default staleTime
+            // above 0 to avoid refetching immediately on the client
+            staleTime: 60 * 1000,
+          },
+        },
+      })
+  );
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>

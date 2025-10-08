@@ -1,13 +1,22 @@
 import { motion, AnimatePresence } from "motion/react";
 import { Link } from "react-router";
-import type { BlockData } from "~/.server/dune";
+
 import { TableBody, TableCell, TableRow } from "./ui/table";
 import FromCell from "./FromCell";
 import { ExternalLink } from "lucide-react";
 import { format } from "date-fns";
+import { useSuspenseQuery } from "@tanstack/react-query";
 const MotionTableRow = motion.create(TableRow);
 
-function RecentBlocks({ data }: { data: BlockData[] }) {
+function RecentBlocks() {
+  const { data } = useSuspenseQuery({
+    queryKey: ["recentBlocks"],
+    queryFn: async () => {
+      const response = await fetch("/api/get-recent-blocks");
+      const data = await response.json();
+      return data;
+    },
+  });
   const rowVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: (i: number) => ({
@@ -22,7 +31,7 @@ function RecentBlocks({ data }: { data: BlockData[] }) {
   return (
     <TableBody className="w-full">
       <AnimatePresence mode="sync">
-        {data.length > 0 ? (
+        {data && data.length > 0 ? (
           [...data].reverse().map((block, index) => (
             <MotionTableRow
               key={index}
