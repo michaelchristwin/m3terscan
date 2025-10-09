@@ -1,19 +1,19 @@
-import {
-  Table,
-  TableCaption,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
-
-import ProposalsTable from "~/components/ProposalsTable";
 import type { Route } from "./+types/proposal";
 import { getProposals } from "~/queries";
 import { useLoaderData } from "react-router";
+import { Suspense } from "react";
+
+import { queryClient } from "~/queries/ts-client";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import Proposals from "~/components/Proposals";
+import { Loader2 } from "lucide-react";
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const data = await getProposals(params.hash);
-  return { data };
+  await queryClient.prefetchQuery({
+    queryKey: ["getProposals", params.hash],
+    queryFn: () => getProposals(params.hash),
+  });
+  return { dehydratedState: dehydrate(queryClient) };
 }
 
 export function meta() {
@@ -23,25 +23,26 @@ export function meta() {
   ];
 }
 
-function Index() {
-  const tablerHeaders = ["M3ter No", "Account", "Nonce"];
-  const { data } = useLoaderData<typeof loader>();
+function Index({ params }: Route.ComponentProps) {
+  const { dehydratedState } = useLoaderData<typeof loader>();
+
   return (
-    <div className="w-[90%] p-4 mx-auto">
-      <Table className="">
-        <TableCaption>A table of your proposals.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            {tablerHeaders.map((item, i) => (
-              <TableHead className="text-[var(--icon-color)]" key={i}>
-                {item}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <ProposalsTable data={data} />
-      </Table>
-    </div>
+    <HydrationBoundary state={dehydratedState}>
+      <div className="min-h-screen bg-background p-8">
+        <Suspense
+          fallback={
+            <div className="max-w-7xl flex justify-center items-center h-full">
+              <div className="block">
+                <Loader2 className="animate-spin" />
+                <p>Loading...</p>
+              </div>
+            </div>
+          }
+        >
+          <Proposals hash={params.hash} />
+        </Suspense>
+      </div>
+    </HydrationBoundary>
   );
 }
 

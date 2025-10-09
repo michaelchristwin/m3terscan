@@ -20,12 +20,9 @@ import RecentBlocks from "~/components/RecentBlocks";
 import { getRecentBlocks } from "~/.server/dune";
 import { useLoaderData } from "react-router";
 import { Table, TableHead, TableHeader, TableRow } from "~/components/ui/table";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import TableSkeleton2 from "~/components/skeletons/TableSkeleton2";
+import { queryClient } from "~/queries/ts-client";
 
 ChartJS.register(
   CategoryScale,
@@ -45,7 +42,6 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export async function loader() {
-  const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["recentBlocks"],
     queryFn: getRecentBlocks,

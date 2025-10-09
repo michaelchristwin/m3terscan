@@ -12,11 +12,13 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { getColorScheme } from "./.server/cookies";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { config } from "~/config/wagmi";
-import { Loader } from "lucide-react";
-import { useState } from "react";
+import "@bprogress/core/css";
+import { BProgress } from "@bprogress/core";
+import { useEffect } from "react";
+import { queryClient } from "./queries/ts-client";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -37,9 +39,23 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const navigation = useNavigation();
-  const isLoading = navigation.state === "loading";
   let loaderData = useLoaderData<typeof loader>();
+  BProgress.configure({});
+  const navigation = useNavigation();
+  const isLoading =
+    navigation.state === "loading" || navigation.state === "submitting";
+  useEffect(() => {
+    if (isLoading) {
+      BProgress.start();
+    } else {
+      BProgress.done();
+    }
+
+    return () => {
+      BProgress.done();
+    };
+  }, [isLoading]);
+
   return (
     <html lang="en" className={loaderData?.colorScheme ?? "light"}>
       <head>
@@ -49,29 +65,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {isLoading && (
-          <div className="absolute flex justify-center items-center z-[70] top-0 left-0 h-[200px] w-full transition-all duration-300">
-            {/* Backdrop blur effect */}
-            <div className="absolute inset-0 bg-white/20 dark:bg-gray-900/20 backdrop-blur-sm rounded-b-[70%]" />
-
-            {/* Loader container */}
-            <div className="relative">
-              {/* Outer glow ring */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500/20 to-purple-500/20 dark:from-blue-400/30 dark:to-purple-400/30 blur-xl animate-pulse" />
-
-              {/* Loader background */}
-              <div className="relative bg-white dark:bg-gray-800 rounded-full p-4 shadow-lg dark:shadow-blue-500/10 border border-gray-200 dark:border-gray-700">
-                {/* Spinning icon */}
-                <Loader className="w-8 h-8 text-[var(--icon-color)] animate-spin" />
-              </div>
-            </div>
-
-            {/* Optional: Loading text */}
-            <span className="absolute bottom-10 text-sm font-medium text-gray-600 dark:text-gray-300 animate-pulse">
-              Loading...
-            </span>
-          </div>
-        )}
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -81,18 +74,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            // With SSR, we usually want to set some default staleTime
-            // above 0 to avoid refetching immediately on the client
-            staleTime: 60 * 1000,
-          },
-        },
-      })
-  );
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>

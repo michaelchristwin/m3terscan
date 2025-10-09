@@ -16,6 +16,13 @@ export interface MonthlyData {
     energy: number;
   }[];
 }
+export interface ProposalData {
+  data: {
+    m3ter_no: number;
+    account: string;
+    nonce: number;
+  }[];
+}
 
 export async function getDailyCharts(m3terId: string) {
   const reponse = await fetch(
@@ -51,6 +58,6 @@ export async function getProposals(hash: string) {
   const response = await fetch(
     `https://m3terscan-api.onrender.com/proposal?hash=${hash}`
   );
-  const proposals = await response.json();
-  return proposals;
+  const proposals: ProposalData = await response.json();
+  return proposals.data;
 }
