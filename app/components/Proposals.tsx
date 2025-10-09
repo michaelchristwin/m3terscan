@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Search, Copy, Check, Grid3x3, List, Table } from "lucide-react";
 import { M3terHead } from "m3ters";
 import { useState } from "react";
+import { Link } from "react-router";
 import { getProposals } from "~/queries";
 
 function Proposals({ hash }: { hash: string }) {
@@ -70,7 +71,10 @@ function Proposals({ hash }: { hash: string }) {
               key={meter.m3ter_no}
               className="bg-card rounded-lg shadow-sm hover:shadow-md transition-shadow p-5"
             >
-              <div className="flex items-center gap-3 mb-4">
+              <Link
+                to={`/m3ter/${meter.m3ter_no}`}
+                className="flex items-center gap-3 mb-4 p-1 rounded-lg transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:shadow-sm hover:-translate-y-0.5"
+              >
                 <M3terHead seed={meter.m3ter_no.toString()} size={40} />
                 <div>
                   <div className="text-xs text-slate-500 dark:text-slate-200 uppercase tracking-wide">
@@ -80,7 +84,7 @@ function Proposals({ hash }: { hash: string }) {
                     {meter.m3ter_no}
                   </div>
                 </div>
-              </div>
+              </Link>
 
               <div className="space-y-3">
                 <div>
