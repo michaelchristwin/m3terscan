@@ -28,13 +28,16 @@ function Index({ params }: Route.ComponentProps) {
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <div className="min-h-screen bg-background p-8">
+      <div className="min-h-screen bg-background lg:p-8 md:p-6 p-4">
         <Suspense
           fallback={
-            <div className="max-w-7xl flex justify-center items-center h-full">
+            <div className="w-full flex justify-center items-center h-full">
               <div className="block">
-                <Loader2 className="animate-spin" />
-                <p>Loading...</p>
+                <Loader2
+                  className="animate-spin mx-auto text-[var(--icon-color)]"
+                  size={30}
+                />
+                <p className="text-neutral-700">Loading...</p>
               </div>
             </div>
           }

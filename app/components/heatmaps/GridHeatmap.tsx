@@ -87,7 +87,7 @@ const GridHeatmap: React.FC<GridHeatmapProps> = ({ data }) => {
                 <div
                   key={`${colIndex}-${rowIndex}`}
                   className={`
-                    w-16 h-10 flex items-center justify-center
+                    md:w-16  w-12 h-10 flex items-center justify-center
                     transition-all duration-200 ease-in-out
                     ${isActive ? "cursor-pointer hover:scale-105 hover:shadow-lg" : "bg-gray-100 opacity-50"}
                   `}

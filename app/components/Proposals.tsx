@@ -2,7 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Search, Copy, Check, Grid3x3, List, Table } from "lucide-react";
 import { M3terHead } from "m3ters";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { getProposals } from "~/queries";
 
 function Proposals({ hash }: { hash: string }) {
@@ -13,7 +13,7 @@ function Proposals({ hash }: { hash: string }) {
     queryKey: ["getProposals", hash],
     queryFn: () => getProposals(hash),
   });
-
+  const navigate = useNavigate();
   const filteredData = data.filter((meter) =>
     meter.m3ter_no.toString().includes(search)
   );
@@ -73,7 +73,7 @@ function Proposals({ hash }: { hash: string }) {
             >
               <Link
                 to={`/m3ter/${meter.m3ter_no}`}
-                className="flex items-center gap-3 mb-4 p-1 rounded-lg transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:shadow-sm hover:-translate-y-0.5"
+                className="flex items-center gap-3 mb-4 p-1 border-l-2 border-transparent transition-all duration-200 hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/20"
               >
                 <M3terHead seed={meter.m3ter_no.toString()} size={40} />
                 <div>
@@ -148,59 +148,61 @@ function Proposals({ hash }: { hash: string }) {
               key={meter.m3ter_no}
               className="p-4 hover:bg-slate-50 dark:hover:bg-slate-50/10 transition-colors"
             >
-              <div className="flex items-center gap-4">
-                <M3terHead seed={meter.m3ter_no.toString()} size={40} />
+              <Link to={`/m3ter/${meter.m3ter_no}`}>
+                <div className="flex items-center gap-4">
+                  <M3terHead seed={meter.m3ter_no.toString()} size={40} />
 
-                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <div className="text-xs text-slate-500 mb-1">Account</div>
-                    <div className="flex items-center gap-2">
-                      <code className="text-sm bg-slate-50 dark:bg-slate-600 px-2 py-1 rounded border border-slate-200">
-                        {meter.account}
-                      </code>
-                      <button
-                        onClick={() =>
-                          copyToClipboard(
-                            meter.account,
-                            `${meter.m3ter_no}-account-list`
-                          )
-                        }
-                        className="p-1 hover:bg-slate-100 dark:hover:bg-slate-100/10 rounded transition-colors"
-                      >
-                        {copied === `${meter.m3ter_no}-account-list` ? (
-                          <Check className="w-4 h-4 text-green-600" />
-                        ) : (
-                          <Copy className="w-4 h-4 text-slate-400" />
-                        )}
-                      </button>
+                  <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <div className="text-xs text-slate-500 mb-1">Account</div>
+                      <div className="flex items-center gap-2">
+                        <code className="text-sm bg-slate-50 dark:bg-slate-600 px-2 py-1 rounded border border-slate-200">
+                          {meter.account}
+                        </code>
+                        <button
+                          onClick={() =>
+                            copyToClipboard(
+                              meter.account,
+                              `${meter.m3ter_no}-account-list`
+                            )
+                          }
+                          className="p-1 hover:bg-slate-100 dark:hover:bg-slate-100/10 rounded transition-colors"
+                        >
+                          {copied === `${meter.m3ter_no}-account-list` ? (
+                            <Check className="w-4 h-4 text-green-600" />
+                          ) : (
+                            <Copy className="w-4 h-4 text-slate-400" />
+                          )}
+                        </button>
+                      </div>
                     </div>
-                  </div>
 
-                  <div>
-                    <div className="text-xs text-slate-500 mb-1">Nonce</div>
-                    <div className="flex items-center gap-2">
-                      <code className="text-sm bg-slate-50 dark:bg-slate-600 px-2 py-1 rounded border border-slate-200">
-                        {meter.nonce}
-                      </code>
-                      <button
-                        onClick={() =>
-                          copyToClipboard(
-                            meter.nonce.toString(),
-                            `${meter.m3ter_no}-nonce-list`
-                          )
-                        }
-                        className="p-1 hover:bg-slate-100 dark:hover:bg-slate-100/10 rounded transition-colors"
-                      >
-                        {copied === `${meter.m3ter_no}-nonce-list` ? (
-                          <Check className="w-4 h-4 text-green-600" />
-                        ) : (
-                          <Copy className="w-4 h-4 text-slate-400" />
-                        )}
-                      </button>
+                    <div>
+                      <div className="text-xs text-slate-500 mb-1">Nonce</div>
+                      <div className="flex items-center gap-2">
+                        <code className="text-sm bg-slate-50 dark:bg-slate-600 px-2 py-1 rounded border border-slate-200">
+                          {meter.nonce}
+                        </code>
+                        <button
+                          onClick={() =>
+                            copyToClipboard(
+                              meter.nonce.toString(),
+                              `${meter.m3ter_no}-nonce-list`
+                            )
+                          }
+                          className="p-1 hover:bg-slate-100 dark:hover:bg-slate-100/10 rounded transition-colors"
+                        >
+                          {copied === `${meter.m3ter_no}-nonce-list` ? (
+                            <Check className="w-4 h-4 text-green-600" />
+                          ) : (
+                            <Copy className="w-4 h-4 text-slate-400" />
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             </div>
           ))}
         </div>
@@ -213,16 +215,16 @@ function Proposals({ hash }: { hash: string }) {
             <table className="w-full">
               <thead className="bg-slate-50 dark:bg-neutral-900 border-b border-slate-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-100 uppercase tracking-wider">
+                  <th className="md:px-6 px-2 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-100 uppercase tracking-wider">
                     M3ter No
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-100  uppercase tracking-wider">
+                  <th className="md:px-6 px-2 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-100  uppercase tracking-wider">
                     Account
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-100  uppercase tracking-wider">
+                  <th className="md:px-6 px-2 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-100  uppercase tracking-wider">
                     Nonce
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-100  uppercase tracking-wider">
+                  <th className="md:px-6 px-2 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-100  uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -230,10 +232,17 @@ function Proposals({ hash }: { hash: string }) {
               <tbody className="divide-y divide-slate-200">
                 {filteredData.map((meter) => (
                   <tr
+                    role="link"
+                    tabIndex={0}
+                    onClick={() => navigate(`/m3ter/${meter.m3ter_no}`)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ")
+                        navigate(`/m3ter/${meter.m3ter_no}`);
+                    }}
                     key={meter.m3ter_no}
-                    className="hover:bg-slate-50 dark:hover:bg-slate-50/10"
+                    className="hover:bg-slate-50 dark:hover:bg-slate-50/10 cursor-pointer"
                   >
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="md:px-6 px-2 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
                         <M3terHead seed={meter.m3ter_no.toString()} size={40} />
                         <span className="font-medium text-slate-900 dark:text-slate-200">
@@ -241,17 +250,17 @@ function Proposals({ hash }: { hash: string }) {
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="md:px-6 px-2 py-4 whitespace-nowrap">
                       <code className="text-sm bg-slate-50 dark:bg-slate-600 px-2 py-1 rounded border border-slate-200">
                         {meter.account}
                       </code>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="md:px-6 px-2 py-4 whitespace-nowrap">
                       <code className="text-sm bg-slate-50 dark:bg-slate-600 px-2 py-1 rounded border border-slate-200">
                         {meter.nonce}
                       </code>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="md:px-6 px-2 py-4 whitespace-nowrap">
                       <div className="flex gap-2">
                         <button
                           onClick={() =>
@@ -286,7 +295,7 @@ function Proposals({ hash }: { hash: string }) {
             <Search className="w-12 h-12 mx-auto" />
           </div>
           <h3 className="text-lg font-medium text-slate-900 mb-1">
-            No meters found
+            No m3ters found
           </h3>
           <p className="text-slate-500">Try adjusting your search query</p>
         </div>

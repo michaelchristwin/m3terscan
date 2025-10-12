@@ -50,6 +50,7 @@ const doughnutChartData = {
 
 const options = {
   responsive: true,
+  // maintainAspectRatio: false,
   plugins: {
     legend: {
       display: false,
@@ -77,12 +78,12 @@ export default function Charts({ params }: Route.ComponentProps) {
   const isMonthly = useComputed(() => viewMode.value === "monthly");
 
   return (
-    <div className="w-full h-full grid grid-cols-1 lg:grid-cols-[10fr_2fr] pb-[50px]">
-      <div className="px-[30px] pt-[37px] pb-[41px] bg-[var(--background-primary)] rounded-lg h-full mx-4">
+    <div className="h-full grid grid-cols-1 md:grid-cols-[9fr_2fr] gap-4 pb-[50px]">
+      <div className="px-4 md:px-6 pt-6 pb-8 bg-[var(--background-primary)] rounded-lg h-full mx-4">
         <Suspense fallback={<BarChartSkeleton />}>
           <DailyBarChart m3terId={m3terId} />
         </Suspense>
-        <div className="p-10 bg-background text-foreground rounded-lg mt-5 min-h-[482px]">
+        <div className="p-10 bg-background text-foreground rounded-lg mt-5 min-h-[482px] w-full">
           <div className="">
             <div className="text-center flex justify-between items-center mb-3">
               <h3 className="text-foreground text-[17px] md:text-[19px] font-medium">
@@ -97,7 +98,7 @@ export default function Charts({ params }: Route.ComponentProps) {
           {isMonthly.value && <MonthlyHeatmap m3terId={m3terId} />}
         </div>
       </div>
-      <div className="">
+      <div className="md:w-[97%] w-full block h-[300px]">
         <Doughnut data={doughnutChartData} options={options} />
       </div>
     </div>
