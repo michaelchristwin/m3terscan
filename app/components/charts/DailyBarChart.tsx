@@ -79,7 +79,7 @@ function DailyBarChart({ m3terId }: { m3terId: string }) {
         )}
         {!error && chartData.length > 0 && (
           <>
-            <div className="h-95 md:w-[9 6%] w-[300px]">
+            <div className="h-95 md:w-[96%] w-[300px]">
               <Bar data={barChartData} options={barChartOptions} />
             </div>
             <div className="flex w-full items-center gap-x-5 mt-[23px] pl-[70px]">

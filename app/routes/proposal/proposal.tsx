@@ -2,7 +2,6 @@ import type { Route } from "./+types/proposal";
 import { getProposals } from "~/queries";
 import { useLoaderData } from "react-router";
 import { Suspense } from "react";
-
 import { queryClient } from "~/queries/ts-client";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import Proposals from "~/components/Proposals";
