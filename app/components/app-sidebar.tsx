@@ -41,7 +41,7 @@ const data = (m3terId: string) => {
     },
     {
       title: "Ask M3ter AI",
-      url: `/m3ters/${m3terId}/ask-ai`,
+      url: `/m3ter/${m3terId}/ask-ai`,
       icon: Sparkles,
     },
   ];

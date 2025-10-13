@@ -5,9 +5,9 @@ interface StatCardProps {
 
 function StatCard({ title, value }: StatCardProps) {
   return (
-    <div className="w-[202px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-[#FFE0CC] justify-center">
-      <p className="text-[14px] font-normal">{title}</p>
-      <p className="font-medium text-[25px]">{value}</p>
+    <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-[#FFE0CC] justify-center">
+      <p className="md:text-[14px] text-[12px] font-normal">{title}</p>
+      <p className="font-medium md:text-[25px] text-[20px]">{value}</p>
     </div>
   );
 }

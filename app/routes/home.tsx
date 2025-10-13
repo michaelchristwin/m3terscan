@@ -23,6 +23,7 @@ import { Table, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import TableSkeleton2 from "~/components/skeletons/TableSkeleton2";
 import { queryClient } from "~/queries/ts-client";
+import RecentCard from "~/components/RecentCard";
 
 ChartJS.register(
   CategoryScale,
@@ -127,8 +128,8 @@ export default function Home() {
   ];
   return (
     <HydrationBoundary state={dehydratedState}>
-      <main className="w-full h-full px-[63px] mt-5">
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-5">
+      <main className="w-full h-full md:px-[60px] px-[20px] mt-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-5">
           <StatCard title="Total revenue" value="$25K" />
           <StatCard title="Total revenue" value="$25K" />
           <StatCard title="Market cap" value="$10K" />
@@ -200,8 +201,12 @@ export default function Home() {
                 )} */}
               </div>
             </motion.div>
-
-            <Table className="w-full table-fixed">
+            <div className="md:hidden space-y-3">
+              <Suspense>
+                <RecentCard />
+              </Suspense>
+            </div>
+            <Table className="w-full table-fixed hidden md:table">
               <TableHeader>
                 <TableRow className="text-left font-sans border-b border-[var(--background-secondary)]">
                   {tableHeaders.map((item, i) => (

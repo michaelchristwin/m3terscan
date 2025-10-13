@@ -1,9 +1,9 @@
 import type React from "react";
-const Map = lazy(() => import("react-map-gl/maplibre"));
+import { lazy } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { signal } from "@preact/signals-react";
 import { useSignals } from "@preact/signals-react/runtime";
-import { lazy } from "react";
+const Map = lazy(() => import("react-map-gl/maplibre"));
 
 interface MCenter {
   lat: number;
