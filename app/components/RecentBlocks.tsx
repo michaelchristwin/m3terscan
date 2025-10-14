@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
-import { Link } from "react-router";
-
+import { Link, useSearchParams } from "react-router";
 import { TableBody, TableCell, TableRow } from "./ui/table";
 import FromCell from "./FromCell";
 import { ExternalLink } from "lucide-react";
@@ -10,6 +9,7 @@ import TableSkeleton2 from "./skeletons/TableSkeleton2";
 const MotionTableRow = motion.create(TableRow);
 
 function RecentBlocks() {
+  const [searchParams] = useSearchParams();
   const { data, isRefetching } = useSuspenseQuery({
     queryKey: ["recentBlocks"],
     queryFn: async () => {
@@ -49,7 +49,10 @@ function RecentBlocks() {
                     <Link
                       aria-label="Open proposal page"
                       viewTransition
-                      to={`/proposal/${block.hash}`}
+                      to={{
+                        pathname: `/proposal/${block.hash}`,
+                        search: searchParams.toString(),
+                      }}
                       prefetch="viewport"
                     >
                       {block.hash.slice(0, 9)}…{block.hash.slice(-9)}
@@ -70,19 +73,17 @@ function RecentBlocks() {
                     )}
                   </TableCell>
                   <TableCell className="truncate text-[rgb(106,181,219,1)] underline roboto-mono">
-                    <Link
+                    <a
                       aria-label="Open transaction in etherscan"
-                      viewTransition
-                      to={`https://sepolia.etherscan.io/tx/${block.hash}`}
+                      href={`https://sepolia.etherscan.io/tx/${block.hash}`}
                       target="_blank"
-                      prefetch="viewport"
                       className="flex w-fit items-center space-x-2"
                     >
                       <span>
                         {block.hash.slice(0, 9)}…{block.hash.slice(-9)}
                       </span>
                       <ExternalLink size={15} />
-                    </Link>
+                    </a>
                   </TableCell>
                 </MotionTableRow>
               ))

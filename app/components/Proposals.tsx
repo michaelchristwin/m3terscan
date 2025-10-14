@@ -2,10 +2,11 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Search, Copy, Check, Grid3x3, List, Table } from "lucide-react";
 import { M3terHead } from "m3ters";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { getProposals } from "~/queries";
 
 function Proposals({ hash }: { hash: string }) {
+  const [searchParams] = useSearchParams();
   const [view, setView] = useState("cards");
   const [search, setSearch] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
@@ -73,7 +74,10 @@ function Proposals({ hash }: { hash: string }) {
             >
               <Link
                 prefetch="viewport"
-                to={`/m3ter/${meter.m3ter_no}`}
+                to={{
+                  pathname: `/m3ter/${meter.m3ter_no}`,
+                  search: searchParams.toString(),
+                }}
                 className="flex items-center gap-3 mb-4 p-1 border-l-2 border-transparent transition-all duration-200 hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/20"
               >
                 <M3terHead seed={meter.m3ter_no.toString()} size={40} />
@@ -149,7 +153,13 @@ function Proposals({ hash }: { hash: string }) {
               key={meter.m3ter_no}
               className="p-4 hover:bg-slate-50 dark:hover:bg-slate-50/10 transition-colors"
             >
-              <Link to={`/m3ter/${meter.m3ter_no}`} prefetch="viewport">
+              <Link
+                to={{
+                  pathname: `/m3ter/${meter.m3ter_no}`,
+                  search: searchParams.toString(),
+                }}
+                prefetch="viewport"
+              >
                 <div className="flex items-center gap-4">
                   <M3terHead seed={meter.m3ter_no.toString()} size={40} />
 
@@ -235,10 +245,18 @@ function Proposals({ hash }: { hash: string }) {
                   <tr
                     role="link"
                     tabIndex={0}
-                    onClick={() => navigate(`/m3ter/${meter.m3ter_no}`)}
+                    onClick={() =>
+                      navigate({
+                        pathname: `/m3ter/${meter.m3ter_no}`,
+                        search: searchParams.toString(),
+                      })
+                    }
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ")
-                        navigate(`/m3ter/${meter.m3ter_no}`);
+                        navigate({
+                          pathname: `/m3ter/${meter.m3ter_no}`,
+                          search: searchParams.toString(),
+                        });
                     }}
                     key={meter.m3ter_no}
                     className="hover:bg-slate-50 dark:hover:bg-slate-50/10 cursor-pointer"

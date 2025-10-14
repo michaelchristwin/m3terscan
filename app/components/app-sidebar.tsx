@@ -8,7 +8,13 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
-import { NavLink, useParams, useLocation, Link } from "react-router";
+import {
+  NavLink,
+  useParams,
+  useLocation,
+  Link,
+  useSearchParams,
+} from "react-router";
 import {
   ChartLine,
   Activity,
@@ -48,6 +54,7 @@ const data = (m3terId: string) => {
   return navMain;
 };
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [searchParams] = useSearchParams();
   const params = useParams();
   const m3terId = params.m3terId as string;
   let location = useLocation();
@@ -56,7 +63,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar {...props}>
       <SidebarHeader className="h-[100px] p-3">
         <Link
-          to={"/"}
+          to={{ pathname: "/", search: searchParams.toString() }}
+          viewTransition
           className="w-[75px] font-semibold text-[12px] h-[30px] rounded-[20px] bg-background-primary flex items-center justify-center"
         >
           SWITCH
@@ -73,7 +81,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 key={item.title}
               >
                 <NavLink
-                  to={item.url}
+                  to={{ pathname: item.url, search: searchParams.toString() }}
                   className="text-[13px] gap-[9px] flex items-center"
                 >
                   {({ isActive }) => (

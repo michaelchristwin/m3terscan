@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import * as RechartsPrimitive from "recharts";
 
 import { cn } from "~/lib/utils";

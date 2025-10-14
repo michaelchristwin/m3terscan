@@ -143,29 +143,39 @@ export default function Home() {
             <p className="md:text-[14px] text-[12px] font-normal text-text-primary">
               Total revenue
             </p>
-            <p className="font-medium md:text-[25px] text-[20px]">$25K</p>
+            <p className="font-medium md:text-[25px] text-[20px] text-text-primary">
+              $25K
+            </p>
           </div>
           <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-stats justify-center">
-            <p className="md:text-[14px] text-[12px] font-normal">
+            <p className="md:text-[14px] text-[12px] font-normal text-text-primary">
               Total revenue
             </p>
-            <p className="font-medium md:text-[25px] text-[20px]">$25K</p>
+            <p className="font-medium md:text-[25px] text-[20px] text-text-primary">
+              $25K
+            </p>
           </div>
           <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-stats justify-center">
-            <p className="md:text-[14px] text-[12px] font-normal">Market cap</p>
-            <p className="font-medium md:text-[25px] text-[20px]">$10K</p>
+            <p className="md:text-[14px] text-[12px] font-normal text-text-primary">
+              Market cap
+            </p>
+            <p className="font-medium md:text-[25px] text-[20px] text-text-primary">
+              $10K
+            </p>
           </div>
           <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-stats justify-center">
-            <p className="md:text-[14px] text-[12px] font-normal">
+            <p className="md:text-[14px] text-[12px] font-normal text-text-primary">
               Total regions
             </p>
-            <p className="font-medium md:text-[25px] text-[20px]">
+            <p className="font-medium md:text-[25px] text-[20px] text-text-primary">
               6 countries
             </p>
           </div>
 
           <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-stats justify-center">
-            <p className="md:text-[14px] text-[12px] font-normal">See more</p>
+            <p className="md:text-[14px] text-[12px] font-normal text-text-primary">
+              See more
+            </p>
             <button
               type="button"
               className="bg-[#FFC9B2] rounded-full h-[36px] w-[36px] flex justify-center items-center"

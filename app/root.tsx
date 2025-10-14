@@ -72,8 +72,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
             __html: `
 (function() {
   var params = new URLSearchParams(window.location.search);
-  var theme = params.get('theme');
-  var themes = {
+  var chain = params.get('chain');
+  var chains = {
     base: {
       '--stats': '#001f3f',
       '--text-primary': '#ffffff',
@@ -81,10 +81,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
       '--icon': '#0099ff'
     },
     celo: {
-      '--stats': '#fff8e1',
-      '--text-primary': '#333333',
-      '--accent': '#fbcc5c',
-      '--icon': '#e4b200'
+      '--stats': '#252830',
+      '--text': '#FFFFFF',
+      '--accent': '#FCFF52',
+      '--accent-secondary': '#FFF799',
+      '--accent-tertiary': '#D4E831',
+      '--heatmap-min': '#1A1C20',
+      '--heatmap-max': '#FCFF52',
+      '--icon': '#E8A800'
     },
     optimism: {
       '--stats': '#fff5f5',
@@ -94,8 +98,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
     }
   };
 
-  if (theme && themes[theme]) {
-    var vars = themes[theme];
+  if (chain && chains[chain]) {
+    var vars = chains[chain];
     for (var key in vars) {
       document.documentElement.style.setProperty(key, vars[key]);
     }
