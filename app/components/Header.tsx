@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { ModeToggle } from "./mode-toggle";
 
 function Header() {
@@ -6,7 +7,12 @@ function Header() {
       <div className="mx-auto w-full">
         <div className="flex items-center justify-between gap-2 py-2 md:py-3">
           <div className="flex-shrink-0">
-            <div></div>
+            <Link
+              to={"/"}
+              className="w-[75px] font-semibold text-[12px] h-[30px] rounded-[20px] bg-[var(--background-primary)] flex items-center justify-center"
+            >
+              SWITCH
+            </Link>
           </div>
 
           <div></div>

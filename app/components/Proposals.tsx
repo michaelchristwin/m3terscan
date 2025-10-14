@@ -72,13 +72,14 @@ function Proposals({ hash }: { hash: string }) {
               className="bg-card rounded-lg shadow-sm hover:shadow-md transition-shadow p-5"
             >
               <Link
+                prefetch="viewport"
                 to={`/m3ter/${meter.m3ter_no}`}
                 className="flex items-center gap-3 mb-4 p-1 border-l-2 border-transparent transition-all duration-200 hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/20"
               >
                 <M3terHead seed={meter.m3ter_no.toString()} size={40} />
                 <div>
                   <div className="text-xs text-slate-500 dark:text-slate-200 uppercase tracking-wide">
-                    M3ter No
+                    M3ter ID
                   </div>
                   <div className="font-semibold text-slate-800 dark:text-slate-400">
                     {meter.m3ter_no}
@@ -148,7 +149,7 @@ function Proposals({ hash }: { hash: string }) {
               key={meter.m3ter_no}
               className="p-4 hover:bg-slate-50 dark:hover:bg-slate-50/10 transition-colors"
             >
-              <Link to={`/m3ter/${meter.m3ter_no}`}>
+              <Link to={`/m3ter/${meter.m3ter_no}`} prefetch="viewport">
                 <div className="flex items-center gap-4">
                   <M3terHead seed={meter.m3ter_no.toString()} size={40} />
 
@@ -216,7 +217,7 @@ function Proposals({ hash }: { hash: string }) {
               <thead className="bg-slate-50 dark:bg-neutral-900 border-b border-slate-200">
                 <tr>
                   <th className="md:px-6 px-2 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-100 uppercase tracking-wider">
-                    M3ter No
+                    M3ter ID
                   </th>
                   <th className="md:px-6 px-2 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-100  uppercase tracking-wider">
                     Account

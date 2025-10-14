@@ -9,7 +9,7 @@ const RecentCard = () => {
   const { data } = useSuspenseQuery({
     queryKey: ["recentBlocks"],
     queryFn: async () => {
-      const response = await fetch("/api/get-recent-blocks");
+      const response = await fetch("/api/blocks");
       const data = await response.json();
       return data;
     },

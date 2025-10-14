@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
-import { NavLink, useParams, useLocation } from "react-router";
+import { NavLink, useParams, useLocation, Link } from "react-router";
 import {
   ChartLine,
   Activity,
@@ -54,7 +54,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar {...props}>
-      <SidebarHeader className="h-[100px]"></SidebarHeader>
+      <SidebarHeader className="h-[100px] p-3">
+        <Link
+          to={"/"}
+          className="w-[75px] font-semibold text-[12px] h-[30px] rounded-[20px] bg-[var(--background-primary)] flex items-center justify-center"
+        >
+          SWITCH
+        </Link>
+      </SidebarHeader>
       <SidebarContent className="gap-0 px-[12px]">
         <SidebarMenu>
           {data(m3terId).map((item) => (

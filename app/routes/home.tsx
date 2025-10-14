@@ -1,6 +1,6 @@
 import StatCard from "~/components/StatCard";
 import type { Route } from "./+types/home";
-import { TrendingUp, SlidersHorizontal } from "lucide-react";
+import { TrendingUp, SlidersHorizontal, RotateCw, CircleX } from "lucide-react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,10 +15,12 @@ import {
 import { Line } from "react-chartjs-2";
 import { motion, AnimatePresence } from "motion/react";
 import { Suspense, useState } from "react";
+import { QueryErrorResetBoundary } from "@tanstack/react-query";
+import { ErrorBoundary } from "react-error-boundary";
 import FilterBlocks from "~/components/FilterBlocks";
 import RecentBlocks from "~/components/RecentBlocks";
 import { getRecentBlocks } from "~/.server/dune";
-import { useLoaderData } from "react-router";
+import { useFetcher, useLoaderData } from "react-router";
 import { Table, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import TableSkeleton2 from "~/components/skeletons/TableSkeleton2";
@@ -75,6 +77,8 @@ export default function Home() {
       },
     ],
   };
+  const fetcher = useFetcher();
+  const spinning = fetcher.state !== "idle";
 
   const options = {
     responsive: true,
@@ -153,6 +157,7 @@ export default function Home() {
         </div>
         <div className="mt-20 space-y-3">
           <h3 className="text-xl">Recent Proposals</h3>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -160,6 +165,27 @@ export default function Home() {
             className="bg-[var(--background-primary)] text-[var(--text-secondary)] rounded-xl p-4 relative"
           >
             <motion.div className="flex justify-between items-center mb-4">
+              <div className="flex justify-end w-full">
+                <button
+                  type="button"
+                  className="rounded-full"
+                  onClick={async () => {
+                    fetcher.submit(null, {
+                      method: "post",
+                      action: "/api/blocks",
+                    });
+                    await queryClient.refetchQueries({
+                      queryKey: ["recentBlocks"],
+                      type: "active",
+                      exact: true,
+                    });
+                  }}
+                >
+                  <RotateCw
+                    className={`${spinning ? "animate-spin" : ""} w-[20px] float-end text-[var(--icon-color)] transition-transform`}
+                  />
+                </button>
+              </div>
               {/* <h3 className="text-sm font-medium">
                 {showAll
                   ? `All Blocks (${recent_blocks.length})`
@@ -201,25 +227,45 @@ export default function Home() {
                 )} */}
               </div>
             </motion.div>
-            <div className="md:hidden space-y-3">
-              <Suspense>
-                <RecentCard />
-              </Suspense>
-            </div>
-            <Table className="w-full table-fixed hidden md:table">
-              <TableHeader>
-                <TableRow className="text-left font-sans border-b border-[var(--background-secondary)]">
-                  {tableHeaders.map((item, i) => (
-                    <TableHead className="w-[20%]" key={i.toString()}>
-                      <small>{item}</small>
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <Suspense fallback={<TableSkeleton2 />}>
-                <RecentBlocks />
-              </Suspense>
-            </Table>
+
+            <QueryErrorResetBoundary>
+              {({ reset }) => (
+                <ErrorBoundary
+                  onReset={reset}
+                  fallbackRender={({ resetErrorBoundary }) => (
+                    <div className="flex w-full justify-center">
+                      <div className="flex items-center space-x-2">
+                        <p className="text-red-500">Something went wrong</p>
+                        <CircleX size={17} className="text-red-500" />
+                      </div>
+                      <button onClick={() => resetErrorBoundary()}>
+                        Try again
+                      </button>
+                    </div>
+                  )}
+                >
+                  <div className="md:hidden space-y-3">
+                    <Suspense>
+                      <RecentCard />
+                    </Suspense>
+                  </div>
+                  <Table className="w-full table-fixed hidden md:table">
+                    <TableHeader>
+                      <TableRow className="text-left font-sans border-b border-[var(--background-secondary)]">
+                        {tableHeaders.map((item, i) => (
+                          <TableHead className="w-[20%]" key={i.toString()}>
+                            <small>{item}</small>
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    </TableHeader>
+                    <Suspense fallback={<TableSkeleton2 />}>
+                      <RecentBlocks />
+                    </Suspense>
+                  </Table>
+                </ErrorBoundary>
+              )}
+            </QueryErrorResetBoundary>
           </motion.div>
         </div>
       </main>

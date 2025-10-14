@@ -25,6 +25,6 @@ export default [
   layout("routes/proposal/layout.tsx", [
     ...prefix("proposal/:hash", [index("routes/proposal/proposal.tsx")]),
   ]),
-  route("api/get-recent-blocks", "routes/api/get-recent-blocks.tsx"),
+  route("api/blocks", "routes/api/blocks.tsx"),
   route("action/set-theme", "routes/action/set-theme.tsx"),
 ] satisfies RouteConfig;
