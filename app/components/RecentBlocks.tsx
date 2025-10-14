@@ -68,7 +68,7 @@ function RecentBlocks() {
                   <TableCell className="whitespace-nowrap">
                     {format(
                       new Date(block.block_time),
-                      "MMM d, yyyy 'at' h:mm a"
+                      "MMM d, yyyy 'at' HH:mm"
                     )}
                   </TableCell>
                   <TableCell className="truncate text-[rgb(106,181,219,1)] underline roboto-mono">
