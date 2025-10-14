@@ -57,15 +57,15 @@ function Activity() {
 
         <SlidersHorizontal
           size={20}
-          className="font-bold hover:text-[var(--icon-color)] transition-colors cursor-pointer"
+          className="font-bold hover:text-icon transition-colors cursor-pointer"
         />
       </div>
       <div className="">
         <Table className="text-left">
           <TableHeader className="text-[13px] font-semibold">
-            <TableRow className="bg-[var(--background-secondary)]">
+            <TableRow className="bg-background-secondary">
               {tableHeaders.map((v) => (
-                <TableHead className="text-[var(--icon-color)] p-4" key={v}>
+                <TableHead className="text-icon p-4" key={v}>
                   {v}
                 </TableHead>
               ))}
@@ -80,7 +80,7 @@ function Activity() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
-                  className="even:bg-[var(--background-primary)] border-0"
+                  className="even:bg-background-primary border-0"
                   key={index.toString()}
                 >
                   <TableCell className="p-4">
@@ -99,9 +99,7 @@ function Activity() {
                   <TableCell className="p-4">
                     {Number((item.energy as number) * 0.6).toFixed(2)} USD
                   </TableCell>
-                  <TableCell className="text-[var(--color-success)] p-4">
-                    Valid
-                  </TableCell>
+                  <TableCell className="text-success p-4">Valid</TableCell>
                 </MotionTableRow>
               ))}
             </TableBody>

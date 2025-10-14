@@ -29,7 +29,8 @@ const GridHeatmap: React.FC<GridHeatmapProps> = ({ data }) => {
         }
       : { r: 0, g: 0, b: 0 };
   };
-
+  // let styles = getComputedStyle(document.documentElement);
+  // let accent = styles.getPropertyValue("--accent");
   const minColor = hexToRgb("#FBE6D4");
   const maxColor = hexToRgb("#EB822A");
 

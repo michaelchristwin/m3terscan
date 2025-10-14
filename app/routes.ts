@@ -24,6 +24,7 @@ export default [
   ]),
   layout("routes/proposal/layout.tsx", [
     ...prefix("proposal/:hash", [index("routes/proposal/proposal.tsx")]),
+    route("proposal/latest", "routes/proposal/latest.tsx"),
   ]),
   route("api/blocks", "routes/api/blocks.tsx"),
   route("action/set-theme", "routes/action/set-theme.tsx"),

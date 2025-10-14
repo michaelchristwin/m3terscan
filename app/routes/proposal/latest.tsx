@@ -1,28 +1,29 @@
-import type { Route } from "./+types/proposal";
-import { getProposals } from "~/queries";
-import { useLoaderData } from "react-router";
-import { Suspense } from "react";
-import { queryClient } from "~/queries/ts-client";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import Proposals from "~/components/Proposals";
+import { dehydrate, HydrationBoundary, useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { Suspense } from "react";
+import { useLoaderData } from "react-router";
+import { getRecentBlocks } from "~/.server/dune";
+import Proposals from "~/components/Proposals";
+import { queryClient } from "~/queries/ts-client";
 
-export async function loader({ params }: Route.LoaderArgs) {
+export async function loader() {
   await queryClient.prefetchQuery({
-    queryKey: ["getProposals", params.hash],
-    queryFn: () => getProposals(params.hash),
+    queryKey: ["recentBlocks"],
+    queryFn: getRecentBlocks,
   });
+
   return { dehydratedState: dehydrate(queryClient) };
 }
 
-export function meta() {
-  return [
-    { title: "Proposals | M3terscan" },
-    { name: "description", content: "" },
-  ];
-}
-
-function Index({ params }: Route.ComponentProps) {
+function Latest() {
+  const { data } = useQuery({
+    queryKey: ["recentBlocks"],
+    queryFn: async () => {
+      const response = await fetch("/api/blocks");
+      const data = await response.json();
+      return data;
+    },
+  });
   const { dehydratedState } = useLoaderData<typeof loader>();
 
   return (
@@ -38,11 +39,11 @@ function Index({ params }: Route.ComponentProps) {
             </div>
           }
         >
-          <Proposals hash={params.hash} />
+          {data && <Proposals hash={data.at(-1).hash} />}
         </Suspense>
       </div>
     </HydrationBoundary>
   );
 }
 
-export default Index;
+export default Latest;

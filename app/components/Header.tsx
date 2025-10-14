@@ -9,7 +9,7 @@ function Header() {
           <div className="flex-shrink-0">
             <Link
               to={"/"}
-              className="w-[75px] font-semibold text-[12px] h-[30px] rounded-[20px] bg-[var(--background-primary)] flex items-center justify-center"
+              className="w-[75px] font-semibold text-[12px] h-[30px] rounded-[20px] bg-background-primary flex items-center justify-center"
             >
               SWITCH
             </Link>
@@ -21,7 +21,7 @@ function Header() {
             <ModeToggle />
           </div>
         </div>
-        <div className="h-[1.5px] w-[95%] mx-auto bg-[var(--background-secondary)]"></div>
+        <div className="h-[1.5px] w-[95%] mx-auto bg-background-secondary"></div>
       </div>
     </header>
   );

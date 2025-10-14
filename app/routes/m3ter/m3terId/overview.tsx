@@ -31,7 +31,7 @@ function Overview() {
       {/* Info Bar */}
       {locationInfo && (
         <motion.div
-          className="flex flex-wrap justify-between items-center gap-4 mt-4 text-sm font-medium bg-[var(--background-primary)] py-5 rounded-t-lg w-11/12 mx-auto "
+          className="flex flex-wrap justify-between items-center gap-4 mt-4 text-sm font-medium bg-background-primary py-5 rounded-t-lg w-11/12 mx-auto "
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}

@@ -101,7 +101,7 @@ function IframeBarChart({
         {isRefetching && (
           <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
             <div className="flex flex-col items-center gap-3">
-              <LoaderCircle className="h-[30px] w-[30px] md:h-[40px] md:w-[40px] text-[var(--icon-color)] animate-spin" />
+              <LoaderCircle className="h-[30px] w-[30px] md:h-[40px] md:w-[40px] text-icon animate-spin" />
               <p className="text-sm text-neutral-400">Updating data...</p>
             </div>
           </div>

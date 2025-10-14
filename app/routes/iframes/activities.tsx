@@ -47,7 +47,7 @@ function Activities() {
             }}
           >
             {tableHeaders.map((v) => (
-              <TableHead className="text-[var(--icon-color)] p-4" key={v}>
+              <TableHead className="text-icon p-4" key={v}>
                 {v}
               </TableHead>
             ))}
@@ -131,9 +131,7 @@ const ChiComponent = ({
             {Number((item.node?.payload?.energy as number) * 0.6).toFixed(2)}{" "}
             USD
           </TableCell>
-          <TableCell className="text-[var(--color-success)] p-4">
-            Valid
-          </TableCell>
+          <TableCell className="text-success p-4">Valid</TableCell>
         </MotionTableRow>
       ))}
     </>

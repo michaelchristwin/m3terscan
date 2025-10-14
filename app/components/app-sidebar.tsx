@@ -57,7 +57,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader className="h-[100px] p-3">
         <Link
           to={"/"}
-          className="w-[75px] font-semibold text-[12px] h-[30px] rounded-[20px] bg-[var(--background-primary)] flex items-center justify-center"
+          className="w-[75px] font-semibold text-[12px] h-[30px] rounded-[20px] bg-background-primary flex items-center justify-center"
         >
           SWITCH
         </Link>
@@ -68,7 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuItem key={item.title} title={item.title}>
               <SidebarMenuButton
                 asChild
-                className={`data-[active=true]:text-[var(--icon-color)] h-[50px] data-[active=true]:bg-[var(--accent-color-tertiary)] hover:bg-[var(--accent-color)] data-[active=true]:font-medium data-[active=true]:hover:bg-[var(--accent-color)] hover:text-[var(--icon-color)] group/inner`}
+                className={`data-[active=true]:text-icon h-[50px] data-[active=true]:bg-accent-tertiary hover:bg-accent data-[active=true]:font-medium data-[active=true]:hover:bg-accent hover:text-icon group/inner`}
                 isActive={item.url === location.pathname}
                 key={item.title}
               >
@@ -82,9 +82,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         key={item.title}
                         className={`p-1.5 ${
                           isActive
-                            ? "bg-[var(--accent-color-secondary)]"
-                            : "bg-[var(--background-secondary)]"
-                        } rounded-lg group-hover/inner:bg-[var(--accent-color)]`}
+                            ? "bg-accent-secondary"
+                            : "bg-background-secondary"
+                        } rounded-lg group-hover/inner:bg-accent`}
                       >
                         <item.icon size={15} />
                       </div>

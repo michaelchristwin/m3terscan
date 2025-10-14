@@ -100,7 +100,7 @@ export default function Charts({ params }: Route.ComponentProps) {
   return (
     <HydrationBoundary state={dehydratedState}>
       <div className="h-full grid grid-cols-1 md:grid-cols-[9fr_2fr] gap-4 pb-[50px]">
-        <div className="px-4 md:px-6 pt-6 pb-8 bg-[var(--background-primary)] rounded-lg h-full mx-4">
+        <div className="px-4 md:px-6 pt-6 pb-8 bg-background-primary rounded-lg h-full mx-4">
           <Suspense fallback={<BarChartSkeleton />}>
             <DailyBarChart m3terId={m3terId} />
           </Suspense>

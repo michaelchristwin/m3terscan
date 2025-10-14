@@ -53,11 +53,7 @@ export const ViewToggle = () => {
                 />
               )}
               <span
-                className={
-                  isActive
-                    ? "text-[var(--color-success)]"
-                    : "text-[var(--text-secondary)]"
-                }
+                className={isActive ? "text-success" : "text-text-secondary"}
               >
                 {label}
               </span>

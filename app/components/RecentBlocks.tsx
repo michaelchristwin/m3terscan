@@ -45,7 +45,7 @@ function RecentBlocks() {
                   variants={rowVariants}
                   className=""
                 >
-                  <TableCell className="truncate text-[var(--icon-color)] underline roboto-mono">
+                  <TableCell className="truncate text-icon underline roboto-mono">
                     <Link
                       aria-label="Open proposal page"
                       viewTransition
@@ -58,9 +58,7 @@ function RecentBlocks() {
                   <FromCell from={block.from} />
                   <TableCell
                     className={`font-medium whitespace-nowrap ${
-                      block.transaction_status
-                        ? "text-[var(--color-success)]"
-                        : "text-[var(--color-invalid)]"
+                      block.transaction_status ? "text-success" : "text-invalid"
                     }`}
                   >
                     Successful
@@ -98,7 +96,7 @@ function RecentBlocks() {
               >
                 <TableCell
                   colSpan={5}
-                  className="text-center text-sm text-[var(--text-secondary)]"
+                  className="text-center text-sm text-text-secondary"
                 >
                   No blocks match your filters
                 </TableCell>

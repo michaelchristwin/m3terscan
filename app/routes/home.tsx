@@ -1,6 +1,11 @@
-import StatCard from "~/components/StatCard";
 import type { Route } from "./+types/home";
-import { TrendingUp, SlidersHorizontal, RotateCw, CircleX } from "lucide-react";
+import {
+  TrendingUp,
+  SlidersHorizontal,
+  CircleX,
+  ArrowRight,
+  RefreshCw,
+} from "lucide-react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -134,11 +139,40 @@ export default function Home() {
     <HydrationBoundary state={dehydratedState}>
       <main className="w-full h-full md:px-[60px] px-[20px] mt-5">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-5">
-          <StatCard title="Total revenue" value="$25K" />
-          <StatCard title="Total revenue" value="$25K" />
-          <StatCard title="Market cap" value="$10K" />
-          <StatCard title="Total regions" value="6 countries" />
-          <StatCard title="Total revenue" value="$25K" />
+          <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-stats justify-center">
+            <p className="md:text-[14px] text-[12px] font-normal text-text-primary">
+              Total revenue
+            </p>
+            <p className="font-medium md:text-[25px] text-[20px]">$25K</p>
+          </div>
+          <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-stats justify-center">
+            <p className="md:text-[14px] text-[12px] font-normal">
+              Total revenue
+            </p>
+            <p className="font-medium md:text-[25px] text-[20px]">$25K</p>
+          </div>
+          <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-stats justify-center">
+            <p className="md:text-[14px] text-[12px] font-normal">Market cap</p>
+            <p className="font-medium md:text-[25px] text-[20px]">$10K</p>
+          </div>
+          <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-stats justify-center">
+            <p className="md:text-[14px] text-[12px] font-normal">
+              Total regions
+            </p>
+            <p className="font-medium md:text-[25px] text-[20px]">
+              6 countries
+            </p>
+          </div>
+
+          <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-stats justify-center">
+            <p className="md:text-[14px] text-[12px] font-normal">See more</p>
+            <button
+              type="button"
+              className="bg-[#FFC9B2] rounded-full h-[36px] w-[36px] flex justify-center items-center"
+            >
+              <ArrowRight size={14} className="text-icon" />
+            </button>
+          </div>
         </div>
         <div className="mt-9.5 w-full">
           <div className="gap-y-[13px]">
@@ -152,7 +186,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="h-[360px] bg-[var(--background-primary)] p-6 rounded-2xl">
+        <div className="h-[360px] bg-background-primary p-6 rounded-2xl">
           <Line data={data} options={options} />
         </div>
         <div className="mt-20 space-y-3">
@@ -162,10 +196,10 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="bg-[var(--background-primary)] text-[var(--text-secondary)] rounded-xl p-4 relative"
+            className="bg-background-primary text-text-secondary rounded-xl p-4 relative"
           >
             <motion.div className="flex justify-between items-center mb-4">
-              <div className="flex justify-end w-full">
+              <div className="flex justify-end w-full px-7">
                 <button
                   type="button"
                   className="rounded-full"
@@ -173,6 +207,7 @@ export default function Home() {
                     fetcher.submit(null, {
                       method: "post",
                       action: "/api/blocks",
+                      preventScrollReset: true,
                     });
                     await queryClient.refetchQueries({
                       queryKey: ["recentBlocks"],
@@ -181,8 +216,8 @@ export default function Home() {
                     });
                   }}
                 >
-                  <RotateCw
-                    className={`${spinning ? "animate-spin" : ""} w-[20px] float-end text-[var(--icon-color)] transition-transform`}
+                  <RefreshCw
+                    className={`${spinning ? "animate-spin" : ""} w-[20px] float-end text-icon transition-transform`}
                   />
                 </button>
               </div>
@@ -199,7 +234,7 @@ export default function Home() {
                       whileTap={{ scale: 0.95 }}
                       transition={{ type: "spring", stiffness: 300 }}
                       onClick={() => setShowFilters(!showFilters)}
-                      className="p-1 hover:text-[var(--icon-color)] transition-colors cursor-pointer"
+                      className="p-1 hover:text-icon transition-colors cursor-pointer"
                     >
                       <SlidersHorizontal />
                     </motion.button>
@@ -220,7 +255,7 @@ export default function Home() {
                 {/* {recent_blocks.length > 5 && (
                   <a
                     onClick={() => setShowAll(!showAll)}
-                    className="text-sm cursor-pointer text-[var(--icon-color)]"
+                    className="text-sm cursor-pointer text-icon"
                   >
                     {showAll ? "See less" : "See more"}
                   </a>
@@ -251,7 +286,7 @@ export default function Home() {
                   </div>
                   <Table className="w-full table-fixed hidden md:table">
                     <TableHeader>
-                      <TableRow className="text-left font-sans border-b border-[var(--background-secondary)]">
+                      <TableRow className="text-left font-sans border-b border-background-secondary">
                         {tableHeaders.map((item, i) => (
                           <TableHead className="w-[20%]" key={i.toString()}>
                             <small>{item}</small>

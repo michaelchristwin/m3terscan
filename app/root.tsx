@@ -44,6 +44,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const navigation = useNavigation();
   const isLoading =
     navigation.state === "loading" || navigation.state === "submitting";
+
   useEffect(() => {
     if (isLoading) {
       BProgress.start();
@@ -57,11 +58,53 @@ export function Layout({ children }: { children: React.ReactNode }) {
   }, [isLoading]);
 
   return (
-    <html lang="en" className={loaderData?.colorScheme ?? "light"}>
+    <html
+      lang="en"
+      className={loaderData?.colorScheme ?? "light"}
+      suppressHydrationWarning
+    >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var theme = params.get('theme');
+  var themes = {
+    base: {
+      '--stats': '#001f3f',
+      '--text-primary': '#ffffff',
+      '--accent': '#0070f3',
+      '--icon': '#0099ff'
+    },
+    celo: {
+      '--stats': '#fff8e1',
+      '--text-primary': '#333333',
+      '--accent': '#fbcc5c',
+      '--icon': '#e4b200'
+    },
+    optimism: {
+      '--stats': '#fff5f5',
+      '--text-primary': '#111111',
+      '--accent': '#ff0420',
+      '--icon': '#e00000'
+    }
+  };
+
+  if (theme && themes[theme]) {
+    var vars = themes[theme];
+    for (var key in vars) {
+      document.documentElement.style.setProperty(key, vars[key]);
+    }
+  }
+})();
+    `,
+          }}
+        />
+
         <Links />
       </head>
       <body>

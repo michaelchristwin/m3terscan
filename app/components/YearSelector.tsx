@@ -95,7 +95,7 @@ export const YearSelector = () => {
         <button
           onClick={handlePrev}
           disabled={isAtMinimum}
-          className="p-1 rounded-full bg-[#77FF9D] text-[#28B750] transition-colors disabled:bg-[var(--background-secondary)] disabled:!cursor-not-allowed"
+          className="p-1 rounded-full bg-[#77FF9D] text-[#28B750] transition-colors disabled:bg-background-secondary disabled:!cursor-not-allowed"
           aria-label={isMonthlyView ? "Previous month" : "Previous year"}
         >
           <ChevronLeft size={20} />
@@ -108,7 +108,7 @@ export const YearSelector = () => {
         <button
           onClick={handleNext}
           disabled={isAtCurrent}
-          className="p-1 rounded-full bg-[#77FF9D] text-[#28B750] transition-colors disabled:bg-[var(--background-secondary)] disabled:!cursor-not-allowed"
+          className="p-1 rounded-full bg-[#77FF9D] text-[#28B750] transition-colors disabled:bg-background-secondary disabled:!cursor-not-allowed"
           aria-label={isMonthlyView ? "Next month" : "Next year"}
         >
           <ChevronRight size={20} />

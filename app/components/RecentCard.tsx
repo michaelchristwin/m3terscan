@@ -37,20 +37,18 @@ const RecentCard = () => {
             key={index.toString()}
             exit="hidden"
             variants={cardVariants(index)}
-            className="bg-[var(--background-primary)] border border-[var(--background-secondary)] rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
+            className="bg-background-primary border border-background-secondary rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
           >
             {/* Header with Status */}
-            <div className="flex justify-between items-start mb-3 pb-3 border-b border-[var(--background-secondary)]">
+            <div className="flex justify-between items-start mb-3 pb-3 border-b border-background-secondary">
               <div className="flex-1 min-w-0">
-                <div className="text-xs text-[var(--text-secondary)] mb-1">
-                  Proposal
-                </div>
+                <div className="text-xs text-text-secondary mb-1">Proposal</div>
                 <Link
                   aria-label="Open proposal page"
                   viewTransition
                   to={`/proposal/${block.hash}`}
                   prefetch="viewport"
-                  className="text-[var(--icon-color)] underline roboto-mono text-sm font-medium block truncate"
+                  className="text-icon underline roboto-mono text-sm font-medium block truncate"
                 >
                   {block.hash.slice(0, 9)}…{block.hash.slice(-9)}
                 </Link>
@@ -58,8 +56,8 @@ const RecentCard = () => {
               <span
                 className={`ml-3 px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
                   block.transaction_status
-                    ? "bg-[var(--color-success)]/10 text-[var(--color-success)]"
-                    : "bg-[var(--color-invalid)]/10 text-[var(--color-invalid)]"
+                    ? "bg-success/10 text-success"
+                    : "bg-invalid/10 text-invalid"
                 }`}
               >
                 Successful
@@ -68,9 +66,7 @@ const RecentCard = () => {
 
             {/* From Address */}
             <div className="mb-3">
-              <div className="text-xs text-[var(--text-secondary)] mb-1">
-                Proposer
-              </div>
+              <div className="text-xs text-text-secondary mb-1">Proposer</div>
               <div className="text-sm">
                 <span className="whitespace-nowrap roboto-mono md:hidden block">
                   {`${block.from.slice(0, 9)}…${block.from.slice(-9)}`}
@@ -80,17 +76,15 @@ const RecentCard = () => {
 
             {/* Timestamp */}
             <div className="mb-3">
-              <div className="text-xs text-[var(--text-secondary)] mb-1">
-                Time
-              </div>
-              <div className="text-sm text-[var(--text-primary)]">
+              <div className="text-xs text-text-secondary mb-1">Time</div>
+              <div className="text-sm text-text-primary">
                 {format(new Date(block.block_time), "MMM d, yyyy 'at' h:mm a")}
               </div>
             </div>
 
             {/* Etherscan Link */}
             <div>
-              <div className="text-xs text-[var(--text-secondary)] mb-1">
+              <div className="text-xs text-text-secondary mb-1">
                 View on Etherscan
               </div>
               <Link
@@ -116,7 +110,7 @@ const RecentCard = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="text-center py-8 text-sm text-[var(--text-secondary)]"
+          className="text-center py-8 text-sm text-text-secondary"
         >
           No blocks match your filters
         </motion.div>
