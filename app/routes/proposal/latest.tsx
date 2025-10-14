@@ -15,6 +15,13 @@ export async function loader() {
   return { dehydratedState: dehydrate(queryClient) };
 }
 
+export function meta() {
+  return [
+    { title: "Latest Proposal" },
+    { name: "description", content: "The latest m3ters proposal" },
+  ];
+}
+
 function Latest() {
   const { data } = useQuery({
     queryKey: ["recentBlocks"],
