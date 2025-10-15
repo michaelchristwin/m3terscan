@@ -117,7 +117,6 @@ function Trades({ params }: Route.ComponentProps) {
   const visibleTrades = showAll
     ? trades(params.m3terId)
     : trades(params.m3terId).slice(0, 5);
-  console.log(trades(params.m3terId));
   return (
     <section className="flex flex-col items-center justify-center p-4 pb-10">
       <motion.div
