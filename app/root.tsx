@@ -72,24 +72,43 @@ export function Layout({ children }: { children: React.ReactNode }) {
             __html: `
 (function() {
   var params = new URLSearchParams(window.location.search);
-  var chain = params.get('chain');
+  var c = params.get('c');
   var chains = {
     base: {
-      '--stats': '#001f3f',
-      '--text-primary': '#ffffff',
-      '--accent': '#0070f3',
-      '--icon': '#0099ff'
+      '--stats': '#d9dff5',
+      '--text': '#ffffff',
+      '--accent': '#1e40ff',
+      '--accent-tertiary': '#9ab3ff',
+      '--accent-secondary': '#4a6fff',
+      '--icon': '#365eff',
+      '--heatmap-min': '#a8c5ff',
+      '--heatmap-max': '#ff4b00',
     },
+  
     celo: {
-      '--stats': '#252830',
+      '--stats': '#37381F',
       '--text': '#FFFFFF',
       '--accent': '#FCFF52',
       '--accent-secondary': '#FFF799',
       '--accent-tertiary': '#D4E831',
       '--heatmap-min': '#1A1C20',
       '--heatmap-max': '#FCFF52',
-      '--icon': '#E8A800'
+      '--icon': '#E8A800',
+      '--chart-low': '#A0A23A',
+      '--chart-high': '#E5E85B'
     },
+    arbitrum: {
+  '--stats': '#213147',
+  '--text': '#FFFFFF',
+  '--accent': '#12AAFF',
+  '--accent-secondary': '#9DCCED',
+  '--accent-tertiary': '#E5E5E5',
+  '--heatmap-min': '#213147',
+  '--heatmap-max': '#12AAFF',
+  '--icon': '#9DCCED',
+  '--chart-low': '#213147',
+  '--chart-high': '#12AAFF'
+},
     optimism: {
       '--stats': '#fff5f5',
       '--text-primary': '#111111',
@@ -98,8 +117,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
     }
   };
 
-  if (chain && chains[chain]) {
-    var vars = chains[chain];
+  if (c && chains[c]) {
+    var vars = chains[c];
     for (var key in vars) {
       document.documentElement.style.setProperty(key, vars[key]);
     }

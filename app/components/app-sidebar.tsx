@@ -8,13 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
-import {
-  NavLink,
-  useParams,
-  useLocation,
-  Link,
-  useSearchParams,
-} from "react-router";
+import { NavLink, useParams, Link, useSearchParams } from "react-router";
 import {
   ChartLine,
   Activity,
@@ -57,50 +51,57 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [searchParams] = useSearchParams();
   const params = useParams();
   const m3terId = params.m3terId as string;
-  let location = useLocation();
 
   return (
     <Sidebar {...props}>
       <SidebarHeader className="h-[100px] p-3">
         <Link
           to={{ pathname: "/", search: searchParams.toString() }}
-          viewTransition
-          className="w-[75px] font-semibold text-[12px] h-[30px] rounded-[20px] bg-background-primary flex items-center justify-center"
+          className="w-[45px] font-semibold text-[12px] h-[45px] rounded-full bg-background-primary flex items-center justify-center"
         >
-          SWITCH
+          <img
+            src="/m3terhead.webp"
+            alt="M3terhead"
+            className="w-[40px] h-[40px]"
+          />
         </Link>
       </SidebarHeader>
       <SidebarContent className="gap-0 px-[12px]">
         <SidebarMenu>
           {data(m3terId).map((item) => (
             <SidebarMenuItem key={item.title} title={item.title}>
-              <SidebarMenuButton
-                asChild
-                className={`data-[active=true]:text-icon h-[50px] data-[active=true]:bg-accent-tertiary hover:bg-accent data-[active=true]:font-medium data-[active=true]:hover:bg-accent hover:text-icon group/inner`}
-                isActive={item.url === location.pathname}
-                key={item.title}
+              <NavLink
+                to={{ pathname: item.url, search: searchParams.toString() }}
+                className="text-[13px] gap-[9px] flex items-center"
               >
-                <NavLink
-                  to={{ pathname: item.url, search: searchParams.toString() }}
-                  className="text-[13px] gap-[9px] flex items-center"
-                >
-                  {({ isActive }) => (
-                    <>
+                {({ isActive }) => (
+                  <SidebarMenuButton
+                    asChild
+                    data-active={isActive}
+                    className="h-[50px] data-[active=true]:text-foreground data-[active=true]:dark:text-background data-[active=true]:bg-accent-tertiary hover:bg-accent data-[active=true]:font-medium data-[active=true]:hover:bg-accent hover:text-icon group/inner"
+                  >
+                    <div className="text-[13px] gap-[9px] flex items-center">
                       <div
-                        key={item.title}
                         className={`p-1.5 ${
                           isActive
                             ? "bg-accent-secondary"
                             : "bg-background-secondary"
                         } rounded-lg group-hover/inner:bg-accent`}
                       >
-                        <item.icon size={15} />
+                        <item.icon
+                          size={15}
+                          className={
+                            isActive
+                              ? "text-foreground dark:text-background"
+                              : ""
+                          }
+                        />
                       </div>
                       <span>{item.title}</span>
-                    </>
-                  )}
-                </NavLink>
-              </SidebarMenuButton>
+                    </div>
+                  </SidebarMenuButton>
+                )}
+              </NavLink>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>

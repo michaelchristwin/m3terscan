@@ -60,7 +60,7 @@ function MonthlyHeatmap({ m3terId }: { m3terId: string }) {
     <div className="flex w-full items-center justify-center">
       <div>
         <YearSelector />
-        <div className="p-6 bg-white rounded-lg">
+        <div className="p-6 bg-background rounded-lg">
           <div className="grid grid-cols-7 gap-1 mb-2">
             {dayNames.map((day) => (
               <div

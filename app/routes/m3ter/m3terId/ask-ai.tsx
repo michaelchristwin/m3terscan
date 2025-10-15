@@ -34,13 +34,13 @@ function AskAi() {
         </div>
       </div>
       <div className="grid w-full lg:grid-cols-3 md:grid-cols-2 grid-cols-1 mt-[200px] place-items-center">
-        <div className="w-fit px-4 h-[48px] rounded-[35px] border border-[#D89156] flex items-center justify-center">
+        <div className="w-fit px-4 h-[48px] rounded-[35px] border border-icon flex items-center justify-center">
           <p>Why is my meter not working?</p>
         </div>
-        <div className="w-fit px-4 h-[48px] rounded-[35px] border border-[#D89156] flex items-center justify-center">
+        <div className="w-fit px-4 h-[48px] rounded-[35px] border border-icon flex items-center justify-center">
           <p>How do i access my meter activities</p>
         </div>
-        <div className="w-fit px-4 h-[48px] rounded-[35px] border border-[#D89156] flex items-center justify-center">
+        <div className="w-fit px-4 h-[48px] rounded-[35px] border border-icon flex items-center justify-center">
           <p>Why is my meter not working?</p>
         </div>
       </div>

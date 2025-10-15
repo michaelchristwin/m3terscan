@@ -32,7 +32,7 @@ function Proposals({ hash }: { hash: string }) {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-slate-100 w-5 h-5" />
           <input
             type="text"
-            placeholder="Search by m3ter number..."
+            placeholder="Search by m3ter ID..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

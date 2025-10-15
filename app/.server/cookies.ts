@@ -12,9 +12,9 @@ const cookie = createCookie("color-scheme", {
 
 // Create a Zod schema to validate the cookie value
 export const schema = z
-  .enum(["dark", "light", "system"]) // Possible color schemes
-  .default("light") // If no cookie, default to "system"
-  .catch("light"); // In case of an error, default to "system"
+  .enum(["dark", "light"]) // Possible color schemes
+  .default("dark") // If no cookie, default to "system"
+  .catch("dark"); // In case of an error, default to "system"
 
 // Use Remix Utils to ensure the cookie value is always parsed
 const typedCookie = createTypedCookie({ cookie, schema });

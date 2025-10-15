@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { Bar } from "react-chartjs-2";
+import useStyle from "~/hooks/useStyle";
 import { getDailyCharts } from "~/queries";
 
 function DailyBarChart({ m3terId }: { m3terId: string }) {
@@ -15,10 +16,13 @@ function DailyBarChart({ m3terId }: { m3terId: string }) {
     refetchInterval: 15 * 60 * 1000, // 15 minutes
     staleTime: 15 * 60 * 1000,
   });
-
+  const high = useStyle("--chart-high");
+  const low = useStyle("--chart-low");
   const colors = chartData.map((entry, index) => {
-    if (index === 0) return "#28B750"; // first bar default green
-    return entry.energy < chartData[index - 1].energy ? "#EB822A" : "#28B750";
+    if (index === 0) return high || "#28B750"; // first bar default green
+    return entry.energy < chartData[index - 1].energy
+      ? low || "#EB822A"
+      : high || "#28B750";
   });
   const barChartData = {
     labels: chartData.map((d) => d.hour),
@@ -84,11 +88,17 @@ function DailyBarChart({ m3terId }: { m3terId: string }) {
             </div>
             <div className="flex w-full items-center gap-x-5 mt-[23px] pl-[70px]">
               <div className="flex items-center gap-x-1.5">
-                <div className="w-[7px] h-[7px] bg-[#28B750] rounded-full" />
+                <div
+                  className="w-[7px] h-[7px] rounded-full"
+                  style={{ backgroundColor: high || "#28B750" }}
+                />
                 <span className="text-[12px]">High</span>
               </div>
               <div className="flex items-center gap-x-1.5">
-                <div className="w-[7px] h-[7px] bg-[#EB822A] rounded-full" />
+                <div
+                  className="w-[7px] h-[7px] rounded-full"
+                  style={{ backgroundColor: low || "#EB822A" }}
+                />
                 <span className="text-[12px]">Low</span>
               </div>
             </div>

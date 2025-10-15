@@ -4,5 +4,6 @@ import type { Route } from "./+types";
 export function loader({ params, request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const chain = url.searchParams.get("chain");
-  return redirect(`/m3ter/${params.m3terId}/charts?chain=${chain}`);
+  if (chain) return redirect(`/m3ter/${params.m3terId}/charts/?chain=${chain}`);
+  else return redirect(`/m3ter/${params.m3terId}/charts`);
 }
