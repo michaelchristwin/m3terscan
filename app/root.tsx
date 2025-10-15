@@ -60,7 +60,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className={loaderData?.colorScheme ?? "light"}
+      className={loaderData?.colorScheme ?? "dark"}
       suppressHydrationWarning
     >
       <head>
