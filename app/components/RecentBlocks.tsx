@@ -64,7 +64,7 @@ function RecentBlocks() {
                       block.transaction_status ? "text-success" : "text-invalid"
                     }`}
                   >
-                    Successful
+                    Accepted
                   </TableCell>
                   <TableCell className="whitespace-nowrap">
                     {format(
