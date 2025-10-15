@@ -140,40 +140,40 @@ export default function Home() {
       <main className="w-full h-full md:px-[60px] px-[20px] mt-5">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-5">
           <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-stats justify-center">
-            <p className="md:text-[14px] text-[12px] font-normal text-text-primary">
+            <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-foreground">
               Total revenue
             </p>
-            <p className="font-medium md:text-[25px] text-[20px] text-text-primary">
+            <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-foreground">
               $25K
             </p>
           </div>
           <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-stats justify-center">
-            <p className="md:text-[14px] text-[12px] font-normal text-text-primary">
+            <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-foreground">
               Total revenue
             </p>
-            <p className="font-medium md:text-[25px] text-[20px] text-text-primary">
+            <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-foreground">
               $25K
             </p>
           </div>
           <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-stats justify-center">
-            <p className="md:text-[14px] text-[12px] font-normal text-text-primary">
+            <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-foreground">
               Market cap
             </p>
-            <p className="font-medium md:text-[25px] text-[20px] text-text-primary">
+            <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-foreground">
               $10K
             </p>
           </div>
           <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-stats justify-center">
-            <p className="md:text-[14px] text-[12px] font-normal text-text-primary">
+            <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-foreground">
               Total regions
             </p>
-            <p className="font-medium md:text-[25px] text-[20px] text-text-primary">
+            <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-foreground">
               6 countries
             </p>
           </div>
 
           <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-background bg-stats justify-center">
-            <p className="md:text-[14px] text-[12px] font-normal text-text-primary">
+            <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-foreground">
               See more
             </p>
             <button

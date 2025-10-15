@@ -72,9 +72,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
             __html: `
 (function() {
   var params = new URLSearchParams(window.location.search);
-  var c = params.get('c');
+  var c = params.get('thm');
   var chains = {
-    base: {
+    8453: {
       '--stats': '#d9dff5',
       '--text': '#ffffff',
       '--accent': '#1e40ff',
@@ -85,7 +85,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       '--heatmap-max': '#ff4b00',
     },
   
-    celo: {
+    42220: {
       '--stats': '#37381F',
       '--text': '#FFFFFF',
       '--accent': '#FCFF52',
@@ -97,7 +97,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       '--chart-low': '#A0A23A',
       '--chart-high': '#E5E85B'
     },
-    arbitrum: {
+    42161: {
   '--stats': '#213147',
   '--text': '#FFFFFF',
   '--accent': '#12AAFF',
@@ -109,7 +109,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   '--chart-low': '#213147',
   '--chart-high': '#12AAFF'
 },
-    optimism: {
+    10: {
       '--stats': '#fff5f5',
       '--text-primary': '#111111',
       '--accent': '#ff0420',
