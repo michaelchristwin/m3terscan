@@ -31,6 +31,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import TableSkeleton2 from "~/components/skeletons/TableSkeleton2";
 import { queryClient } from "~/queries/ts-client";
 import RecentCard from "~/components/RecentCard";
+import useStyle from "~/hooks/useStyle";
 
 ChartJS.register(
   CategoryScale,
@@ -60,22 +61,23 @@ export async function loader() {
 
 export default function Home() {
   const { dehydratedState } = useLoaderData<typeof loader>();
+  const icon = useStyle("--icon");
   const data = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
       {
         label: "First Line",
         data: [10, 25, 15, 30, 22, 40],
-        borderColor: "#FD8852",
-        backgroundColor: "#FD8852",
+        borderColor: icon || "#FD8852",
+        backgroundColor: icon || "#FD8852",
         borderWidth: 1,
         pointRadius: 0,
       },
       {
         label: "Second Line",
         data: [5, 15, 10, 20, 12, 25],
-        borderColor: "#AEC7ED",
-        backgroundColor: "#AEC7ED",
+        borderColor: "#00FF00",
+        backgroundColor: "#00FF00",
         borderDash: [6, 6], // <-- dashed line
         borderWidth: 1,
         pointRadius: 0,
@@ -84,7 +86,6 @@ export default function Home() {
   };
   const fetcher = useFetcher();
   const spinning = fetcher.state !== "idle";
-
   const options = {
     responsive: true,
     maintainAspectRatio: false,
