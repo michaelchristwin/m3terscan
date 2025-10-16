@@ -21,6 +21,7 @@ export default [
   ...prefix("iframes", [
     route("bar-chart", "routes/iframes/bar-chart.tsx"),
     route("activities", "routes/iframes/activities.tsx"),
+    route("map", "routes/iframes/map.tsx"),
   ]),
   layout("routes/proposal/layout.tsx", [
     ...prefix("proposal/:hash", [index("routes/proposal/proposal.tsx")]),

@@ -28,9 +28,9 @@ interface MapComponentProps {
   center?: { lat: number; lng: number } | null;
 }
 
-const MapComponent: React.FC<MapComponentProps> = ({ center }) => {
+const MapComponent: React.FC<MapComponentProps> = ({}) => {
   useSignals();
-  console.log(center);
+
   if (!mapCenter.value) return <p>Setting map to default location...</p>;
 
   return (
