@@ -77,6 +77,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     8453: {
       '--stats': '#d9dff5',
       '--text': '#ffffff',
+      '--stat-text': '#ffffff',
       '--accent': '#1e40ff',
       '--accent-tertiary': '#9ab3ff',
       '--accent-secondary': '#4a6fff',
@@ -88,6 +89,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     42220: {
       '--stats': '#37381F',
       '--text': '#FFFFFF',
+      '--stat-text': '#ffffff',
       '--accent': '#FCFF52',
       '--accent-secondary': '#FFF799',
       '--accent-tertiary': '#D4E831',
@@ -100,6 +102,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     42161: {
   '--stats': '#213147',
   '--text': '#FFFFFF',
+   '--stat-text': '#ffffff',
   '--accent': '#12AAFF',
   '--accent-secondary': '#9DCCED',
   '--accent-tertiary': '#E5E5E5',

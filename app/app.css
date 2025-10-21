@@ -73,6 +73,7 @@ body {
   --success: #73c336;
   --invalid: #c33638;
   --stats: #ffe0cc;
+  --stat-text: #ffffff;
 }
 
 .dark {
@@ -117,6 +118,7 @@ body {
   --success: #73c336;
   --invalid: #c33638;
   --stats: #ffe0cc;
+  --stat-text: #000000;
 }
 
 @theme inline {
@@ -166,6 +168,7 @@ body {
   --color-success: var(--success);
   --color-invalid: var(--invalid);
   --color-stats: var(--stats);
+  --color-stat-text: var(--stat-text);
 }
 
 @layer base {
