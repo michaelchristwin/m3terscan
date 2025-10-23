@@ -6,9 +6,14 @@ import { ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import TableSkeleton2 from "./skeletons/TableSkeleton2";
+import { useMemo } from "react";
 const MotionTableRow = motion.create(TableRow);
 
-function RecentBlocks() {
+interface RecentBlocksProps {
+  showAll: boolean;
+}
+
+function RecentBlocks({ showAll }: RecentBlocksProps) {
   const [searchParams] = useSearchParams();
   const { data, isRefetching } = useSuspenseQuery({
     queryKey: ["recentBlocks"],
@@ -28,6 +33,9 @@ function RecentBlocks() {
       },
     }),
   };
+  const visibleRows = useMemo(() => {
+    return showAll ? [...data].reverse() : [...data].reverse().slice(0, 5);
+  }, [data, showAll]);
 
   return (
     <>
@@ -35,7 +43,7 @@ function RecentBlocks() {
         <TableBody className="w-full">
           <AnimatePresence mode="sync">
             {data.length > 0 ? (
-              [...data].reverse().map((block, index) => (
+              visibleRows.map((block, index) => (
                 <MotionTableRow
                   key={index}
                   custom={index}

@@ -1,11 +1,5 @@
 import type { Route } from "./+types/home";
-import {
-  TrendingUp,
-  SlidersHorizontal,
-  CircleX,
-  ArrowRight,
-  RefreshCw,
-} from "lucide-react";
+import { TrendingUp, CircleX, ArrowRight, RefreshCw } from "lucide-react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,11 +12,10 @@ import {
   type ChartOptions,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { Suspense, useState } from "react";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
-import FilterBlocks from "~/components/FilterBlocks";
 import RecentBlocks from "~/components/RecentBlocks";
 import { getRecentBlocks } from "~/.server/dune";
 import { useFetcher, useLoaderData } from "react-router";
@@ -112,22 +105,7 @@ export default function Home() {
     },
   } satisfies ChartOptions<"line">;
 
-  const [showAll, _setShowAll] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
-  const [filters, setFilters] = useState({
-    status: "",
-    proposer: "",
-  });
-
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleClearFilters = () => {
-    setFilters({ status: "", proposer: "" });
-    setShowFilters(false);
-  };
+  const [showAll, setShowAll] = useState(false);
 
   const tableHeaders = [
     "PROPOSAL",
@@ -209,8 +187,14 @@ export default function Home() {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="bg-background-primary text-text-secondary rounded-xl p-4 relative"
           >
-            <motion.div className="flex justify-between items-center mb-4">
-              <div className="flex justify-end w-full px-7">
+            <motion.div className="flex justify-end items-center mb-4">
+              <div className="flex justify-end w-fit space-x-3">
+                <button
+                  onClick={() => setShowAll(!showAll)}
+                  className="text-sm text-icon"
+                >
+                  {showAll ? "See less" : "See more"}
+                </button>
                 <button
                   type="button"
                   className="rounded-full"
@@ -231,46 +215,6 @@ export default function Home() {
                     className={`${spinning ? "animate-spin" : ""} w-[20px] float-end text-icon transition-transform`}
                   />
                 </button>
-              </div>
-              {/* <h3 className="text-sm font-medium">
-                {showAll
-                  ? `All Blocks (${recent_blocks.length})`
-                  : `Last 5 proposals`}
-              </h3> */}
-              <div className="flex items-center gap-5">
-                {showAll && (
-                  <motion.div className="relative" layout>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                      onClick={() => setShowFilters(!showFilters)}
-                      className="p-1 hover:text-icon transition-colors cursor-pointer"
-                    >
-                      <SlidersHorizontal />
-                    </motion.button>
-
-                    <AnimatePresence>
-                      {showFilters && (
-                        <FilterBlocks
-                          filters={filters}
-                          onFilterChange={handleFilterChange}
-                          onClearFilters={handleClearFilters}
-                          onClose={() => setShowFilters(false)}
-                        />
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                )}
-
-                {/* {recent_blocks.length > 5 && (
-                  <a
-                    onClick={() => setShowAll(!showAll)}
-                    className="text-sm cursor-pointer text-icon"
-                  >
-                    {showAll ? "See less" : "See more"}
-                  </a>
-                )} */}
               </div>
             </motion.div>
 
@@ -306,7 +250,7 @@ export default function Home() {
                       </TableRow>
                     </TableHeader>
                     <Suspense fallback={<TableSkeleton2 />}>
-                      <RecentBlocks />
+                      <RecentBlocks showAll={showAll} />
                     </Suspense>
                   </Table>
                 </ErrorBoundary>
