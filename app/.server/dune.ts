@@ -1,3 +1,5 @@
+import { DuneClient } from "@duneanalytics/client-sdk";
+
 export interface BlockData {
   block_time: string;
   from: string;
@@ -42,3 +44,10 @@ export async function refreshRecentBlocks() {
     );
   }
 }
+
+export const dune = new DuneClient(process.env.DUNE_API_KEY ?? "");
+
+export const getWorldState = async () => {
+  const query_result = await dune.getLatestResult({ queryId: 5933916 });
+  return query_result.result;
+};

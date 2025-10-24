@@ -28,5 +28,6 @@ export default [
     route("proposal/latest", "routes/proposal/latest.tsx"),
   ]),
   route("api/blocks", "routes/api/blocks.tsx"),
+  route("api/world-state", "routes/api/world-state.tsx"),
   route("action/set-theme", "routes/action/set-theme.tsx"),
 ] satisfies RouteConfig;

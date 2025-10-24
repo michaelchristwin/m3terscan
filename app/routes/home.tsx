@@ -1,5 +1,5 @@
 import type { Route } from "./+types/home";
-import { TrendingUp, CircleX, ArrowRight, RefreshCw } from "lucide-react";
+import { TrendingUp, CircleX, RefreshCw } from "lucide-react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -25,6 +25,8 @@ import TableSkeleton2 from "~/components/skeletons/TableSkeleton2";
 import { queryClient } from "~/queries/ts-client";
 import RecentCard from "~/components/RecentCard";
 import useStyle from "~/hooks/useStyle";
+import Statistics from "~/components/Statistics";
+import { Skeleton } from "~/components/ui/skeleton";
 
 ChartJS.register(
   CategoryScale,
@@ -117,52 +119,20 @@ export default function Home() {
   return (
     <HydrationBoundary state={dehydratedState}>
       <main className="w-full h-full md:px-[60px] px-[20px] mt-5">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-5">
-          <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
-            <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
-              Total revenue
-            </p>
-            <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-stat-text">
-              $25K
-            </p>
-          </div>
-          <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
-            <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
-              Total revenue
-            </p>
-            <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-stat-text">
-              $25K
-            </p>
-          </div>
-          <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
-            <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
-              Market cap
-            </p>
-            <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-stat-text">
-              $10K
-            </p>
-          </div>
-          <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
-            <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
-              Total regions
-            </p>
-            <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-stat-text">
-              6 countries
-            </p>
-          </div>
-
-          <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
-            <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
-              See more
-            </p>
-            <button
-              type="button"
-              className="bg-[#FFC9B2] rounded-full h-[36px] w-[36px] flex justify-center items-center"
-            >
-              <ArrowRight size={14} className="text-icon" />
-            </button>
-          </div>
-        </div>
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  className="md:w-[202px] w-[170px] h-[86px] rounded-[16px]"
+                />
+              ))}
+            </div>
+          }
+        >
+          <Statistics />
+        </Suspense>
         <div className="mt-9.5 w-full">
           <div className="gap-y-[13px]">
             <p className="text-[20px] font-normal">Total revenue</p>
