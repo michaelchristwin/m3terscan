@@ -23,17 +23,13 @@ function Statistics() {
     (sum: number, item: any) => sum + Number(item.account),
     0
   );
+  const totalNonces: number = worldState.data.rows.reduce(
+    (sum: number, item: any) => sum + Number(item.nonce),
+    0
+  );
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-5">
-      <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
-        <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
-          Total proposals
-        </p>
-        <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-stat-text">
-          {recentBlocks.data.length}
-        </p>
-      </div>
       <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
         <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
           Total energy generated
@@ -44,18 +40,27 @@ function Statistics() {
       </div>
       <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
         <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
-          Market cap
+          Total transactions
         </p>
         <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-stat-text">
-          $10K
+          {Number(totalNonces.toFixed()).toLocaleString()}
         </p>
       </div>
       <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
         <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
-          Total regions
+          Total proposals
         </p>
         <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-stat-text">
-          6 countries
+          {recentBlocks.data.length}
+        </p>
+      </div>
+
+      <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
+        <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
+          Total active m3ters
+        </p>
+        <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-stat-text">
+          {worldState.data.rows.length} devices
         </p>
       </div>
 
