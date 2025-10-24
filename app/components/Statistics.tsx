@@ -35,7 +35,7 @@ function Statistics() {
           Total energy generated
         </p>
         <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-stat-text">
-          {Number(totatEnergy.toFixed()).toLocaleString()} kWh
+          {Number(totatEnergy.toFixed()).toLocaleString()} mWh
         </p>
       </div>
       <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
