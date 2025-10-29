@@ -168,6 +168,7 @@ export default function Home() {
                 <button
                   type="button"
                   className="rounded-full"
+                  aria-label="Refresh"
                   onClick={async () => {
                     fetcher.submit(null, {
                       method: "post",

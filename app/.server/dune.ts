@@ -1,10 +1,14 @@
-import { DuneClient } from "@duneanalytics/client-sdk";
-
 export interface BlockData {
   block_time: string;
   from: string;
   hash: string;
   transaction_status: boolean;
+}
+
+export interface WorldStateData {
+  account: string;
+  id: number;
+  nonce: number;
 }
 
 export async function getRecentBlocks() {
@@ -45,9 +49,16 @@ export async function refreshRecentBlocks() {
   }
 }
 
-export const dune = new DuneClient(process.env.DUNE_API_KEY ?? "");
+export async function getWorldState() {
+  const headers = new Headers();
+  headers.append("X-Dune-API-Key", process.env.DUNE_API_KEY ?? "");
+  const response = await fetch(
+    "https://api.dune.com/api/v1/query/5933916/results",
+    {
+      headers,
+    }
+  );
 
-export const getWorldState = async () => {
-  const query_result = await dune.getLatestResult({ queryId: 5933916 });
-  return query_result.result;
-};
+  const data = await response.json();
+  return data.result.rows as WorldStateData[];
+}
