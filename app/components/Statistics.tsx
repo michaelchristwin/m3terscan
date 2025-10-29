@@ -30,7 +30,7 @@ function Statistics() {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-5">
-      <div className="md:w-[202px] w-[170px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
+      <div className="md:w-[202px] w-full h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
         <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
           Total energy generated
         </p>
