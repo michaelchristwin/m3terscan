@@ -125,7 +125,7 @@ export default function Home() {
               {Array.from({ length: 5 }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="md:w-[202px] w-[170px] h-[86px] rounded-[16px]"
+                  className="md:w-[202px] w-[150px] h-[86px] rounded-[16px]"
                 />
               ))}
             </div>
