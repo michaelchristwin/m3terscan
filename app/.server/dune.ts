@@ -5,12 +5,6 @@ export interface BlockData {
   transaction_status: boolean;
 }
 
-export interface WorldStateData {
-  account: string;
-  id: number;
-  nonce: number;
-}
-
 export async function getRecentBlocks() {
   const headers = new Headers();
   headers.append("X-Dune-API-Key", process.env.DUNE_API_KEY ?? "");
@@ -47,6 +41,12 @@ export async function refreshRecentBlocks() {
       `Dune API request failed: ${response.status} ${response.statusText}`
     );
   }
+}
+
+export interface WorldStateData {
+  account: string;
+  id: number;
+  nonce: number;
 }
 
 export async function getWorldState() {

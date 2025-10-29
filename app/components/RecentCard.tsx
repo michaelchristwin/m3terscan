@@ -3,9 +3,10 @@ import { ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 // Mobile Card Component
-const RecentCard = () => {
+const RecentCard = ({ showAll }: { showAll: boolean }) => {
   const { data } = useSuspenseQuery({
     queryKey: ["recentBlocks"],
     queryFn: async () => {
@@ -26,10 +27,14 @@ const RecentCard = () => {
     };
   };
 
+  const visibleRows = useMemo(() => {
+    return showAll ? [...data].reverse() : [...data].reverse().slice(0, 5);
+  }, [data, showAll]);
+
   return (
     <AnimatePresence mode="sync">
       {data && data.length > 0 ? (
-        [...data].reverse().map((block, index) => (
+        visibleRows.map((block, index) => (
           <motion.div
             custom={index}
             initial="hidden"

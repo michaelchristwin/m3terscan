@@ -207,7 +207,7 @@ export default function Home() {
                 >
                   <div className="md:hidden space-y-3">
                     <Suspense>
-                      <RecentCard />
+                      <RecentCard showAll={showAll} />
                     </Suspense>
                   </div>
                   <Table className="w-full table-fixed hidden md:table">
