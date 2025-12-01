@@ -4,24 +4,18 @@ export interface ChartsData {
 }
 
 export interface WeeklyData {
-  data: {
-    week: number;
-    totalEnergy: number;
-  }[][];
+  week: number;
+  totalEnergy: number;
 }
 
 export interface MonthlyData {
-  data: {
-    date: string;
-    energy: number;
-  }[];
+  date: string;
+  energy: number;
 }
 export interface ProposalData {
-  data: {
-    m3ter_no: number;
-    account: string;
-    nonce: number;
-  }[];
+  m3ter_no: number;
+  account: string;
+  nonce: number;
 }
 
 export async function getDailyCharts(m3terId: string) {
@@ -29,14 +23,15 @@ export async function getDailyCharts(m3terId: string) {
     `https://m3terscan-api.onrender.com/m3ter/${m3terId}/daily`
   );
   const initialData: ChartsData[] = await reponse.json();
+
   return initialData;
 }
 
 export async function getWeeklyCharts(m3terId: string, year: number) {
   const reponse = await fetch(
-    `https://m3terscan-api.onrender.com/m3ter/${m3terId}/weekly?year=${year}`
+    `https://m3terscan-api.onrender.com/m3ter/${m3terId}/weeks/${year}`
   );
-  const data: WeeklyData = await reponse.json();
+  const data: WeeklyData[][] = await reponse.json();
 
   return data;
 }
@@ -47,17 +42,17 @@ export async function getMonthlyData(
   month: number
 ) {
   const reponse = await fetch(
-    `https://m3terscan-api.onrender.com/m3ter/${m3terId}/monthly?year=${year}&month=${month}`
+    `https://m3terscan-api.onrender.com/m3ter/${m3terId}/months/${year}/${month}`
   );
-  const data: MonthlyData = await reponse.json();
+  const data: MonthlyData[] = await reponse.json();
 
-  return data.data;
+  return data;
 }
 
 export async function getProposals(hash: string) {
   const response = await fetch(
-    `https://m3terscan-api.onrender.com/proposal?hash=${hash}`
+    `https://m3terscan-api.onrender.com/proposal/${hash}`
   );
-  const proposals: ProposalData = await response.json();
-  return proposals.data;
+  const proposals: ProposalData[] = await response.json();
+  return proposals;
 }

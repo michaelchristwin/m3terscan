@@ -23,7 +23,7 @@ function WeeklyHeatmap({ m3terId }: { m3terId: string }) {
             <p>Feb</p>
             <p>Mar</p>
           </div>
-          <GridHeatmap data={gridHeatMapData.data[0]} />
+          <GridHeatmap data={gridHeatMapData[0]} />
         </div>
         <div>
           <div className="grid grid-cols-3 w-[200px] text-[14px] text-center">
@@ -31,7 +31,7 @@ function WeeklyHeatmap({ m3terId }: { m3terId: string }) {
             <p>May</p>
             <p>Jun</p>
           </div>
-          <GridHeatmap data={gridHeatMapData.data[1]} />
+          <GridHeatmap data={gridHeatMapData[1]} />
         </div>
         <div>
           <div className="grid grid-cols-3 w-[200px] text-[14px] text-center">
@@ -39,7 +39,7 @@ function WeeklyHeatmap({ m3terId }: { m3terId: string }) {
             <p>Aug</p>
             <p>Sep</p>
           </div>
-          <GridHeatmap data={gridHeatMapData.data[2]} />
+          <GridHeatmap data={gridHeatMapData[2]} />
         </div>
         <div>
           <div className="grid grid-cols-3 w-[200px] text-[14px] text-center">
@@ -47,7 +47,7 @@ function WeeklyHeatmap({ m3terId }: { m3terId: string }) {
             <p>Nov</p>
             <p>Dec</p>
           </div>
-          <GridHeatmap data={gridHeatMapData.data[3]} />
+          <GridHeatmap data={gridHeatMapData[3]} />
         </div>
       </div>
     </div>
