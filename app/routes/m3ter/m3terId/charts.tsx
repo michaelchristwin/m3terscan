@@ -18,8 +18,12 @@ import WeeklyHeatmap from "~/components/heatmaps/WeeklyHeatmap";
 import MonthlyHeatmap from "~/components/heatmaps/MonthlyHeatmap";
 import DailyBarChart from "~/components/charts/DailyBarChart";
 import WeeklyHeatmapSkeleton from "~/components/skeletons/WeeklyHeatmapSkeleton";
-import { queryClient } from "~/queries/ts-client";
-import { getDailyCharts, getWeeklyCharts } from "~/queries";
+import { queryClient } from "~/queries/query-client";
+import {
+  getDailyM3TerM3TerIdDailyGetOptions,
+  getWeeksOfYearM3TerM3TerIdWeeksYearGetOptions,
+} from "~/api-client/@tanstack/react-query.gen";
+import { m3terscanClient } from "~/queries/query-client";
 import { selectedYear } from "~/components/YearSelector";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { useLoaderData } from "react-router";
@@ -67,12 +71,16 @@ const options = {
 export async function loader({ params }: Route.LoaderArgs) {
   await Promise.all([
     queryClient.prefetchQuery({
-      queryKey: ["chartData", params.m3terId],
-      queryFn: () => getDailyCharts(params.m3terId),
+      ...getDailyM3TerM3TerIdDailyGetOptions({
+        client: m3terscanClient,
+        path: { m3ter_id: Number(params.m3terId) },
+      }),
     }),
     queryClient.prefetchQuery({
-      queryKey: ["heatmapData", params.m3terId, selectedYear.value],
-      queryFn: () => getWeeklyCharts(params.m3terId, selectedYear.value),
+      ...getWeeksOfYearM3TerM3TerIdWeeksYearGetOptions({
+        client: m3terscanClient,
+        path: { m3ter_id: Number(params.m3terId), year: selectedYear.value },
+      }),
     }),
   ]);
   return { dehydratedState: dehydrate(queryClient) };

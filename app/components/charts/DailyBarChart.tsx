@@ -3,7 +3,8 @@ import { LoaderCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { Bar } from "react-chartjs-2";
 import useStyle from "~/hooks/useStyle";
-import { getDailyCharts } from "~/queries";
+import { getDailyM3TerM3TerIdDailyGetOptions } from "~/api-client/@tanstack/react-query.gen";
+import { m3terscanClient } from "~/queries/query-client";
 
 function DailyBarChart({ m3terId }: { m3terId: string }) {
   const {
@@ -11,25 +12,37 @@ function DailyBarChart({ m3terId }: { m3terId: string }) {
     isRefetching,
     error,
   } = useSuspenseQuery({
-    queryKey: ["chartData", m3terId],
-    queryFn: () => getDailyCharts(m3terId),
-    refetchInterval: 15 * 60 * 1000, // 15 minutes
+    ...getDailyM3TerM3TerIdDailyGetOptions({
+      client: m3terscanClient,
+      path: {
+        m3ter_id: Number(m3terId),
+      },
+    }),
+    refetchInterval: 15 * 60 * 1000,
     staleTime: 15 * 60 * 1000,
   });
+
   const high = useStyle("--chart-high");
   const low = useStyle("--chart-low");
   const colors = chartData.map((entry, index) => {
-    if (index === 0) return high || "#28B750"; // first bar default green
-    return entry.energy < chartData[index - 1].energy
+    if (index === 0) return high || "#28B750";
+
+    return entry.total_energy < chartData[index - 1].total_energy
       ? low || "#EB822A"
       : high || "#28B750";
   });
   const barChartData = {
-    labels: chartData.map((d) => d.hour),
+    labels: chartData.map((d) =>
+      new Date(d.hour_start_utc).toLocaleTimeString([], {
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    ),
     datasets: [
       {
         label: "Energy used",
-        data: chartData.map((d) => d.energy),
+        data: chartData.map((d) => d.total_energy),
         backgroundColor: colors,
         borderRadius: 4, // rounded bars
       },

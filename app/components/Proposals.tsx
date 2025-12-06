@@ -3,7 +3,8 @@ import { Search, Copy, Check, Grid3x3, List, Table } from "lucide-react";
 import { M3terHead } from "m3ters";
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
-import { getProposals } from "~/queries";
+import { getProposalProposalTxHashGetOptions } from "~/api-client/@tanstack/react-query.gen";
+import { m3terscanClient } from "~/queries/query-client";
 
 function Proposals({ hash }: { hash: string }) {
   const [searchParams] = useSearchParams();
@@ -11,8 +12,10 @@ function Proposals({ hash }: { hash: string }) {
   const [search, setSearch] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
   const { data } = useSuspenseQuery({
-    queryKey: ["getProposals", hash],
-    queryFn: () => getProposals(hash),
+    ...getProposalProposalTxHashGetOptions({
+      client: m3terscanClient,
+      path: { tx_hash: hash },
+    }),
   });
   const navigate = useNavigate();
   const filteredData = data.filter((meter) =>

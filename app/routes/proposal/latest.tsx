@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { useLoaderData } from "react-router";
 import { getRecentBlocks } from "~/.server/dune";
 import Proposals from "~/components/Proposals";
-import { queryClient } from "~/queries/ts-client";
+import { queryClient } from "~/queries/query-client";
 
 export async function loader() {
   await queryClient.prefetchQuery({

@@ -1,14 +1,20 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { selectedMonth, selectedYear, YearSelector } from "../YearSelector";
 import { useSignals } from "@preact/signals-react/runtime";
-import { getMonthlyData } from "~/queries";
+import { getMonthOfYearM3TerM3TerIdMonthYearMonthGetOptions } from "~/api-client/@tanstack/react-query.gen";
+import { m3terscanClient } from "~/queries/query-client";
 
 function MonthlyHeatmap({ m3terId }: { m3terId: string }) {
   useSignals();
   const { data } = useSuspenseQuery({
-    queryKey: ["monthlyData", m3terId, selectedMonth.value, selectedYear.value],
-    queryFn: () =>
-      getMonthlyData(m3terId, selectedYear.value, selectedMonth.value + 1),
+    ...getMonthOfYearM3TerM3TerIdMonthYearMonthGetOptions({
+      client: m3terscanClient,
+      path: {
+        m3ter_id: Number(m3terId),
+        year: selectedYear.value,
+        month: selectedMonth.value + 1,
+      },
+    }),
     refetchInterval: 15 * 60 * 1000, // 15 minutes
     staleTime: 15 * 60 * 1000,
   });
@@ -28,7 +34,7 @@ function MonthlyHeatmap({ m3terId }: { m3terId: string }) {
   const minColor = hexToRgb("#FBE6D4");
   const maxColor = hexToRgb("#EB822A");
 
-  const energyValues = data.map((item) => item.energy);
+  const energyValues = data.map((item) => item.total_energy);
   const minEnergy = Math.min(...energyValues);
   const maxEnergy = Math.max(...energyValues);
 
@@ -50,7 +56,11 @@ function MonthlyHeatmap({ m3terId }: { m3terId: string }) {
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   // --- Alignment logic ---
-  const firstDate = new Date(data[0].date); // first entry in data
+  const firstDate = new Date(
+    selectedYear.value,
+    selectedMonth.value,
+    data[0].day
+  ); // first entry in data
   const startDay = firstDate.getDay(); // 0=Sun, 1=Mon, etc.
 
   // prepend nulls for offset

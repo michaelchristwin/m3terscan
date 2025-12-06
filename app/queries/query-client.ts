@@ -1,4 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
+import { createClient } from "~/api-client/client";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -7,4 +8,8 @@ export const queryClient = new QueryClient({
       staleTime: 60 * 1000,
     },
   },
+});
+
+export const m3terscanClient = createClient({
+  baseUrl: import.meta.env.VITE_API_URL,
 });

@@ -18,7 +18,7 @@ import { config } from "~/config/wagmi";
 import "@bprogress/core/css";
 import { BProgress } from "@bprogress/core";
 import { useEffect } from "react";
-import { queryClient } from "./queries/ts-client";
+import { queryClient } from "./queries/query-client";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

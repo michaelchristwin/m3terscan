@@ -1,16 +1,19 @@
 import type { Route } from "./+types/proposal";
-import { getProposals } from "~/queries";
 import { useLoaderData } from "react-router";
 import { Suspense } from "react";
-import { queryClient } from "~/queries/ts-client";
+import { queryClient } from "~/queries/query-client";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import Proposals from "~/components/Proposals";
 import { Loader2 } from "lucide-react";
+import { getProposalProposalTxHashGetOptions } from "~/api-client/@tanstack/react-query.gen";
+import { m3terscanClient } from "~/queries/query-client";
 
 export async function loader({ params }: Route.LoaderArgs) {
   await queryClient.prefetchQuery({
-    queryKey: ["getProposals", params.hash],
-    queryFn: () => getProposals(params.hash),
+    ...getProposalProposalTxHashGetOptions({
+      client: m3terscanClient,
+      path: { tx_hash: params.hash },
+    }),
   });
   return { dehydratedState: dehydrate(queryClient) };
 }

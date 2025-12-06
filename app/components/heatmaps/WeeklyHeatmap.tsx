@@ -1,17 +1,23 @@
-import { getWeeklyCharts } from "~/queries";
+import { getWeeksOfYearM3TerM3TerIdWeeksYearGetOptions } from "~/api-client/@tanstack/react-query.gen";
+import { m3terscanClient } from "~/queries/query-client";
 import GridHeatmap from "./GridHeatmap";
 import { selectedYear, YearSelector } from "../YearSelector";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useSignals } from "@preact/signals-react/runtime";
+import { splitInto4 } from "~/lib/utils";
 
 function WeeklyHeatmap({ m3terId }: { m3terId: string }) {
   useSignals();
   const { data: gridHeatMapData } = useSuspenseQuery({
-    queryKey: ["heatmapData", m3terId, selectedYear.value],
-    queryFn: () => getWeeklyCharts(m3terId, selectedYear.value),
+    ...getWeeksOfYearM3TerM3TerIdWeeksYearGetOptions({
+      client: m3terscanClient,
+      path: { m3ter_id: Number(m3terId), year: selectedYear.value },
+    }),
     refetchInterval: 15 * 60 * 1000, // 15 minutes
     staleTime: 15 * 60 * 1000,
   });
+
+  const [arr1, arr2, arr3, arr4] = splitInto4(gridHeatMapData);
 
   return (
     <div className="w-full">
@@ -23,7 +29,7 @@ function WeeklyHeatmap({ m3terId }: { m3terId: string }) {
             <p>Feb</p>
             <p>Mar</p>
           </div>
-          <GridHeatmap data={gridHeatMapData[0]} />
+          <GridHeatmap data={arr1} />
         </div>
         <div>
           <div className="grid grid-cols-3 w-[200px] text-[14px] text-center">
@@ -31,7 +37,7 @@ function WeeklyHeatmap({ m3terId }: { m3terId: string }) {
             <p>May</p>
             <p>Jun</p>
           </div>
-          <GridHeatmap data={gridHeatMapData[1]} />
+          <GridHeatmap data={arr2} />
         </div>
         <div>
           <div className="grid grid-cols-3 w-[200px] text-[14px] text-center">
@@ -39,7 +45,7 @@ function WeeklyHeatmap({ m3terId }: { m3terId: string }) {
             <p>Aug</p>
             <p>Sep</p>
           </div>
-          <GridHeatmap data={gridHeatMapData[2]} />
+          <GridHeatmap data={arr3} />
         </div>
         <div>
           <div className="grid grid-cols-3 w-[200px] text-[14px] text-center">
@@ -47,7 +53,7 @@ function WeeklyHeatmap({ m3terId }: { m3terId: string }) {
             <p>Nov</p>
             <p>Dec</p>
           </div>
-          <GridHeatmap data={gridHeatMapData[3]} />
+          <GridHeatmap data={arr4} />
         </div>
       </div>
     </div>

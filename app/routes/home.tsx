@@ -22,7 +22,7 @@ import { useFetcher, useLoaderData } from "react-router";
 import { Table, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import TableSkeleton2 from "~/components/skeletons/TableSkeleton2";
-import { queryClient } from "~/queries/ts-client";
+import { queryClient } from "~/queries/query-client";
 import RecentCard from "~/components/RecentCard";
 import useStyle from "~/hooks/useStyle";
 import Statistics from "~/components/Statistics";

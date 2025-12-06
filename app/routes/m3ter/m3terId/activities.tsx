@@ -9,21 +9,15 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { useLoaderData } from "react-router";
 import { formatDistanceToNow } from "date-fns";
 import { formatAddress } from "~/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { getActivitiesM3TerM3TerIdActivitiesGetOptions } from "~/api-client/@tanstack/react-query.gen";
+import { m3terscanClient } from "~/queries/query-client";
 
 const MotionTableRow = motion.create(TableRow);
 
 const tableHeaders = ["Time", "Energy", "Signature", "Value", "Status"];
-
-export const loader = async ({ params }: Route.LoaderArgs) => {
-  const response = await fetch(
-    `https://m3terscan-api.onrender.com/m3ter/${params.m3terId}/activities`
-  );
-  const data = await response.json();
-  return { data };
-};
 
 export const meta = ({ params }: Route.MetaArgs) => {
   return [
@@ -36,8 +30,13 @@ export const meta = ({ params }: Route.MetaArgs) => {
   ];
 };
 
-function Activity() {
-  const { data } = useLoaderData<typeof loader>();
+function Activity({ params }: Route.ComponentProps) {
+  const { data } = useQuery({
+    ...getActivitiesM3TerM3TerIdActivitiesGetOptions({
+      client: m3terscanClient,
+      path: { m3ter_id: Number(params.m3terId) },
+    }),
+  });
 
   return (
     <motion.div
@@ -74,7 +73,7 @@ function Activity() {
 
           <AnimatePresence>
             <TableBody className="text-[12px]">
-              {data.data.map((item: any, index: number) => (
+              {data?.data.map((item, index) => (
                 <MotionTableRow
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -84,20 +83,19 @@ function Activity() {
                   key={index.toString()}
                 >
                   <TableCell className="p-4">
-                    {formatDistanceToNow(new Date(item.timestamp as number))}{" "}
-                    ago
+                    {formatDistanceToNow(new Date(item.timestamp))} ago
                   </TableCell>
                   <TableCell className="p-4">
                     {item.energy.toFixed(2)} kWh
                   </TableCell>
                   <TableCell className="p-4">
                     <span className="2xl:hidden block">
-                      {formatAddress(item.signature as string)}
+                      {formatAddress(item.signature)}
                     </span>
                     <span className="hidden 2xl:block">{item.signature}</span>
                   </TableCell>
                   <TableCell className="p-4">
-                    {Number((item.energy as number) * 0.6).toFixed(2)} USD
+                    {Number(item.energy * 0.6).toFixed(2)} USD
                   </TableCell>
                   <TableCell className="text-success p-4">Valid</TableCell>
                 </MotionTableRow>

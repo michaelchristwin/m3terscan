@@ -1,22 +1,13 @@
-import React from "react";
+import type { WeeksOfYearResponse } from "~/api-client";
 
-interface EnergyData {
-  totalEnergy: number;
-  week: number;
-}
-
-interface GridHeatmapProps {
-  data: EnergyData[];
-}
-
-const GridHeatmap: React.FC<GridHeatmapProps> = ({ data }) => {
+function GridHeatmap({ data }: { data: WeeksOfYearResponse[] }) {
   // Since we have 13 active cells (weeks) in a 4x4 grid (16 total cells)
   // We'll have 3 inactive cells (null values)
   const totalCells = 16;
 
   // Find min and max values for color interpolation
-  const minEnergy = Math.min(...data.map((item) => item.totalEnergy));
-  const maxEnergy = Math.max(...data.map((item) => item.totalEnergy));
+  const minEnergy = Math.min(...data.map((item) => item.total_energy));
+  const maxEnergy = Math.max(...data.map((item) => item.total_energy));
 
   // Convert hex colors to RGB for interpolation
   const hexToRgb = (hex: string) => {
@@ -50,7 +41,7 @@ const GridHeatmap: React.FC<GridHeatmapProps> = ({ data }) => {
     return `rgb(${r}, ${g}, ${b})`;
   };
 
-  const gridData: (EnergyData | null)[] = [];
+  const gridData: (WeeksOfYearResponse | null)[] = [];
 
   const startWeek = Math.min(...data.map((d) => d.week));
   const endWeek = Math.max(...data.map((d) => d.week));
@@ -94,13 +85,13 @@ const GridHeatmap: React.FC<GridHeatmapProps> = ({ data }) => {
                   `}
                   style={{
                     backgroundColor: isActive
-                      ? getColor(cell.totalEnergy)
+                      ? getColor(cell.total_energy)
                       : undefined,
                     borderRadius: "8px",
                   }}
                   title={
                     isActive
-                      ? `Week ${cell.week}: ${cell.totalEnergy} units`
+                      ? `Week ${cell.week}: ${cell.total_energy} units`
                       : "No data"
                   }
                 >
@@ -115,6 +106,6 @@ const GridHeatmap: React.FC<GridHeatmapProps> = ({ data }) => {
       </div>
     </div>
   );
-};
+}
 
 export default GridHeatmap;
