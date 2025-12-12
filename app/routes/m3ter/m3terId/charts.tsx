@@ -33,7 +33,7 @@ ChartJS.register(
   Legend,
   BarElement,
   CategoryScale,
-  LinearScale
+  LinearScale,
 );
 
 const doughnutChartData = {
@@ -107,12 +107,12 @@ export default function Charts({ params }: Route.ComponentProps) {
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <div className="h-full grid grid-cols-1 md:grid-cols-[9fr_2fr] gap-4 pb-[50px]">
+      <div className="h-full grid grid-cols-1 md:grid-cols-[9fr_2fr] gap-4 pb-12.5">
         <div className="px-4 md:px-6 pt-6 pb-8 bg-background-primary rounded-lg h-full mx-4">
           <Suspense fallback={<BarChartSkeleton />}>
             <DailyBarChart m3terId={m3terId} />
           </Suspense>
-          <div className="p-10 bg-background text-foreground rounded-lg mt-5 min-h-[482px] w-full">
+          <div className="p-10 bg-background text-foreground rounded-lg mt-5 min-h-120.5 w-full">
             <div className="">
               <div className="text-center flex justify-between items-center mb-3">
                 <h3 className="text-foreground text-[17px] md:text-[19px] font-medium">
@@ -128,7 +128,7 @@ export default function Charts({ params }: Route.ComponentProps) {
           </div>
         </div>
         <div className="w-full">
-          <div className="w-[97%] md:block flex justify-center mx-auto h-[300px]">
+          <div className="w-[97%] md:block flex justify-center mx-auto h-75">
             <Doughnut data={doughnutChartData} options={options} />
           </div>
         </div>
