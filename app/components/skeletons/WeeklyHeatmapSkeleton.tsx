@@ -9,7 +9,7 @@ function WeeklyHeatmapSkeleton() {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="p-4 h-105 min-w-0 flex flex-col items-center justify-center relative w-full"
     >
-      <LoaderCircle className="h-[30px] w-[30px] md:h-[40px] md:w-[40px] text-icon animate-spin" />
+      <LoaderCircle className="h-7.5 w-7.5 md:h-10 md:w-10 text-icon animate-spin" />
       <p className="text-[13px] md:text-[15px] text-neutral-700 text-center">
         Loading heatmap data...
       </p>

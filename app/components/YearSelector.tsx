@@ -1,7 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { viewMode } from "./ViewToggle";
-import { signal } from "@preact/signals-react";
-import { useSignals } from "@preact/signals-react/runtime";
+import { useTimeStore } from "~/store";
+import type { Mode } from "~/types";
 
 export const MONTHS_LONG = [
   "January",
@@ -17,37 +16,39 @@ export const MONTHS_LONG = [
   "November",
   "December",
 ];
-export const selectedMonth = signal(new Date().getMonth());
-export const selectedYear = signal(new Date().getFullYear());
 
-export const YearSelector = () => {
-  useSignals();
+interface YearSelectorProps {
+  viewMode: Mode;
+}
+
+export function YearSelector({ viewMode }: YearSelectorProps) {
+  const { selectedYear, selectedMonth, setSelectedYear, setSelectedMonth } =
+    useTimeStore();
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth();
-  const isMonthlyView = viewMode.value === "monthly";
+  const isMonthlyView = viewMode === "monthly";
 
   const handlePrev = () => {
-    const minYear = 2021;
+    const minYear = 2025;
 
     if (isMonthlyView && selectedMonth !== null) {
-      // Prevent going before Jan 2021
-      if (selectedYear.value === minYear && selectedMonth.value === 0) {
-        return; // stop here
+      if (selectedYear === minYear && selectedMonth === 0) {
+        return;
       }
 
-      if (selectedMonth.value === 0) {
-        selectedYear.value--;
-        selectedMonth.value = 11;
+      if (selectedMonth === 0) {
+        setSelectedYear(selectedYear - 1);
+        setSelectedMonth(11);
       } else {
-        selectedMonth.value--;
+        setSelectedMonth(selectedMonth - 1);
       }
     } else {
       // Prevent going before 2021 in yearly view
-      if (selectedYear.value <= minYear) {
+      if (selectedYear <= minYear) {
         return;
       }
-      selectedYear.value--;
+      setSelectedYear(selectedYear - 1);
     }
   };
 
@@ -55,39 +56,36 @@ export const YearSelector = () => {
     if (isMonthlyView && selectedMonth !== null) {
       // Prevent moving past current month in current year
       if (
-        selectedYear.value > currentYear ||
-        (selectedYear.value === currentYear &&
-          selectedMonth.value >= currentMonth)
+        selectedYear > currentYear ||
+        (selectedYear === currentYear && selectedMonth >= currentMonth)
       ) {
         return; // stop here
       }
 
-      if (selectedMonth.value === 11) {
-        selectedYear.value++;
-        selectedMonth.value = 0;
+      if (selectedMonth === 11) {
+        setSelectedYear(selectedYear + 1);
+        setSelectedMonth(0);
       } else {
-        selectedMonth.value++;
+        setSelectedMonth(selectedMonth + 1);
       }
     } else {
       // Prevent moving past current year entirely
-      if (selectedYear.value >= currentYear) {
+      if (selectedYear >= currentYear) {
         return;
       }
-      selectedYear.value++;
+      setSelectedYear(selectedYear);
     }
   };
 
   const isAtCurrent =
     (isMonthlyView &&
-      selectedYear.value === currentYear &&
-      selectedMonth.value === currentMonth) ||
-    (!isMonthlyView && selectedYear.value === currentYear);
+      selectedYear === currentYear &&
+      selectedMonth === currentMonth) ||
+    (!isMonthlyView && selectedYear === currentYear);
 
   const isAtMinimum =
-    (isMonthlyView &&
-      selectedYear.value === 2021 &&
-      selectedMonth.value === 0) ||
-    (!isMonthlyView && selectedYear.value === 2021);
+    (isMonthlyView && selectedYear === 2021 && selectedMonth === 0) ||
+    (!isMonthlyView && selectedYear === 2021);
 
   return (
     <div className="flex justify-center gap-2 flex-wrap items-center">
@@ -95,20 +93,20 @@ export const YearSelector = () => {
         <button
           onClick={handlePrev}
           disabled={isAtMinimum}
-          className="p-1 rounded-full bg-[#77FF9D] text-[#28B750] transition-colors disabled:bg-background-secondary disabled:!cursor-not-allowed"
+          className="p-1 rounded-full bg-[#77FF9D] text-[#28B750] transition-colors disabled:bg-background-secondary disabled:cursor-not-allowed!"
           aria-label={isMonthlyView ? "Previous month" : "Previous year"}
         >
           <ChevronLeft size={20} />
         </button>
         <h3>
           {isMonthlyView && selectedMonth !== null
-            ? `${MONTHS_LONG[selectedMonth.value]} ${selectedYear}`
+            ? `${MONTHS_LONG[selectedMonth]} ${selectedYear}`
             : selectedYear}
         </h3>
         <button
           onClick={handleNext}
           disabled={isAtCurrent}
-          className="p-1 rounded-full bg-[#77FF9D] text-[#28B750] transition-colors disabled:bg-background-secondary disabled:!cursor-not-allowed"
+          className="p-1 rounded-full bg-[#77FF9D] text-[#28B750] transition-colors disabled:bg-background-secondary disabled:cursor-not-allowed!"
           aria-label={isMonthlyView ? "Next month" : "Next year"}
         >
           <ChevronRight size={20} />
@@ -116,4 +114,4 @@ export const YearSelector = () => {
       </div>
     </div>
   );
-};
+}

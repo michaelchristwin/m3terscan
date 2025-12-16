@@ -1,25 +1,30 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { selectedMonth, selectedYear, YearSelector } from "../YearSelector";
-import { useSignals } from "@preact/signals-react/runtime";
+import { YearSelector } from "../YearSelector";
 import { getMonthOfYearM3TerM3TerIdMonthYearMonthGetOptions } from "~/api-client/@tanstack/react-query.gen";
 import { m3terscanClient } from "~/queries/query-client";
+import type { Mode } from "~/types";
+import { useTimeStore } from "~/store";
 
-function MonthlyHeatmap({ m3terId }: { m3terId: string }) {
-  useSignals();
+interface MonthlyHeatmapProps {
+  m3terId: string;
+  viewMode: Mode;
+}
+
+function MonthlyHeatmap({ m3terId, viewMode }: MonthlyHeatmapProps) {
+  const { selectedMonth, selectedYear } = useTimeStore();
   const { data } = useSuspenseQuery({
     ...getMonthOfYearM3TerM3TerIdMonthYearMonthGetOptions({
       client: m3terscanClient,
       path: {
         m3ter_id: Number(m3terId),
-        year: selectedYear.value,
-        month: selectedMonth.value + 1,
+        year: selectedYear,
+        month: selectedMonth + 1,
       },
     }),
     refetchInterval: 15 * 60 * 1000, // 15 minutes
     staleTime: 15 * 60 * 1000,
   });
 
-  // --- Colors same as before ---
   const hexToRgb = (hex: string) => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
@@ -35,6 +40,7 @@ function MonthlyHeatmap({ m3terId }: { m3terId: string }) {
   const maxColor = hexToRgb("#EB822A");
 
   const energyValues = data.map((item) => item.total_energy);
+
   const minEnergy = Math.min(...energyValues);
   const maxEnergy = Math.max(...energyValues);
 
@@ -56,11 +62,7 @@ function MonthlyHeatmap({ m3terId }: { m3terId: string }) {
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   // --- Alignment logic ---
-  const firstDate = new Date(
-    selectedYear.value,
-    selectedMonth.value,
-    data[0].day
-  ); // first entry in data
+  const firstDate = new Date(selectedYear, selectedMonth, data[0].day); // first entry in data
   const startDay = firstDate.getDay(); // 0=Sun, 1=Mon, etc.
 
   // prepend nulls for offset
@@ -69,7 +71,7 @@ function MonthlyHeatmap({ m3terId }: { m3terId: string }) {
   return (
     <div className="flex w-full items-center justify-center">
       <div>
-        <YearSelector />
+        <YearSelector viewMode={viewMode} />
         <div className="p-6 bg-background rounded-lg">
           <div className="grid grid-cols-7 gap-1 mb-2">
             {dayNames.map((day) => (
@@ -82,14 +84,14 @@ function MonthlyHeatmap({ m3terId }: { m3terId: string }) {
             ))}
           </div>
 
-          <div className="grid grid-cols-7 gap-y-[15px] gap-x-[20px]">
+          <div className="grid grid-cols-7 gap-y-3.75 gap-x-5">
             {paddedData.map((dayData, index) =>
               dayData ? (
                 <div
                   key={index}
                   className="w-18 h-10 rounded flex items-center justify-center text-xs font-medium transition-all duration-200 cursor-pointer hover:scale-110 hover:shadow-md hover:z-10"
-                  style={{ backgroundColor: getColor(dayData.energy) }}
-                  title={`${dayData.date}: ${dayData.energy.toFixed(2)} units`}
+                  style={{ backgroundColor: getColor(dayData.total_energy) }}
+                  title={`${new Date(selectedYear, selectedMonth, dayData.day).toLocaleDateString()}: ${dayData.total_energy.toFixed(2)} units`}
                 />
               ) : (
                 <div key={index} />

@@ -1,7 +1,7 @@
 import type { Route } from "./+types/charts";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import BarChartSkeleton from "~/components/skeletons/BarChartSkeleton";
-import { viewMode, ViewToggle } from "~/components/ViewToggle";
+import { ViewToggle } from "~/components/ViewToggle";
 import { Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -12,8 +12,6 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
-import { useSignals } from "@preact/signals-react/runtime";
-import { useComputed } from "@preact/signals-react";
 import WeeklyHeatmap from "~/components/heatmaps/WeeklyHeatmap";
 import MonthlyHeatmap from "~/components/heatmaps/MonthlyHeatmap";
 import DailyBarChart from "~/components/charts/DailyBarChart";
@@ -24,16 +22,17 @@ import {
   getWeeksOfYearM3TerM3TerIdWeeksYearGetOptions,
 } from "~/api-client/@tanstack/react-query.gen";
 import { m3terscanClient } from "~/queries/query-client";
-import { selectedYear } from "~/components/YearSelector";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { useLoaderData } from "react-router";
+import type { Mode } from "~/types";
+import { useTimeStore } from "~/store";
 ChartJS.register(
   ArcElement,
   Tooltip,
   Legend,
   BarElement,
   CategoryScale,
-  LinearScale,
+  LinearScale
 );
 
 const doughnutChartData = {
@@ -69,6 +68,7 @@ const options = {
 };
 
 export async function loader({ params }: Route.LoaderArgs) {
+  const { selectedYear } = useTimeStore.getState();
   await Promise.all([
     queryClient.prefetchQuery({
       ...getDailyM3TerM3TerIdDailyGetOptions({
@@ -79,7 +79,7 @@ export async function loader({ params }: Route.LoaderArgs) {
     queryClient.prefetchQuery({
       ...getWeeksOfYearM3TerM3TerIdWeeksYearGetOptions({
         client: m3terscanClient,
-        path: { m3ter_id: Number(params.m3terId), year: selectedYear.value },
+        path: { m3ter_id: Number(params.m3terId), year: selectedYear },
       }),
     }),
   ]);
@@ -99,11 +99,9 @@ export const meta = ({ params }: Route.MetaArgs) => {
 };
 
 export default function Charts({ params }: Route.ComponentProps) {
-  useSignals();
-  const { m3terId } = params;
-  const isYearly = useComputed(() => viewMode.value === "yearly");
-  const isMonthly = useComputed(() => viewMode.value === "monthly");
   const { dehydratedState } = useLoaderData<typeof loader>();
+  const { m3terId } = params;
+  const [viewMode, setViewMode] = useState<Mode>("yearly");
 
   return (
     <HydrationBoundary state={dehydratedState}>
@@ -118,13 +116,16 @@ export default function Charts({ params }: Route.ComponentProps) {
                 <h3 className="text-foreground text-[17px] md:text-[19px] font-medium">
                   Revenue Heatmap
                 </h3>
-                <ViewToggle />
+                <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
               </div>
             </div>
             <Suspense fallback={<WeeklyHeatmapSkeleton />}>
-              {isYearly.value && <WeeklyHeatmap m3terId={m3terId} />}
+              {viewMode === "yearly" ? (
+                <WeeklyHeatmap m3terId={m3terId} viewMode={viewMode} />
+              ) : (
+                <MonthlyHeatmap viewMode={viewMode} m3terId={m3terId} />
+              )}
             </Suspense>
-            {isMonthly.value && <MonthlyHeatmap m3terId={m3terId} />}
           </div>
         </div>
         <div className="w-full">

@@ -1,8 +1,8 @@
-import { useSignals } from "@preact/signals-react/runtime";
 import { BriefcaseBusiness, Clock, Locate, MapPin } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
-import MapComponent, { mapCenter } from "~/components/MapComponent";
+import MapComponent from "~/components/MapComponent";
+import { useMapStore } from "~/store";
 import { formatDateTime } from "~/utils/query-utils";
 
 function Overview() {
@@ -11,8 +11,7 @@ function Overview() {
     lng: number;
     dateTime: string;
   } | null>(null);
-  useSignals();
-
+  const { lat, lng } = useMapStore();
   return (
     <div className="p-4">
       {/* Map Section */}
@@ -22,10 +21,7 @@ function Overview() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <MapComponent
-          onLocationFetched={setLocationInfo}
-          center={mapCenter.value || undefined}
-        />
+        <MapComponent onLocationFetched={setLocationInfo} lat={lat} lng={lng} />
       </motion.div>
 
       {/* Info Bar */}
@@ -77,7 +73,7 @@ function Overview() {
             key={i}
             src={src}
             alt={`Worker ${i + 1}`}
-            className="h-auto object-cover rounded-b-lg shadow-sm flex-shrink-0"
+            className="h-auto object-cover rounded-b-lg shadow-sm shrink-0"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 + i * 0.2 }}
