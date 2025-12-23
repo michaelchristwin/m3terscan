@@ -41,7 +41,11 @@ ChartJS.register(
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Home | M3terscan" },
-    { name: "description", content: "Welcome to M3terscan!" },
+    {
+      name: "description",
+      content:
+        "m3terscan is a fast energy usage analytics platform that aggregates meter data into clear daily, weekly, and yearly insights for monitoring consumption and performance.",
+    },
   ];
 }
 
@@ -118,14 +122,14 @@ export default function Home() {
   ];
   return (
     <HydrationBoundary state={dehydratedState}>
-      <main className="w-full h-full md:px-[60px] px-[20px] mt-5">
+      <main className="w-full h-full md:px-15 px-5 mt-5">
         <Suspense
           fallback={
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-5">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="md:w-[202px] w-[150px] h-[86px] rounded-[16px]"
+                  className="md:w-50.5 w-37.5 h-21.5 rounded-2xl"
                 />
               ))}
             </div>
@@ -134,7 +138,7 @@ export default function Home() {
           <Statistics />
         </Suspense>
         <div className="mt-9.5 w-full">
-          <div className="gap-y-[13px]">
+          <div className="gap-y-3.25">
             <p className="text-[20px] font-normal">Total revenue</p>
             <div className="gap-x-[3.41px] flex items-center">
               <p className="font-medium text-[24px]">$25K</p>
@@ -145,7 +149,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="h-[360px] bg-background-primary p-6 rounded-2xl">
+        <div className="h-90 bg-background-primary p-6 rounded-2xl">
           <Line data={data} options={options} />
         </div>
         <div className="mt-20 space-y-3">
@@ -183,7 +187,7 @@ export default function Home() {
                   }}
                 >
                   <RefreshCw
-                    className={`${spinning ? "animate-spin" : ""} w-[20px] float-end text-icon transition-transform`}
+                    className={`${spinning ? "animate-spin" : ""} w-5 float-end text-icon transition-transform`}
                   />
                 </button>
               </div>
