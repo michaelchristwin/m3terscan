@@ -1,10 +1,8 @@
 import type { Route } from "./+types/proposal";
 import { useLoaderData } from "react-router";
-import { Suspense } from "react";
 import { queryClient } from "~/queries/query-client";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import Proposals from "~/components/Proposals";
-import { Loader2 } from "lucide-react";
 import { getProposalProposalTxHashGetOptions } from "~/api-client/@tanstack/react-query.gen";
 import { m3terscanClient } from "~/queries/query-client";
 
@@ -18,10 +16,13 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { dehydratedState: dehydrate(queryClient) };
 }
 
-export function meta() {
+export function meta({ params }: Route.MetaArgs) {
   return [
     { title: "Proposals | M3terscan" },
-    { name: "description", content: "" },
+    {
+      name: "description",
+      content: `Proposals for transaction hash ${params.hash}`,
+    },
   ];
 }
 
@@ -31,18 +32,7 @@ function Index({ params }: Route.ComponentProps) {
   return (
     <HydrationBoundary state={dehydratedState}>
       <div className="min-h-screen bg-background lg:p-8 md:p-6 p-4">
-        <Suspense
-          fallback={
-            <div className="w-full flex justify-center items-center h-full">
-              <div className="block">
-                <Loader2 className="animate-spin mx-auto text-icon" size={30} />
-                <p className="text-neutral-700">Loading...</p>
-              </div>
-            </div>
-          }
-        >
-          <Proposals hash={params.hash} />
-        </Suspense>
+        <Proposals hash={params.hash} />
       </div>
     </HydrationBoundary>
   );

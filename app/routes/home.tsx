@@ -13,7 +13,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { motion } from "motion/react";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
 import RecentBlocks from "~/components/RecentBlocks";
@@ -21,12 +21,11 @@ import { getRecentBlocks } from "~/.server/dune";
 import { useFetcher, useLoaderData } from "react-router";
 import { Table, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import TableSkeleton2 from "~/components/skeletons/TableSkeleton2";
-import { queryClient } from "~/queries/query-client";
+
+import { queryClient as qc } from "~/queries/query-client";
 import RecentCard from "~/components/RecentCard";
 import useStyle from "~/hooks/useStyle";
 import Statistics from "~/components/Statistics";
-import { Skeleton } from "~/components/ui/skeleton";
 
 ChartJS.register(
   CategoryScale,
@@ -50,12 +49,36 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export async function loader() {
-  await queryClient.prefetchQuery({
-    queryKey: ["recentBlocks"],
-    queryFn: getRecentBlocks,
-  });
+  await Promise.all([
+    await qc.prefetchQuery({
+      queryKey: ["recentBlocks"],
+      queryFn: getRecentBlocks,
+    }),
 
-  return { dehydratedState: dehydrate(queryClient) };
+    qc.prefetchQuery({
+      queryKey: ["getWorldState"],
+      queryFn: async () => {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/world-state`
+        );
+        const data = await response.json();
+        return data;
+      },
+    }),
+
+    await qc.prefetchQuery({
+      queryKey: ["recentBlocks"],
+      queryFn: async () => {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/blocks`
+        );
+        const data = await response.json();
+        return data;
+      },
+    }),
+  ]);
+
+  return { dehydratedState: dehydrate(qc) };
 }
 
 export default function Home() {
@@ -123,20 +146,7 @@ export default function Home() {
   return (
     <HydrationBoundary state={dehydratedState}>
       <main className="w-full h-full md:px-15 px-5 mt-5">
-        <Suspense
-          fallback={
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton
-                  key={i}
-                  className="md:w-50.5 w-37.5 h-21.5 rounded-2xl"
-                />
-              ))}
-            </div>
-          }
-        >
-          <Statistics />
-        </Suspense>
+        <Statistics />
         <div className="mt-9.5 w-full">
           <div className="gap-y-3.25">
             <p className="text-[20px] font-normal">Total revenue</p>
@@ -179,7 +189,7 @@ export default function Home() {
                       action: "/api/blocks",
                       preventScrollReset: true,
                     });
-                    await queryClient.refetchQueries({
+                    await qc.refetchQueries({
                       queryKey: ["recentBlocks"],
                       type: "active",
                       exact: true,
@@ -210,9 +220,7 @@ export default function Home() {
                   )}
                 >
                   <div className="md:hidden space-y-3">
-                    <Suspense>
-                      <RecentCard showAll={showAll} />
-                    </Suspense>
+                    <RecentCard showAll={showAll} />
                   </div>
                   <Table className="w-full table-fixed hidden md:table">
                     <TableHeader>
@@ -224,9 +232,7 @@ export default function Home() {
                         ))}
                       </TableRow>
                     </TableHeader>
-                    <Suspense fallback={<TableSkeleton2 />}>
-                      <RecentBlocks showAll={showAll} />
-                    </Suspense>
+                    <RecentBlocks showAll={showAll} />
                   </Table>
                 </ErrorBoundary>
               )}

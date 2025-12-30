@@ -1,17 +1,18 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { Bar } from "react-chartjs-2";
 import useStyle from "~/hooks/useStyle";
 import { getDailyM3TerM3TerIdDailyGetOptions } from "~/api-client/@tanstack/react-query.gen";
 import { m3terscanClient } from "~/queries/query-client";
+import type { DailyResponse } from "~/api-client";
 
 function DailyBarChart({ m3terId }: { m3terId: string }) {
   const {
     data: chartData,
     isRefetching,
     error,
-  } = useSuspenseQuery({
+  } = useQuery({
     ...getDailyM3TerM3TerIdDailyGetOptions({
       client: m3terscanClient,
       path: {
@@ -24,15 +25,16 @@ function DailyBarChart({ m3terId }: { m3terId: string }) {
 
   const high = useStyle("--chart-high");
   const low = useStyle("--chart-low");
-  const colors = chartData.map((entry, index) => {
+  const colors = (chartData as DailyResponse[]).map((entry, index) => {
     if (index === 0) return high || "#28B750";
 
-    return entry.total_energy < chartData[index - 1].total_energy
+    return entry.total_energy <
+      (chartData as DailyResponse[])[index - 1].total_energy
       ? low || "#EB822A"
       : high || "#28B750";
   });
   const barChartData = {
-    labels: chartData.map((d) =>
+    labels: (chartData as DailyResponse[]).map((d) =>
       new Date(d.hour_start_utc).toLocaleTimeString([], {
         hour12: false,
         hour: "2-digit",
@@ -42,7 +44,7 @@ function DailyBarChart({ m3terId }: { m3terId: string }) {
     datasets: [
       {
         label: "Energy used",
-        data: chartData.map((d) => d.total_energy),
+        data: (chartData as DailyResponse[]).map((d) => d.total_energy),
         backgroundColor: colors,
         borderRadius: 4, // rounded bars
       },
@@ -94,7 +96,7 @@ function DailyBarChart({ m3terId }: { m3terId: string }) {
             </div>
           </div>
         )}
-        {!error && chartData.length > 0 && (
+        {!error && (chartData as DailyResponse[]).length > 0 && (
           <>
             <div className="h-95 md:w-[96%] w-75">
               <Bar data={barChartData} options={barChartOptions} />

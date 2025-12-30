@@ -2,15 +2,17 @@ import { format } from "date-fns";
 import { ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 // Mobile Card Component
 const RecentCard = ({ showAll }: { showAll: boolean }) => {
-  const { data } = useSuspenseQuery({
+  const { data } = useQuery({
     queryKey: ["recentBlocks"],
     queryFn: async () => {
-      const response = await fetch("/api/blocks");
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/blocks`
+      );
       const data = await response.json();
       return data;
     },

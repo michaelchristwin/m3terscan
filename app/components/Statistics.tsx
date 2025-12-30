@@ -1,13 +1,15 @@
-import { useSuspenseQueries } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 
 function Statistics() {
-  const [worldState, recentBlocks] = useSuspenseQueries({
+  const [worldState, recentBlocks] = useQueries({
     queries: [
       {
         queryKey: ["getWorldState"],
         queryFn: async () => {
-          const response = await fetch("/api/world-state");
+          const response = await fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/api/world-state`
+          );
           const data = await response.json();
           return data;
         },
@@ -15,7 +17,9 @@ function Statistics() {
       {
         queryKey: ["recentBlocks"],
         queryFn: async () => {
-          const response = await fetch("/api/blocks");
+          const response = await fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/api/blocks`
+          );
           const data = await response.json();
           return data;
         },
@@ -34,7 +38,7 @@ function Statistics() {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-5">
-      <div className="md:w-[202px] w-[150px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
+      <div className="md:w-50.5 w-37.5 h-21.5 rounded-2xl flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
         <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
           Total energy generated
         </p>
@@ -42,7 +46,7 @@ function Statistics() {
           {Number(totatEnergy.toFixed()).toLocaleString()} MWh
         </p>
       </div>
-      <div className="md:w-[202px] w-[150px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
+      <div className="md:w-50.5 w-37.5 h-21.5 rounded-2xl flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
         <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
           Total transactions
         </p>
@@ -50,7 +54,7 @@ function Statistics() {
           {Number(totalNonces.toFixed()).toLocaleString()}
         </p>
       </div>
-      <div className="md:w-[202px] w-[150px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
+      <div className="md:w-50.5 w-37.5 h-21.5 rounded-2xl flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
         <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
           Total proposals
         </p>
@@ -59,7 +63,7 @@ function Statistics() {
         </p>
       </div>
 
-      <div className="md:w-[202px] w-[150px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
+      <div className="md:w-50.5 w-37.5 h-21.5 rounded-2xl flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
         <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
           Total active m3ters
         </p>
@@ -68,14 +72,14 @@ function Statistics() {
         </p>
       </div>
 
-      <div className="md:w-[202px] w-[150px] h-[86px] rounded-[16px] flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
+      <div className="md:w-50.5 w-37.5 h-21.5 rounded-2xl flex flex-col items-center gap-y-[6.5px] text-foreground dark:text-stat-text bg-stats justify-center">
         <p className="md:text-[14px] text-[12px] font-normal text-text-primary dark:text-stat-text">
           See more
         </p>
         <button
           type="button"
           aria-label="See more"
-          className="bg-[#FFC9B2] rounded-full h-[36px] w-[36px] flex justify-center items-center"
+          className="bg-[#FFC9B2] rounded-full h-9 w-9 flex justify-center items-center"
         >
           <ArrowRight size={14} className="text-icon" />
         </button>

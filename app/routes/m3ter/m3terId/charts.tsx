@@ -16,7 +16,7 @@ import WeeklyHeatmap from "~/components/heatmaps/WeeklyHeatmap";
 import MonthlyHeatmap from "~/components/heatmaps/MonthlyHeatmap";
 import DailyBarChart from "~/components/charts/DailyBarChart";
 import WeeklyHeatmapSkeleton from "~/components/skeletons/WeeklyHeatmapSkeleton";
-import { queryClient } from "~/queries/query-client";
+import { queryClient as qc } from "~/queries/query-client";
 import {
   getDailyM3TerM3TerIdDailyGetOptions,
   getWeeksOfYearM3TerM3TerIdWeeksYearGetOptions,
@@ -70,20 +70,20 @@ const options = {
 export async function loader({ params }: Route.LoaderArgs) {
   const { selectedYear } = useTimeStore.getState();
   await Promise.all([
-    queryClient.prefetchQuery({
+    qc.prefetchQuery({
       ...getDailyM3TerM3TerIdDailyGetOptions({
         client: m3terscanClient,
         path: { m3ter_id: Number(params.m3terId) },
       }),
     }),
-    queryClient.prefetchQuery({
+    qc.prefetchQuery({
       ...getWeeksOfYearM3TerM3TerIdWeeksYearGetOptions({
         client: m3terscanClient,
         path: { m3ter_id: Number(params.m3terId), year: selectedYear },
       }),
     }),
   ]);
-  return { dehydratedState: dehydrate(queryClient) };
+  return { dehydratedState: dehydrate(qc) };
 }
 
 export const meta = ({ params }: Route.MetaArgs) => {
@@ -107,9 +107,8 @@ export default function Charts({ params }: Route.ComponentProps) {
     <HydrationBoundary state={dehydratedState}>
       <div className="h-full grid grid-cols-1 md:grid-cols-[9fr_2fr] gap-4 pb-12.5">
         <div className="px-4 md:px-6 pt-6 pb-8 bg-background-primary rounded-lg h-full mx-4">
-          <Suspense fallback={<BarChartSkeleton />}>
-            <DailyBarChart m3terId={m3terId} />
-          </Suspense>
+          <DailyBarChart m3terId={m3terId} />
+
           <div className="p-10 bg-background text-foreground rounded-lg mt-5 min-h-120.5 w-full">
             <div className="">
               <div className="text-center flex justify-between items-center mb-3">

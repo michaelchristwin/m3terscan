@@ -4,7 +4,7 @@ import { TableBody, TableCell, TableRow } from "./ui/table";
 import FromCell from "./FromCell";
 import { ExternalLink } from "lucide-react";
 import { format } from "date-fns";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import TableSkeleton2 from "./skeletons/TableSkeleton2";
 import { useMemo } from "react";
 const MotionTableRow = motion.create(TableRow);
@@ -15,10 +15,12 @@ interface RecentBlocksProps {
 
 function RecentBlocks({ showAll }: RecentBlocksProps) {
   const [searchParams] = useSearchParams();
-  const { data, isRefetching } = useSuspenseQuery({
+  const { data, isRefetching } = useQuery({
     queryKey: ["recentBlocks"],
     queryFn: async () => {
-      const response = await fetch("/api/blocks");
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/blocks`
+      );
       const data = await response.json();
       return data;
     },
