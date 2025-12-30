@@ -1,6 +1,5 @@
 import type { Route } from "./+types/charts";
 import { Suspense, useState } from "react";
-import BarChartSkeleton from "~/components/skeletons/BarChartSkeleton";
 import { ViewToggle } from "~/components/ViewToggle";
 import { Doughnut } from "react-chartjs-2";
 import {
