@@ -25,6 +25,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { useLoaderData } from "react-router";
 import type { Mode } from "~/types";
 import { useTimeStore } from "~/store";
+import BarChartSkeleton from "~/components/skeletons/BarChartSkeleton";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -106,7 +107,9 @@ export default function Charts({ params }: Route.ComponentProps) {
     <HydrationBoundary state={dehydratedState}>
       <div className="h-full grid grid-cols-1 md:grid-cols-[9fr_2fr] gap-4 pb-12.5">
         <div className="px-4 md:px-6 pt-6 pb-8 bg-background-primary rounded-lg h-full mx-4">
-          <DailyBarChart m3terId={m3terId} />
+          <Suspense fallback={<BarChartSkeleton />}>
+            <DailyBarChart m3terId={m3terId} />
+          </Suspense>
 
           <div className="p-10 bg-background text-foreground rounded-lg mt-5 min-h-120.5 w-full">
             <div className="">

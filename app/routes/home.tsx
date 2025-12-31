@@ -13,7 +13,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
 import RecentBlocks from "~/components/RecentBlocks";
@@ -26,6 +26,8 @@ import { queryClient as qc } from "~/queries/query-client";
 import RecentCard from "~/components/RecentCard";
 import useStyle from "~/hooks/useStyle";
 import Statistics from "~/components/Statistics";
+import { Skeleton } from "~/components/ui/skeleton";
+import TableSkeleton2 from "~/components/skeletons/TableSkeleton2";
 
 ChartJS.register(
   CategoryScale,
@@ -146,7 +148,21 @@ export default function Home() {
   return (
     <HydrationBoundary state={dehydratedState}>
       <main className="w-full h-full md:px-15 px-5 mt-5">
-        <Statistics />
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 place-items-center gap-y-5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  className="md:w-50.5 w-37.5 h-21.5 rounded-2xl"
+                />
+              ))}
+            </div>
+          }
+        >
+          <Statistics />
+        </Suspense>
+
         <div className="mt-9.5 w-full">
           <div className="gap-y-3.25">
             <p className="text-[20px] font-normal">Total revenue</p>
@@ -220,7 +236,9 @@ export default function Home() {
                   )}
                 >
                   <div className="md:hidden space-y-3">
-                    <RecentCard showAll={showAll} />
+                    <Suspense>
+                      <RecentCard showAll={showAll} />
+                    </Suspense>
                   </div>
                   <Table className="w-full table-fixed hidden md:table">
                     <TableHeader>
@@ -232,7 +250,9 @@ export default function Home() {
                         ))}
                       </TableRow>
                     </TableHeader>
-                    <RecentBlocks showAll={showAll} />
+                    <Suspense fallback={<TableSkeleton2 />}>
+                      <RecentBlocks showAll={showAll} />
+                    </Suspense>
                   </Table>
                 </ErrorBoundary>
               )}

@@ -4,7 +4,7 @@ import { TableBody, TableCell, TableRow } from "./ui/table";
 import FromCell from "./FromCell";
 import { ExternalLink } from "lucide-react";
 import { format } from "date-fns";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import TableSkeleton2 from "./skeletons/TableSkeleton2";
 import { useMemo } from "react";
 const MotionTableRow = motion.create(TableRow);
@@ -15,7 +15,7 @@ interface RecentBlocksProps {
 
 function RecentBlocks({ showAll }: RecentBlocksProps) {
   const [searchParams] = useSearchParams();
-  const { data, isRefetching } = useQuery({
+  const { data, isRefetching } = useSuspenseQuery({
     queryKey: ["recentBlocks"],
     queryFn: async () => {
       const response = await fetch(
