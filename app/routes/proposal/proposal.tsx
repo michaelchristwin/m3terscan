@@ -20,10 +20,10 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export function meta({ params }: Route.MetaArgs) {
   return [
-    { title: "Proposals | M3terscan" },
+    { title: "Proposals" },
     {
       name: "description",
-      content: `Proposals for transaction hash ${params.hash}`,
+      content: `Proposals on the transaction hash: ${params.hash}`,
     },
   ];
 }

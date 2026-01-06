@@ -41,7 +41,7 @@ ChartJS.register(
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Home | M3terscan" },
+    { title: "M3terscan" },
     {
       name: "description",
       content:

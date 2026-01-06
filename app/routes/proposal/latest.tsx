@@ -17,8 +17,12 @@ export async function loader() {
 
 export function meta() {
   return [
-    { title: "Latest Proposal" },
-    { name: "description", content: "The latest m3ters proposal" },
+    { title: "Latest Proposals" },
+    {
+      name: "description",
+      content:
+        "The list of the latest proposals on the m3terchain, their IDs and nonces.",
+    },
   ];
 }
 

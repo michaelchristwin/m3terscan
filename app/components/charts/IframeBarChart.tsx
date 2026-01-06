@@ -110,7 +110,7 @@ function IframeBarChart({
         {isRefetching && (
           <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
             <div className="flex flex-col items-center gap-3">
-              <LoaderCircle className="h-[30px] w-[30px] md:h-[40px] md:w-[40px] text-icon animate-spin" />
+              <LoaderCircle className="h-7.5 w-7.5 md:h-10 md:w-10 text-icon animate-spin" />
               <p className="text-sm text-neutral-400">Updating data...</p>
             </div>
           </div>
@@ -120,13 +120,13 @@ function IframeBarChart({
             <div className="h-95 w-full">
               <Bar data={barChartData} options={barChartOptions} />
             </div>
-            <div className="flex w-full items-center gap-x-5 mt-[23px] pl-[70px]">
+            <div className="flex w-full items-center gap-x-5 mt-5.75 pl-17.5">
               <div className="flex items-center gap-x-1.5">
-                <div className="w-[7px] h-[7px] bg-[#28B750] rounded-full" />
+                <div className="w-1.75 h-1.75 bg-[#28B750] rounded-full" />
                 <span className="text-[12px]">High</span>
               </div>
               <div className="flex items-center gap-x-1.5">
-                <div className="w-[7px] h-[7px] bg-[#EB822A] rounded-full" />
+                <div className="w-1.75 h-1.75 bg-[#EB822A] rounded-full" />
                 <span className="text-[12px]">Low</span>
               </div>
             </div>
