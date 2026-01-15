@@ -25,7 +25,7 @@ function DailyBarChart({ m3terId }: { m3terId: string }) {
   const high = useStyle("--chart-high");
   const low = useStyle("--chart-low");
   const colors = chartData.map((entry, index) => {
-    if (index === 0) return high || "#28B750";
+    if (index === 0) return low || "#EB822A";
 
     return entry.total_energy < chartData[index - 1].total_energy
       ? low || "#EB822A"
