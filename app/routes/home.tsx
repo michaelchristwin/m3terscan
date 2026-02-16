@@ -1,16 +1,5 @@
-import type { Route } from "./+types/home";
 import { TrendingUp, CircleX, RefreshCw } from "lucide-react";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  type ChartOptions,
-} from "chart.js";
+import { type ChartOptions } from "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import { motion } from "motion/react";
 import { Suspense, useState } from "react";
@@ -29,23 +18,13 @@ import Statistics from "~/components/Statistics";
 import { Skeleton } from "~/components/ui/skeleton";
 import TableSkeleton2 from "~/components/skeletons/TableSkeleton2";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-export function meta({}: Route.MetaArgs) {
+export function meta() {
   return [
     { title: "M3terscan" },
     {
       name: "description",
       content:
-        "m3terscan is a fast energy usage analytics platform that aggregates meter data into clear daily, weekly, and yearly insights for monitoring consumption and performance.",
+        "M3terscan is a fast energy usage analytics platform that aggregates meter data into clear daily, weekly, and yearly insights for monitoring consumption and performance.",
     },
   ];
 }
@@ -61,7 +40,7 @@ export async function loader() {
       queryKey: ["getWorldState"],
       queryFn: async () => {
         const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/world-state`
+          `${import.meta.env.VITE_API_BASE_URL}/api/world-state`,
         );
         const data = await response.json();
         return data;
@@ -72,7 +51,7 @@ export async function loader() {
       queryKey: ["recentBlocks"],
       queryFn: async () => {
         const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/blocks`
+          `${import.meta.env.VITE_API_BASE_URL}/api/blocks`,
         );
         const data = await response.json();
         return data;

@@ -1,3 +1,4 @@
+import "chart.js/auto"
 import {
   isRouteErrorResponse,
   Links,
@@ -8,7 +9,6 @@ import {
   useLoaderData,
   useNavigation,
 } from "react-router";
-
 import type { Route } from "./+types/root";
 import "./app.css";
 import { getColorScheme } from "./.server/cookies";

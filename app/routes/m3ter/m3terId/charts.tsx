@@ -2,15 +2,6 @@ import type { Route } from "./+types/charts";
 import { Suspense, useState } from "react";
 import { ViewToggle } from "~/components/ViewToggle";
 import { Doughnut } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-} from "chart.js";
 import WeeklyHeatmap from "~/components/heatmaps/WeeklyHeatmap";
 import MonthlyHeatmap from "~/components/heatmaps/MonthlyHeatmap";
 import DailyBarChart from "~/components/charts/DailyBarChart";
@@ -26,14 +17,6 @@ import { useLoaderData } from "react-router";
 import type { Mode } from "~/types";
 import { useTimeStore } from "~/store";
 import BarChartSkeleton from "~/components/skeletons/BarChartSkeleton";
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale
-);
 
 const doughnutChartData = {
   labels: ["cUSD", "USDT", "USDe", "xDAI", "DAI", "PYUSD", "USDC"],
@@ -89,7 +72,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 export const meta = ({ params }: Route.MetaArgs) => {
   return [
     {
-      title: `Charts for M3ter ${params.m3terId} | M3terscan`,
+      title: `Charts for M3ter ${params.m3terId}`,
     },
     {
       name: "description",

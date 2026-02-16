@@ -123,7 +123,7 @@ function Trades({ params }: Route.ComponentProps) {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4 }}
-        className="bg-[var(--background-primary)] p-4 rounded-xl w-full md:max-w-max shadow-lg"
+        className="bg-background-primary p-4 rounded-xl w-full md:max-w-max shadow-lg"
       >
         <h3 className="mb-4 text-lg font-semibold">Trades</h3>
 
@@ -138,7 +138,7 @@ function Trades({ params }: Route.ComponentProps) {
                 exit="exit"
                 transition={{ duration: 0.3 }}
                 layout
-                className="rounded-xl flex items-center justify-between gap-10 px-2 py-2 border-[1.5px] border-[var(--background-secondary)]  "
+                className="rounded-xl flex items-center justify-between gap-10 px-2 py-2 border-[1.5px] border-background-secondary"
               >
                 <div className="flex flex-col gap-1 items-center">
                   <M3terHead size={20} seed={trade.fromId} />

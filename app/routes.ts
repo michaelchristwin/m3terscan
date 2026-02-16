@@ -7,7 +7,7 @@ import {
 } from "@react-router/dev/routes";
 
 export default [
-  layout("routes/layout.tsx", [index("routes/home.tsx")]),
+  layout("routes/layout.tsx", [index("routes/home.tsx"), route("sign-in", "routes/sign-in.tsx")]),
   ...prefix("m3ter/:m3terId", [
     layout("routes/m3ter/layout.tsx", [
       index("routes/m3ter/m3terId/index.tsx"),

@@ -73,7 +73,7 @@ export function YearSelector({ viewMode }: YearSelectorProps) {
       if (selectedYear >= currentYear) {
         return;
       }
-      setSelectedYear(selectedYear);
+      setSelectedYear(selectedYear + 1);
     }
   };
 

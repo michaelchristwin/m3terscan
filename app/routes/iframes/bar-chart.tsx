@@ -1,25 +1,8 @@
 import { Suspense } from "react";
 import { useSearchParams } from "react-router";
 import BarChartSkeleton from "~/components/skeletons/BarChartSkeleton";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-} from "chart.js";
 import IframeBarChart from "~/components/charts/IframeBarChart";
 import { decodeParam } from "~/utils/query-utils";
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale
-);
 
 function BarCharts() {
   const [searchParams, _] = useSearchParams();

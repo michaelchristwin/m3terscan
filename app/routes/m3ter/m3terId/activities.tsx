@@ -21,7 +21,7 @@ const tableHeaders = ["Time", "Energy", "Signature", "Value", "Status"];
 
 export const meta = ({ params }: Route.MetaArgs) => {
   return [
-    { title: `Actvities of M3ter ${params.m3terId} | M3terscan` },
+    { title: `Actvities of M3ter ${params.m3terId}` },
     { name: "description", content: `Actvities of M3ter ${params.m3terId}` },
     {
       name: "og:title",
