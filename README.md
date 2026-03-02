@@ -6,7 +6,7 @@ A web-based explorer for meters on the **M3tering Protocol** — a platform (blo
 
 ## 🚀 Project Overview
 
-`m3terscan` is a single-page application (SPA) built with **React + TypeScript + Vite** that lets users:
+`m3terscan` is a full stack app built with **React Router (formerly Remix)** that lets users:
 
 - View a list of registered meters on the M3tering network
 - Explore individual meter details
@@ -30,6 +30,7 @@ This repo contains the client application and its build/deployment configuration
 - **Vite** for development & build tooling
 - **TailwindCSS** for styling
 - **Docker** support included for containerized builds
+- **Bun** a runtime for first class typescript support in development and production
 
 ---
 
@@ -48,7 +49,7 @@ The app connects to the M3tering API and blockchain data sources to retrieve thi
 
 ## 🛠️ Setup & Installation
 
-Make sure you have **Node.js 18+** installed.
+Make sure you have **Bun 1.3.3+** installed.
 
 **1. Clone the repository**
 
@@ -60,17 +61,17 @@ cd m3terscan
 **2. Install dependencies**
 
 ```bash
+bun install
+# or
 npm install
 # or
-yarn install
-# or
-bun install
+pnpm install
 ```
 
 **3. Run locally**
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 The development server will start at `http://localhost:5173` by default.
@@ -79,10 +80,10 @@ The development server will start at `http://localhost:5173` by default.
 
 ## 📦 Build
 
-To create a production build:
+To start in production:
 
 ```bash
-npm run build
+bun run start
 ```
 
 Generated assets will be placed in the `dist/` folder.

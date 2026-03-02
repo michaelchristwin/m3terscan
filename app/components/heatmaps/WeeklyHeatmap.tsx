@@ -7,6 +7,7 @@ import { splitInto4 } from "~/lib/utils";
 import type { Mode } from "~/types";
 import { useTimeStore } from "~/store";
 
+
 interface WeeklyHeatmapProps {
   m3terId: string;
   viewMode: Mode;
