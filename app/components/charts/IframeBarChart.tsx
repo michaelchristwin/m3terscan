@@ -2,8 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { Bar } from "react-chartjs-2";
-import { getDailyM3TerM3TerIdDailyGetOptions } from "~/api-client/@tanstack/react-query.gen";
-import { m3terscanClient } from "~/queries/query-client";
+import { meterQueries } from "~/queries/meterscan.queries";
 
 function IframeBarChart({
   m3terId,
@@ -22,14 +21,7 @@ function IframeBarChart({
     data: chartData,
     isRefetching,
     error,
-  } = useSuspenseQuery({
-    ...getDailyM3TerM3TerIdDailyGetOptions({
-      client: m3terscanClient,
-      path: { m3ter_id: Number(m3terId) },
-    }),
-    refetchInterval: 15 * 60 * 1000, // 15 minutes
-    staleTime: 15 * 60 * 1000,
-  });
+  } = useSuspenseQuery(meterQueries.getDaily(Number(m3terId)));
 
   const colors = chartData.map((entry, index) => {
     if (index === 0) return colorHigh || "#28B750"; // first bar default green
@@ -43,7 +35,7 @@ function IframeBarChart({
         hour12: false,
         hour: "2-digit",
         minute: "2-digit",
-      })
+      }),
     ),
     datasets: [
       {

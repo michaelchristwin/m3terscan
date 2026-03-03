@@ -1,6 +1,6 @@
-import type { WeeksOfYearResponse } from "~/api-client";
+import type { WeeksEnergyRead } from "~/api-sdk";
 
-function GridHeatmap({ data }: { data: WeeksOfYearResponse[] }) {
+function GridHeatmap({ data }: { data: WeeksEnergyRead[] }) {
   // Since we have 13 active cells (weeks) in a 4x4 grid (16 total cells)
   // We'll have 3 inactive cells (null values)
   const totalCells = 16;
@@ -41,7 +41,7 @@ function GridHeatmap({ data }: { data: WeeksOfYearResponse[] }) {
     return `rgb(${r}, ${g}, ${b})`;
   };
 
-  const gridData: (WeeksOfYearResponse | null)[] = [];
+  const gridData: (WeeksEnergyRead | null)[] = [];
 
   const startWeek = Math.min(...data.map((d) => d.week));
   const endWeek = Math.max(...data.map((d) => d.week));

@@ -1,29 +1,19 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { YearSelector } from "../YearSelector";
-import { getMonthOfYearM3TerM3TerIdMonthYearMonthGetOptions } from "~/api-client/@tanstack/react-query.gen";
-import { m3terscanClient } from "~/queries/query-client";
 import type { Mode } from "~/types";
 import { useTimeStore } from "~/store";
+import { meterQueries } from "~/queries/meterscan.queries";
 
 interface MonthlyHeatmapProps {
-  m3terId: string;
+  meterId: number;
   viewMode: Mode;
 }
 
-function MonthlyHeatmap({ m3terId, viewMode }: MonthlyHeatmapProps) {
+function MonthlyHeatmap({ meterId, viewMode }: MonthlyHeatmapProps) {
   const { selectedMonth, selectedYear } = useTimeStore();
-  const { data } = useSuspenseQuery({
-    ...getMonthOfYearM3TerM3TerIdMonthYearMonthGetOptions({
-      client: m3terscanClient,
-      path: {
-        m3ter_id: Number(m3terId),
-        year: selectedYear,
-        month: selectedMonth + 1,
-      },
-    }),
-    refetchInterval: 15 * 60 * 1000, // 15 minutes
-    staleTime: 15 * 60 * 1000,
-  });
+  const { data } = useSuspenseQuery(
+    meterQueries.getMonthOfYear(meterId, selectedYear, selectedMonth),
+  );
 
   const hexToRgb = (hex: string) => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -95,7 +85,7 @@ function MonthlyHeatmap({ m3terId, viewMode }: MonthlyHeatmapProps) {
                 />
               ) : (
                 <div key={index} />
-              )
+              ),
             )}
           </div>
         </div>

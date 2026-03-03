@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "motion/react";
 import { SlidersHorizontal } from "lucide-react";
+import z from "zod";
 import type { Route } from "./+types/activities";
 import {
   Table,
@@ -12,9 +13,10 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import { formatAddress } from "~/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { getActivitiesM3TerM3TerIdActivitiesGetOptions } from "~/api-client/@tanstack/react-query.gen";
-import { m3terscanClient } from "~/queries/query-client";
+import { useLoaderData } from "react-router";
+import { meterQueries } from "~/queries/meterscan.queries";
 
+const pageSchema = z.coerce.number().int().positive();
 const MotionTableRow = motion.create(TableRow);
 
 const tableHeaders = ["Time", "Energy", "Signature", "Value", "Status"];
@@ -30,13 +32,18 @@ export const meta = ({ params }: Route.MetaArgs) => {
   ];
 };
 
-function Activity({ params }: Route.ComponentProps) {
-  const { data } = useQuery({
-    ...getActivitiesM3TerM3TerIdActivitiesGetOptions({
-      client: m3terscanClient,
-      path: { m3ter_id: Number(params.m3terId) },
-    }),
-  });
+export function loader({ params }: Route.LoaderArgs) {
+  const result = pageSchema.safeParse(params.m3terId);
+  if (!result.success) {
+    throw Error(result.error.message);
+  }
+  const meterId = result.data;
+  return { meterId };
+}
+
+function Activity() {
+  const { meterId } = useLoaderData<typeof loader>();
+  const { data } = useQuery(meterQueries.getActivities(meterId));
 
   return (
     <motion.div

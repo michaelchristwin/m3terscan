@@ -1,4 +1,5 @@
 import type { Route } from "./+types/charts";
+import z from "zod";
 import { Suspense, useState } from "react";
 import { ViewToggle } from "~/components/ViewToggle";
 import { Doughnut } from "react-chartjs-2";
@@ -7,17 +8,14 @@ import MonthlyHeatmap from "~/components/heatmaps/MonthlyHeatmap";
 import DailyBarChart from "~/components/charts/DailyBarChart";
 import WeeklyHeatmapSkeleton from "~/components/skeletons/WeeklyHeatmapSkeleton";
 import { queryClient as qc } from "~/queries/query-client";
-import {
-  getDailyM3TerM3TerIdDailyGetOptions,
-  getWeeksOfYearM3TerM3TerIdWeeksYearGetOptions,
-} from "~/api-client/@tanstack/react-query.gen";
-import { m3terscanClient } from "~/queries/query-client";
+
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { useLoaderData } from "react-router";
 import type { Mode } from "~/types";
 import { useTimeStore } from "~/store";
 import BarChartSkeleton from "~/components/skeletons/BarChartSkeleton";
-
+import { meterQueries } from "~/queries/meterscan.queries";
+const pageSchema = z.coerce.number().int().positive();
 const doughnutChartData = {
   labels: ["cUSD", "USDT", "USDe", "xDAI", "DAI", "PYUSD", "USDC"],
   datasets: [
@@ -52,21 +50,16 @@ const options = {
 
 export async function loader({ params }: Route.LoaderArgs) {
   const { selectedYear } = useTimeStore.getState();
+  const result = pageSchema.safeParse(params.m3terId);
+  if (!result.success) {
+    throw Error(result.error.message);
+  }
+  const meterId = result.data;
   await Promise.all([
-    qc.prefetchQuery({
-      ...getDailyM3TerM3TerIdDailyGetOptions({
-        client: m3terscanClient,
-        path: { m3ter_id: Number(params.m3terId) },
-      }),
-    }),
-    qc.prefetchQuery({
-      ...getWeeksOfYearM3TerM3TerIdWeeksYearGetOptions({
-        client: m3terscanClient,
-        path: { m3ter_id: Number(params.m3terId), year: selectedYear },
-      }),
-    }),
+    qc.prefetchQuery(meterQueries.getDaily(meterId)),
+    qc.prefetchQuery(meterQueries.getWeeksOfYear(meterId, selectedYear)),
   ]);
-  return { dehydratedState: dehydrate(qc) };
+  return { dehydratedState: dehydrate(qc), meterId: meterId };
 }
 
 export const meta = ({ params }: Route.MetaArgs) => {
@@ -81,9 +74,9 @@ export const meta = ({ params }: Route.MetaArgs) => {
   ];
 };
 
-export default function Charts({ params }: Route.ComponentProps) {
-  const { dehydratedState } = useLoaderData<typeof loader>();
-  const { m3terId } = params;
+export default function Charts() {
+  const { dehydratedState, meterId } = useLoaderData<typeof loader>();
+
   const [viewMode, setViewMode] = useState<Mode>("yearly");
 
   return (
@@ -91,7 +84,7 @@ export default function Charts({ params }: Route.ComponentProps) {
       <div className="h-full grid grid-cols-1 md:grid-cols-[9fr_2fr] gap-4 pb-12.5">
         <div className="px-4 md:px-6 pt-6 pb-8 bg-background-primary rounded-lg h-full mx-4">
           <Suspense fallback={<BarChartSkeleton />}>
-            <DailyBarChart m3terId={m3terId} />
+            <DailyBarChart meterId={meterId} />
           </Suspense>
 
           <div className="p-10 bg-background text-foreground rounded-lg mt-5 min-h-120.5 w-full">
@@ -105,9 +98,9 @@ export default function Charts({ params }: Route.ComponentProps) {
             </div>
             <Suspense fallback={<WeeklyHeatmapSkeleton />}>
               {viewMode === "yearly" ? (
-                <WeeklyHeatmap m3terId={m3terId} viewMode={viewMode} />
+                <WeeklyHeatmap meterId={meterId} viewMode={viewMode} />
               ) : (
-                <MonthlyHeatmap viewMode={viewMode} m3terId={m3terId} />
+                <MonthlyHeatmap viewMode={viewMode} meterId={meterId} />
               )}
             </Suspense>
           </div>
