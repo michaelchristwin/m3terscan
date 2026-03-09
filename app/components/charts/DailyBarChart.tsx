@@ -3,24 +3,14 @@ import { LoaderCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { Bar } from "react-chartjs-2";
 import useStyle from "~/hooks/useStyle";
-import { getDailyM3TerM3TerIdDailyGetOptions } from "~/api-client/@tanstack/react-query.gen";
-import { m3terscanClient } from "~/queries/query-client";
+import { meterQueries } from "~/queries/meterscan.queries";
 
-function DailyBarChart({ m3terId }: { m3terId: string }) {
+function DailyBarChart({ meterId }: { meterId: number }) {
   const {
     data: chartData,
     isRefetching,
     error,
-  } = useSuspenseQuery({
-    ...getDailyM3TerM3TerIdDailyGetOptions({
-      client: m3terscanClient,
-      path: {
-        m3ter_id: Number(m3terId),
-      },
-    }),
-    refetchInterval: 15 * 60 * 1000,
-    staleTime: 15 * 60 * 1000,
-  });
+  } = useSuspenseQuery(meterQueries.getDaily(meterId));
 
   const high = useStyle("--chart-high");
   const low = useStyle("--chart-low");
@@ -37,7 +27,7 @@ function DailyBarChart({ m3terId }: { m3terId: string }) {
         hour12: false,
         hour: "2-digit",
         minute: "2-digit",
-      })
+      }),
     ),
     datasets: [
       {

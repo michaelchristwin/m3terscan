@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { useSearchParams } from "react-router";
-import BarChartSkeleton from "~/components/skeletons/BarChartSkeleton";
+import { BarChartSkeleton } from "~/components/skeletons/BarChartSkeleton";
 import IframeBarChart from "~/components/charts/IframeBarChart";
 import { decodeParam } from "~/utils/query-utils";
 

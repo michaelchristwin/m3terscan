@@ -10,7 +10,6 @@ import { getRecentBlocks } from "~/.server/dune";
 import { useFetcher, useLoaderData } from "react-router";
 import { Table, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-
 import { queryClient as qc } from "~/queries/query-client";
 import RecentCard from "~/components/RecentCard";
 import useStyle from "~/hooks/useStyle";

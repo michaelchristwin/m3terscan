@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { WeeksOfYearResponse } from "~/api-client";
+import type { WeeksEnergyRead } from "~/api-sdk";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 export function formatAddress(
   address: string,
   startLength = 6,
-  endLength = 4
+  endLength = 4,
 ): string {
   if (!address) return "";
   if (address.length <= startLength + endLength) return address;
@@ -17,7 +17,7 @@ export function formatAddress(
   return `${address.slice(0, startLength)}...${address.slice(-endLength)}`;
 }
 
-export function splitInto4(arr: WeeksOfYearResponse[]) {
+export function splitInto4(arr: WeeksEnergyRead[]) {
   const size = Math.ceil(arr.length / 4);
   return [
     arr.slice(0, size),

@@ -1,27 +1,21 @@
-import { getWeeksOfYearM3TerM3TerIdWeeksYearGetOptions } from "~/api-client/@tanstack/react-query.gen";
-import { m3terscanClient } from "~/queries/query-client";
 import GridHeatmap from "./GridHeatmap";
 import { YearSelector } from "../YearSelector";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { splitInto4 } from "~/lib/utils";
 import type { Mode } from "~/types";
 import { useTimeStore } from "~/store";
+import { meterQueries } from "~/queries/meterscan.queries";
 
 interface WeeklyHeatmapProps {
-  m3terId: string;
+  meterId: number;
   viewMode: Mode;
 }
 
-function WeeklyHeatmap({ m3terId, viewMode }: WeeklyHeatmapProps) {
+function WeeklyHeatmap({ meterId, viewMode }: WeeklyHeatmapProps) {
   const { selectedYear } = useTimeStore();
-  const { data: gridHeatMapData } = useSuspenseQuery({
-    ...getWeeksOfYearM3TerM3TerIdWeeksYearGetOptions({
-      client: m3terscanClient,
-      path: { m3ter_id: Number(m3terId), year: selectedYear },
-    }),
-    refetchInterval: 15 * 60 * 1000, // 15 minutes
-    staleTime: 15 * 60 * 1000,
-  });
+  const { data: gridHeatMapData } = useSuspenseQuery(
+    meterQueries.getWeeksOfYear(meterId, selectedYear),
+  );
 
   const [arr1, arr2, arr3, arr4] = splitInto4(gridHeatMapData);
 
