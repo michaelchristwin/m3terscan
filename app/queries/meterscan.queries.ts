@@ -2,7 +2,7 @@ import { queryOptions } from "@tanstack/react-query";
 import { Configuration, MeterApi, ProposalApi } from "~/api-sdk";
 
 const config = new Configuration({
-  basePath: "http://127.0.0.1:3000",
+  basePath: import.meta.env.VITE_API_URL,
 });
 
 const meterApi = new MeterApi(config);

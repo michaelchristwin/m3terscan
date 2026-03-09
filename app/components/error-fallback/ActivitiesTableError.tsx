@@ -66,7 +66,7 @@ function ActivitiesTableError({ error, resetErrorBoundary }: FallbackProps) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.2 }}
-                    className="mt-2 max-w-md text-xs text-muted-foreground/80 whitespace-pre-wrap break-words"
+                    className="mt-2 max-w-md text-xs text-muted-foreground/80 whitespace-pre-wrap wrap-break-word"
                   >
                     {error.message}
                   </motion.pre>
