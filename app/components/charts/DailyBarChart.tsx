@@ -84,7 +84,7 @@ function DailyBarChart({ meterId }: { meterId: number }) {
             </div>
           </div>
         )}
-        {!error && chartData.length > 0 && (
+        {!error && (
           <>
             <div className="h-95 md:w-[96%] w-75">
               <Bar data={barChartData} options={barChartOptions} />
