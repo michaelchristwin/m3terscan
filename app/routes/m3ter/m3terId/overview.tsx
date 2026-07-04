@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import MapComponent from "~/components/MapComponent";
 import { useMapStore } from "~/store";
-import { formatDateTime } from "~/utils/query-utils";
+import { formatDateTime } from "~/lib/query-utils";
 
 function Overview() {
   const [locationInfo, setLocationInfo] = useState<{

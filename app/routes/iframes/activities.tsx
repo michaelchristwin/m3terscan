@@ -14,7 +14,7 @@ import { formatAddress } from "~/lib/utils";
 import TableSkeleton from "~/components/skeletons/TableSkeleton";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router";
-import { decodeParam } from "~/utils/query-utils";
+import { decodeParam } from "~/lib/query-utils";
 const MotionTableRow = motion.create(TableRow);
 
 const tableHeaders = ["Time", "Energy", "Signature", "Value", "Status"];
