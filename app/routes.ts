@@ -7,7 +7,10 @@ import {
 } from "@react-router/dev/routes";
 
 export default [
-  layout("routes/layout.tsx", [index("routes/home.tsx"), route("sign-in", "routes/sign-in.tsx")]),
+  layout("routes/layout.tsx", [
+    index("routes/home.tsx"),
+    route("sign-in", "routes/sign-in.tsx"),
+  ]),
   ...prefix("m3ter/:m3terId", [
     layout("routes/m3ter/layout.tsx", [
       index("routes/m3ter/m3terId/index.tsx"),
@@ -29,5 +32,4 @@ export default [
   ]),
   route("api/blocks", "routes/api/blocks.tsx"),
   route("api/world-state", "routes/api/world-state.tsx"),
-  route("action/set-theme", "routes/action/set-theme.tsx"),
 ] satisfies RouteConfig;

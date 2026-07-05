@@ -1,10 +1,11 @@
 import GridHeatmap from "./GridHeatmap";
 import { YearSelector } from "../YearSelector";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { splitInto4 } from "~/lib/utils";
 import type { Mode } from "~/types";
 import { useTimeStore } from "~/store";
 import { meterQueries } from "~/queries/meterscan.queries";
+import WeeklyHeatmapSkeleton from "../skeletons/WeeklyHeatmapSkeleton";
 
 interface WeeklyHeatmapProps {
   meterId: number;
@@ -13,51 +14,55 @@ interface WeeklyHeatmapProps {
 
 function WeeklyHeatmap({ meterId, viewMode }: WeeklyHeatmapProps) {
   const { selectedYear } = useTimeStore();
-  const { data: gridHeatMapData } = useSuspenseQuery(
-    meterQueries.getWeeksOfYear(meterId, selectedYear),
-  );
+  const {
+    data: gridHeatMapData,
+    isLoading,
+    isSuccess,
+  } = useQuery(meterQueries.getWeeksOfYear(meterId, selectedYear));
 
-  const [arr1, arr2, arr3, arr4] = splitInto4(gridHeatMapData);
-
-  return (
-    <div className="w-full">
-      <YearSelector viewMode={viewMode} />
-      <div className="grid md:grid-cols-2 grid-cols-1 w-full gap-y-7 mt-5">
-        <div>
-          <div className="grid grid-cols-3 w-50 text-[14px] text-center">
-            <p>Jan</p>
-            <p>Feb</p>
-            <p>Mar</p>
+  if (isLoading) return <WeeklyHeatmapSkeleton />;
+  if (isSuccess) {
+    const [arr1, arr2, arr3, arr4] = splitInto4(gridHeatMapData);
+    return (
+      <div className="w-full">
+        <YearSelector viewMode={viewMode} />
+        <div className="grid md:grid-cols-2 grid-cols-1 w-full gap-y-7 mt-5">
+          <div>
+            <div className="grid grid-cols-3 w-50 text-[14px] text-center">
+              <p>Jan</p>
+              <p>Feb</p>
+              <p>Mar</p>
+            </div>
+            <GridHeatmap data={arr1} />
           </div>
-          <GridHeatmap data={arr1} />
-        </div>
-        <div>
-          <div className="grid grid-cols-3 w-50 text-[14px] text-center">
-            <p>Apr</p>
-            <p>May</p>
-            <p>Jun</p>
+          <div>
+            <div className="grid grid-cols-3 w-50 text-[14px] text-center">
+              <p>Apr</p>
+              <p>May</p>
+              <p>Jun</p>
+            </div>
+            <GridHeatmap data={arr2} />
           </div>
-          <GridHeatmap data={arr2} />
-        </div>
-        <div>
-          <div className="grid grid-cols-3 w-50 text-[14px] text-center">
-            <p>Jul</p>
-            <p>Aug</p>
-            <p>Sep</p>
+          <div>
+            <div className="grid grid-cols-3 w-50 text-[14px] text-center">
+              <p>Jul</p>
+              <p>Aug</p>
+              <p>Sep</p>
+            </div>
+            <GridHeatmap data={arr3} />
           </div>
-          <GridHeatmap data={arr3} />
-        </div>
-        <div>
-          <div className="grid grid-cols-3 w-50 text-[14px] text-center">
-            <p>Oct</p>
-            <p>Nov</p>
-            <p>Dec</p>
+          <div>
+            <div className="grid grid-cols-3 w-50 text-[14px] text-center">
+              <p>Oct</p>
+              <p>Nov</p>
+              <p>Dec</p>
+            </div>
+            <GridHeatmap data={arr4} />
           </div>
-          <GridHeatmap data={arr4} />
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default WeeklyHeatmap;

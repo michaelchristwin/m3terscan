@@ -1,8 +1,9 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { YearSelector } from "../YearSelector";
 import type { Mode } from "~/types";
 import { useTimeStore } from "~/store";
 import { meterQueries } from "~/queries/meterscan.queries";
+import WeeklyHeatmapSkeleton from "../skeletons/WeeklyHeatmapSkeleton";
 
 interface MonthlyHeatmapProps {
   meterId: number;
@@ -11,7 +12,7 @@ interface MonthlyHeatmapProps {
 
 function MonthlyHeatmap({ meterId, viewMode }: MonthlyHeatmapProps) {
   const { selectedMonth, selectedYear } = useTimeStore();
-  const { data } = useSuspenseQuery(
+  const { data, isLoading, isSuccess } = useQuery(
     meterQueries.getMonthOfYear(meterId, selectedYear, selectedMonth),
   );
 
@@ -28,70 +29,74 @@ function MonthlyHeatmap({ meterId, viewMode }: MonthlyHeatmapProps) {
 
   const minColor = hexToRgb("#FBE6D4");
   const maxColor = hexToRgb("#EB822A");
+  if (isLoading) return <WeeklyHeatmapSkeleton />;
 
-  const energyValues = data.map((item) => item.total_energy);
+  if (isSuccess) {
+    const energyValues = data.map((item) => item.total_energy);
 
-  const minEnergy = Math.min(...energyValues);
-  const maxEnergy = Math.max(...energyValues);
+    const minEnergy = Math.min(...energyValues);
+    const maxEnergy = Math.max(...energyValues);
 
-  const getColor = (energy: number) => {
-    if (energy === 0) return `rgb(${minColor.r}, ${minColor.g}, ${minColor.b})`;
+    const getColor = (energy: number) => {
+      if (energy === 0)
+        return `rgb(${minColor.r}, ${minColor.g}, ${minColor.b})`;
 
-    if (minEnergy === maxEnergy) {
-      return `rgb(${maxColor.r}, ${maxColor.g}, ${maxColor.b})`;
-    }
+      if (minEnergy === maxEnergy) {
+        return `rgb(${maxColor.r}, ${maxColor.g}, ${maxColor.b})`;
+      }
 
-    const ratio = (energy - minEnergy) / (maxEnergy - minEnergy);
-    const r = Math.round(minColor.r + (maxColor.r - minColor.r) * ratio);
-    const g = Math.round(minColor.g + (maxColor.g - minColor.g) * ratio);
-    const b = Math.round(minColor.b + (maxColor.b - minColor.b) * ratio);
+      const ratio = (energy - minEnergy) / (maxEnergy - minEnergy);
+      const r = Math.round(minColor.r + (maxColor.r - minColor.r) * ratio);
+      const g = Math.round(minColor.g + (maxColor.g - minColor.g) * ratio);
+      const b = Math.round(minColor.b + (maxColor.b - minColor.b) * ratio);
 
-    return `rgb(${r}, ${g}, ${b})`;
-  };
+      return `rgb(${r}, ${g}, ${b})`;
+    };
 
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  // --- Alignment logic ---
-  const firstDate = new Date(selectedYear, selectedMonth, data[0].day); // first entry in data
-  const startDay = firstDate.getDay(); // 0=Sun, 1=Mon, etc.
+    // --- Alignment logic ---
+    const firstDate = new Date(selectedYear, selectedMonth, data[0].day); // first entry in data
+    const startDay = firstDate.getDay(); // 0=Sun, 1=Mon, etc.
 
-  // prepend nulls for offset
-  const paddedData = [...Array(startDay).fill(null), ...data];
+    // prepend nulls for offset
+    const paddedData = [...Array(startDay).fill(null), ...data];
 
-  return (
-    <div className="flex w-full items-center justify-center">
-      <div>
-        <YearSelector viewMode={viewMode} />
-        <div className="p-6 bg-background rounded-lg">
-          <div className="grid grid-cols-7 gap-1 mb-2">
-            {dayNames.map((day) => (
-              <div
-                key={day}
-                className="text-center text-xs font-medium text-gray-500 py-1"
-              >
-                {day}
-              </div>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-7 gap-y-3.75 gap-x-5">
-            {paddedData.map((dayData, index) =>
-              dayData ? (
+    return (
+      <div className="flex w-full items-center justify-center">
+        <div>
+          <YearSelector viewMode={viewMode} />
+          <div className="p-6 bg-background rounded-lg">
+            <div className="grid grid-cols-7 gap-1 mb-2">
+              {dayNames.map((day) => (
                 <div
-                  key={index}
-                  className="w-18 h-10 rounded flex items-center justify-center text-xs font-medium transition-all duration-200 cursor-pointer hover:scale-110 hover:shadow-md hover:z-10"
-                  style={{ backgroundColor: getColor(dayData.total_energy) }}
-                  title={`${new Date(selectedYear, selectedMonth, dayData.day).toLocaleDateString()}: ${dayData.total_energy.toFixed(2)} units`}
-                />
-              ) : (
-                <div key={index} />
-              ),
-            )}
+                  key={day}
+                  className="text-center text-xs font-medium text-gray-500 py-1"
+                >
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-7 gap-y-3.75 gap-x-5">
+              {paddedData.map((dayData, index) =>
+                dayData ? (
+                  <div
+                    key={index}
+                    className="w-18 h-10 rounded flex items-center justify-center text-xs font-medium transition-all duration-200 cursor-pointer hover:scale-110 hover:shadow-md hover:z-10"
+                    style={{ backgroundColor: getColor(dayData.total_energy) }}
+                    title={`${new Date(selectedYear, selectedMonth, dayData.day).toLocaleDateString()}: ${dayData.total_energy.toFixed(2)} units`}
+                  />
+                ) : (
+                  <div key={index} />
+                ),
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default MonthlyHeatmap;

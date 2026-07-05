@@ -6,10 +6,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { useFetcher } from "react-router";
+
+import { useTheme } from "./theme-provider";
 
 export function ModeToggle() {
-  const fetcher = useFetcher();
+  const { setTheme } = useTheme();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -20,25 +21,14 @@ export function ModeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem
-          onSelect={() =>
-            fetcher.submit(
-              { "color-scheme": "light" },
-              { method: "post", action: "/action/set-theme" }
-            )
-          }
-        >
+        <DropdownMenuItem onClick={() => setTheme("light")}>
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onSelect={() =>
-            fetcher.submit(
-              { "color-scheme": "dark" },
-              { method: "post", action: "/action/set-theme" }
-            )
-          }
-        >
+        <DropdownMenuItem onClick={() => setTheme("dark")}>
           Dark
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("system")}>
+          System
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

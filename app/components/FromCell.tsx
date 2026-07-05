@@ -1,10 +1,15 @@
-import { useEnsName } from "wagmi";
+import { useQuery } from "@tanstack/react-query";
 import { TableCell } from "./ui/table";
+
+import { publicClient } from "~/config/viem";
 import type { Address } from "viem";
 
 function FromCell({ from }: { from: string }) {
-  const { data } = useEnsName({
-    address: from as Address,
+  const { data } = useQuery({
+    queryKey: ["getEnsAdress"],
+    queryFn: async () => {
+      return await publicClient.getEnsName({ address: from as Address });
+    },
   });
 
   return (

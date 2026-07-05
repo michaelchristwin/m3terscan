@@ -1,28 +1,18 @@
 import z from "zod";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryErrorResetBoundary,
-} from "@tanstack/react-query";
+import { useState } from "react";
 import type { Mode } from "~/types";
-import { useTimeStore } from "~/store";
-import { Suspense, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
-import { useLoaderData } from "react-router";
 import type { Route } from "./+types/charts";
 import { ErrorBoundary } from "react-error-boundary";
 import { ViewToggle } from "~/components/ViewToggle";
-import { meterQueries } from "~/queries/meterscan.queries";
-import { queryClient as qc } from "~/queries/query-client";
 import DailyBarChart from "~/components/charts/DailyBarChart";
 import WeeklyHeatmap from "~/components/heatmaps/WeeklyHeatmap";
 import MonthlyHeatmap from "~/components/heatmaps/MonthlyHeatmap";
-import { BarChartSkeleton } from "~/components/skeletons/BarChartSkeleton";
-import WeeklyHeatmapSkeleton from "~/components/skeletons/WeeklyHeatmapSkeleton";
-import { BarChartError } from "~/components/error-fallback/BarChartError";
 import { HeatmapError } from "~/components/error-fallback/HeatmapError";
+import { BarChartError } from "~/components/error-fallback/BarChartError";
+import { QueryErrorResetBoundary } from "@tanstack/react-query";
 
-const pageSchema = z.coerce.number().int().positive();
+const pageSchema = z.coerce.number().int().min(0);
 const doughnutChartData = {
   labels: ["cUSD", "USDT", "USDe", "xDAI", "DAI", "PYUSD", "USDC"],
   datasets: [
@@ -55,20 +45,6 @@ const options = {
   },
 };
 
-export async function loader({ params }: Route.LoaderArgs) {
-  const { selectedYear } = useTimeStore.getState();
-  const result = pageSchema.safeParse(params.m3terId);
-  if (!result.success) {
-    throw Error(result.error.message);
-  }
-  const meterId = result.data;
-  await Promise.all([
-    qc.prefetchQuery(meterQueries.getDaily(meterId)),
-    qc.prefetchQuery(meterQueries.getWeeksOfYear(meterId, selectedYear)),
-  ]);
-  return { dehydratedState: dehydrate(qc), meterId: meterId };
-}
-
 export const meta = ({ params }: Route.MetaArgs) => {
   return [
     {
@@ -81,55 +57,48 @@ export const meta = ({ params }: Route.MetaArgs) => {
   ];
 };
 
-export default function Charts() {
-  const { dehydratedState, meterId } = useLoaderData<typeof loader>();
-
+export default function Charts({ params }: Route.ComponentProps) {
   const [viewMode, setViewMode] = useState<Mode>("yearly");
+  const meterId = pageSchema.parse(params.m3terId);
 
   return (
-    <HydrationBoundary state={dehydratedState}>
-      <div className="h-full grid grid-cols-1 md:grid-cols-[9fr_2fr] gap-4 pb-12.5">
-        <div className="px-4 md:px-6 pt-6 pb-8 bg-background-primary rounded-lg h-full mx-4">
+    <div className="h-full grid grid-cols-1 md:grid-cols-[9fr_2fr] gap-4 pb-12.5">
+      <div className="px-4 md:px-6 pt-6 pb-8 bg-background-primary rounded-lg h-full mx-4">
+        <QueryErrorResetBoundary>
+          {({ reset }) => (
+            <ErrorBoundary onReset={reset} FallbackComponent={BarChartError}>
+              <DailyBarChart meterId={meterId} />
+            </ErrorBoundary>
+          )}
+        </QueryErrorResetBoundary>
+
+        <div className="p-10 bg-background text-foreground rounded-lg mt-5 min-h-120.5 w-full">
+          <div className="">
+            <div className="text-center flex justify-between items-center mb-3">
+              <h3 className="text-foreground text-[17px] md:text-[19px] font-medium">
+                Revenue Heatmap
+              </h3>
+              <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
+            </div>
+          </div>
           <QueryErrorResetBoundary>
             {({ reset }) => (
-              <ErrorBoundary onReset={reset} FallbackComponent={BarChartError}>
-                <Suspense fallback={<BarChartSkeleton />}>
-                  <DailyBarChart meterId={meterId} />
-                </Suspense>
+              <ErrorBoundary onReset={reset} FallbackComponent={HeatmapError}>
+                {viewMode === "yearly" ? (
+                  <WeeklyHeatmap meterId={meterId} viewMode={viewMode} />
+                ) : (
+                  <MonthlyHeatmap viewMode={viewMode} meterId={meterId} />
+                )}
               </ErrorBoundary>
             )}
           </QueryErrorResetBoundary>
-
-          <div className="p-10 bg-background text-foreground rounded-lg mt-5 min-h-120.5 w-full">
-            <div className="">
-              <div className="text-center flex justify-between items-center mb-3">
-                <h3 className="text-foreground text-[17px] md:text-[19px] font-medium">
-                  Revenue Heatmap
-                </h3>
-                <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
-              </div>
-            </div>
-            <QueryErrorResetBoundary>
-              {({ reset }) => (
-                <ErrorBoundary onReset={reset} FallbackComponent={HeatmapError}>
-                  <Suspense fallback={<WeeklyHeatmapSkeleton />}>
-                    {viewMode === "yearly" ? (
-                      <WeeklyHeatmap meterId={meterId} viewMode={viewMode} />
-                    ) : (
-                      <MonthlyHeatmap viewMode={viewMode} meterId={meterId} />
-                    )}
-                  </Suspense>
-                </ErrorBoundary>
-              )}
-            </QueryErrorResetBoundary>
-          </div>
-        </div>
-        <div className="w-full">
-          <div className="w-[97%] md:block flex justify-center mx-auto h-75">
-            <Doughnut data={doughnutChartData} options={options} />
-          </div>
         </div>
       </div>
-    </HydrationBoundary>
+      <div className="w-full">
+        <div className="w-[97%] md:block flex justify-center mx-auto h-75">
+          <Doughnut data={doughnutChartData} options={options} />
+        </div>
+      </div>
+    </div>
   );
 }

@@ -4,9 +4,10 @@ import { TableBody, TableCell, TableRow } from "./ui/table";
 import FromCell from "./FromCell";
 import { ExternalLink } from "lucide-react";
 import { format } from "date-fns";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import TableSkeleton2 from "./skeletons/TableSkeleton2";
 import { useMemo } from "react";
+import { getRecentBlocks } from "~/queries/meterscan.queries";
 const MotionTableRow = motion.create(TableRow);
 
 interface RecentBlocksProps {
@@ -15,14 +16,10 @@ interface RecentBlocksProps {
 
 function RecentBlocks({ showAll }: RecentBlocksProps) {
   const [searchParams] = useSearchParams();
-  const { data, isRefetching } = useSuspenseQuery({
+  const { data, isRefetching, isLoading, isSuccess } = useQuery({
     queryKey: ["recentBlocks"],
     queryFn: async () => {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/blocks`
-      );
-      const data = await response.json();
-      return data;
+      return await getRecentBlocks();
     },
   });
   const rowVariants = {
@@ -35,90 +32,96 @@ function RecentBlocks({ showAll }: RecentBlocksProps) {
       },
     }),
   };
-  const visibleRows = useMemo(() => {
-    return showAll ? [...data].reverse() : [...data].reverse().slice(0, 5);
-  }, [data, showAll]);
 
-  return (
-    <>
-      {!isRefetching && data && (
-        <TableBody className="w-full">
-          <AnimatePresence mode="sync">
-            {data.length > 0 ? (
-              visibleRows.map((block, index) => (
-                <MotionTableRow
-                  key={index}
-                  custom={index}
-                  initial="hidden"
-                  animate="visible"
-                  exit="hidden"
-                  variants={rowVariants}
-                  className=""
-                >
-                  <TableCell className="truncate text-icon underline roboto-mono">
-                    <Link
-                      aria-label="Open proposal page"
-                      viewTransition
-                      to={{
-                        pathname: `/proposal/${block.hash}`,
-                        search: searchParams.toString(),
-                      }}
-                      prefetch="viewport"
-                    >
-                      {block.hash.slice(0, 9)}…{block.hash.slice(-9)}
-                    </Link>
-                  </TableCell>
-                  <FromCell from={block.from} />
-                  <TableCell
-                    className={`font-medium whitespace-nowrap ${
-                      block.transaction_status ? "text-success" : "text-invalid"
-                    }`}
+  if (isLoading) return <TableSkeleton2 />;
+
+  if (isSuccess) {
+    const visibleRows = useMemo(() => {
+      return showAll ? [...data].reverse() : [...data].reverse().slice(0, 5);
+    }, [data, showAll]);
+    return (
+      <>
+        {!isRefetching && data && (
+          <TableBody className="w-full">
+            <AnimatePresence mode="sync">
+              {data.length > 0 ? (
+                visibleRows.map((block, index) => (
+                  <MotionTableRow
+                    key={index}
+                    custom={index}
+                    initial="hidden"
+                    animate="visible"
+                    exit="hidden"
+                    variants={rowVariants}
+                    className=""
                   >
-                    Accepted
-                  </TableCell>
-                  <TableCell className="whitespace-nowrap">
-                    {format(
-                      new Date(block.block_time),
-                      "MMM d, yyyy 'at' HH:mm"
-                    )}
-                  </TableCell>
-                  <TableCell className="truncate text-[rgb(106,181,219,1)] underline roboto-mono">
-                    <a
-                      aria-label="Open transaction in etherscan"
-                      href={`https://sepolia.etherscan.io/tx/${block.hash}`}
-                      target="_blank"
-                      className="flex w-fit items-center space-x-2"
-                    >
-                      <span>
+                    <TableCell className="truncate text-icon underline roboto-mono">
+                      <Link
+                        aria-label="Open proposal page"
+                        viewTransition
+                        to={{
+                          pathname: `/proposal/${block.hash}`,
+                          search: searchParams.toString(),
+                        }}
+                        prefetch="viewport"
+                      >
                         {block.hash.slice(0, 9)}…{block.hash.slice(-9)}
-                      </span>
-                      <ExternalLink size={15} />
-                    </a>
+                      </Link>
+                    </TableCell>
+                    <FromCell from={block.from} />
+                    <TableCell
+                      className={`font-medium whitespace-nowrap ${
+                        block.transaction_status
+                          ? "text-success"
+                          : "text-invalid"
+                      }`}
+                    >
+                      Accepted
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap">
+                      {format(
+                        new Date(block.block_time),
+                        "MMM d, yyyy 'at' HH:mm",
+                      )}
+                    </TableCell>
+                    <TableCell className="truncate text-[rgb(106,181,219,1)] underline roboto-mono">
+                      <a
+                        aria-label="Open transaction in etherscan"
+                        href={`https://sepolia.etherscan.io/tx/${block.hash}`}
+                        target="_blank"
+                        className="flex w-fit items-center space-x-2"
+                      >
+                        <span>
+                          {block.hash.slice(0, 9)}…{block.hash.slice(-9)}
+                        </span>
+                        <ExternalLink size={15} />
+                      </a>
+                    </TableCell>
+                  </MotionTableRow>
+                ))
+              ) : (
+                <MotionTableRow
+                  key="empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <TableCell
+                    colSpan={5}
+                    className="text-center text-sm text-text-secondary"
+                  >
+                    No blocks match your filters
                   </TableCell>
                 </MotionTableRow>
-              ))
-            ) : (
-              <MotionTableRow
-                key="empty"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <TableCell
-                  colSpan={5}
-                  className="text-center text-sm text-text-secondary"
-                >
-                  No blocks match your filters
-                </TableCell>
-              </MotionTableRow>
-            )}
-          </AnimatePresence>
-        </TableBody>
-      )}
-      {isRefetching && <TableSkeleton2 />}
-    </>
-  );
+              )}
+            </AnimatePresence>
+          </TableBody>
+        )}
+        {isRefetching && <TableSkeleton2 />}
+      </>
+    );
+  }
 }
 
 export default RecentBlocks;
