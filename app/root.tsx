@@ -1,4 +1,6 @@
-import "chart.js/auto"
+import "chart.js/auto";
+// @ts-ignore
+import "@bprogress/core/css";
 import {
   isRouteErrorResponse,
   Links,
@@ -6,16 +8,14 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
   useNavigation,
 } from "react-router";
 import type { Route } from "./+types/root";
 import "./app.css";
-import { getColorScheme } from "./.server/cookies";
+import { ThemeProvider } from "~/components/theme-provider";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { config } from "~/config/wagmi";
-import "@bprogress/core/css";
 import { BProgress } from "@bprogress/core";
 import { useEffect } from "react";
 import { queryClient } from "./queries/query-client";
@@ -33,13 +33,7 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-export async function loader({ request }: Route.LoaderArgs) {
-  let colorScheme = await getColorScheme(request);
-  return { colorScheme };
-}
-
 export function Layout({ children }: { children: React.ReactNode }) {
-  let loaderData = useLoaderData<typeof loader>();
   BProgress.configure({});
   const navigation = useNavigation();
   const isLoading =
@@ -58,11 +52,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   }, [isLoading]);
 
   return (
-    <html
-      lang="en"
-      className={loaderData?.colorScheme ?? "dark"}
-      suppressHydrationWarning
-    >
+    <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -133,11 +123,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
         <Links />
       </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-      </body>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <body>
+          {children}
+          <ScrollRestoration />
+          <Scripts />
+        </body>
+      </ThemeProvider>
     </html>
   );
 }
