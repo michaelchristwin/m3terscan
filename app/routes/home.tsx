@@ -2,20 +2,17 @@ import { TrendingUp, CircleX, RefreshCw } from "lucide-react";
 import { type ChartOptions } from "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import { motion } from "motion/react";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
 import RecentBlocks from "~/components/RecentBlocks";
-
 import { useFetcher } from "react-router";
 import { Table, TableHead, TableHeader, TableRow } from "~/components/ui/table";
-
 import { queryClient as qc } from "~/queries/query-client";
 import RecentCard from "~/components/RecentCard";
 import useStyle from "~/hooks/useStyle";
 import Statistics from "~/components/Statistics";
-
-import TableSkeleton2 from "~/components/skeletons/TableSkeleton2";
+import { refreshRecentBlocks } from "~/queries/meterscan.queries";
 
 export function meta() {
   return [
@@ -130,11 +127,7 @@ export default function Home() {
                 className="rounded-full"
                 aria-label="Refresh"
                 onClick={async () => {
-                  fetcher.submit(null, {
-                    method: "post",
-                    action: "/api/blocks",
-                    preventScrollReset: true,
-                  });
+                  await refreshRecentBlocks();
                   await qc.refetchQueries({
                     queryKey: ["recentBlocks"],
                     type: "active",
@@ -166,9 +159,7 @@ export default function Home() {
                 )}
               >
                 <div className="md:hidden space-y-3">
-                  <Suspense>
-                    <RecentCard showAll={showAll} />
-                  </Suspense>
+                  <RecentCard showAll={showAll} />
                 </div>
                 <Table className="w-full table-fixed hidden md:table">
                   <TableHeader>
@@ -180,9 +171,7 @@ export default function Home() {
                       ))}
                     </TableRow>
                   </TableHeader>
-                  <Suspense fallback={<TableSkeleton2 />}>
-                    <RecentBlocks showAll={showAll} />
-                  </Suspense>
+                  <RecentBlocks showAll={showAll} />
                 </Table>
               </ErrorBoundary>
             )}
