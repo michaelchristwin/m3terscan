@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { ExternalLink } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -25,14 +25,16 @@ const RecentCard = ({ showAll }: { showAll: boolean }) => {
       },
     };
   };
-
   const visibleRows = useMemo(() => {
-    return showAll ? [...data].reverse() : [...data].reverse().slice(0, 5);
+    if (!data) return [];
+
+    const reversed = [...data].reverse();
+    return showAll ? reversed : reversed.slice(0, 5);
   }, [data, showAll]);
 
   return (
     <AnimatePresence mode="sync">
-      {data && data.length > 0 ? (
+      {visibleRows.length > 0 ? (
         visibleRows.map((block, index) => (
           <motion.div
             custom={index}

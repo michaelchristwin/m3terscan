@@ -32,19 +32,22 @@ function RecentBlocks({ showAll }: RecentBlocksProps) {
       },
     }),
   };
+  const visibleRows = useMemo(() => {
+    if (!data) return [];
+
+    const reversed = [...data].reverse();
+    return showAll ? reversed : reversed.slice(0, 5);
+  }, [data, showAll]);
 
   if (isLoading) return <TableSkeleton2 />;
 
-  if (isSuccess) {
-    const visibleRows = useMemo(() => {
-      return showAll ? [...data].reverse() : [...data].reverse().slice(0, 5);
-    }, [data, showAll]);
+  if (isSuccess)
     return (
       <>
         {!isRefetching && data && (
           <TableBody className="w-full">
             <AnimatePresence mode="sync">
-              {data.length > 0 ? (
+              {visibleRows.length > 0 ? (
                 visibleRows.map((block, index) => (
                   <MotionTableRow
                     key={index}
@@ -121,7 +124,6 @@ function RecentBlocks({ showAll }: RecentBlocksProps) {
         {isRefetching && <TableSkeleton2 />}
       </>
     );
-  }
 }
 
 export default RecentBlocks;

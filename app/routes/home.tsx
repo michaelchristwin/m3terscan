@@ -1,4 +1,4 @@
-import { TrendingUp, CircleX, RefreshCw } from "lucide-react";
+import { TrendingUp, RefreshCw } from "lucide-react";
 import { type ChartOptions } from "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import { motion } from "motion/react";
@@ -147,32 +147,38 @@ export default function Home() {
               <ErrorBoundary
                 onReset={reset}
                 fallbackRender={({ resetErrorBoundary }) => (
-                  <div className="flex w-full justify-center">
-                    <div className="flex items-center space-x-2">
-                      <p className="text-red-500">Something went wrong</p>
-                      <CircleX size={17} className="text-red-500" />
+                  <div className="w-full block">
+                    <div className="flex items-center space-x-2 mx-auto w-fit">
+                      <p className="text-red-500 text-sm italic">
+                        Something went wrong
+                      </p>
                     </div>
-                    <button onClick={() => resetErrorBoundary()}>
+                    <button
+                      onClick={() => resetErrorBoundary()}
+                      className="w-fit p-2 mx-auto block"
+                    >
                       Try again
                     </button>
                   </div>
                 )}
               >
-                <div className="md:hidden space-y-3">
-                  <RecentCard showAll={showAll} />
-                </div>
-                <Table className="w-full table-fixed hidden md:table">
-                  <TableHeader>
-                    <TableRow className="text-left font-sans border-b border-background-secondary">
-                      {tableHeaders.map((item, i) => (
-                        <TableHead className="w-[20%]" key={i.toString()}>
-                          <small>{item}</small>
-                        </TableHead>
-                      ))}
-                    </TableRow>
-                  </TableHeader>
-                  <RecentBlocks showAll={showAll} />
-                </Table>
+                <>
+                  <div className="md:hidden space-y-3">
+                    <RecentCard showAll={showAll} />
+                  </div>
+                  <Table className="w-full table-fixed hidden md:table">
+                    <TableHeader>
+                      <TableRow className="text-left font-sans border-b border-background-secondary">
+                        {tableHeaders.map((item, i) => (
+                          <TableHead className="w-[20%]" key={i.toString()}>
+                            <small>{item}</small>
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    </TableHeader>
+                    <RecentBlocks showAll={showAll} />
+                  </Table>
+                </>
               </ErrorBoundary>
             )}
           </QueryErrorResetBoundary>
