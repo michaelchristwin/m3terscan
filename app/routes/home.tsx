@@ -1,18 +1,17 @@
-import { TrendingUp, RefreshCw } from "lucide-react";
-import { type ChartOptions } from "chart.js/auto";
-import { Line } from "react-chartjs-2";
-import { motion } from "motion/react";
 import { useState } from "react";
-import { QueryErrorResetBoundary } from "@tanstack/react-query";
+import { refreshRecentBlocks } from "~/queries/meterscan.queries";
+import { motion } from "motion/react";
+import { Line } from "react-chartjs-2";
+import useStyle from "~/hooks/useStyle";
+import RecentCard from "~/components/RecentCard";
+import Statistics from "~/components/Statistics";
+import { type ChartOptions } from "chart.js/auto";
+import { TrendingUp, RefreshCw } from "lucide-react";
 import { ErrorBoundary } from "react-error-boundary";
 import RecentBlocks from "~/components/RecentBlocks";
-import { useFetcher } from "react-router";
+import { QueryErrorResetBoundary, useQuery } from "@tanstack/react-query";
 import { Table, TableHead, TableHeader, TableRow } from "~/components/ui/table";
-import { queryClient as qc } from "~/queries/query-client";
-import RecentCard from "~/components/RecentCard";
-import useStyle from "~/hooks/useStyle";
-import Statistics from "~/components/Statistics";
-import { refreshRecentBlocks } from "~/queries/meterscan.queries";
+import { queryClient } from "~/queries/query-client";
 
 export function meta() {
   return [
@@ -49,8 +48,7 @@ export default function Home() {
       },
     ],
   };
-  const fetcher = useFetcher();
-  const spinning = fetcher.state !== "idle";
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -86,8 +84,20 @@ export default function Home() {
     "DATE/TIME",
     "ETHERSCAN",
   ];
+  const query = useQuery({
+    queryKey: ["refreshRecentBlocks"],
+    queryFn: async () => {
+      await refreshRecentBlocks();
+      await queryClient.refetchQueries({
+        queryKey: ["recentBlocks"],
+        type: "active",
+        exact: true,
+      });
+    },
+    enabled: false,
+  });
   return (
-    <main className="w-full h-full md:px-15 px-5 mt-5">
+    <main className="w-full h-full md:px-15 px-5 mt-10">
       <Statistics />
 
       <div className="mt-9.5 w-full">
@@ -126,17 +136,10 @@ export default function Home() {
                 type="button"
                 className="rounded-full"
                 aria-label="Refresh"
-                onClick={async () => {
-                  await refreshRecentBlocks();
-                  await qc.refetchQueries({
-                    queryKey: ["recentBlocks"],
-                    type: "active",
-                    exact: true,
-                  });
-                }}
+                onClick={() => query.refetch()}
               >
                 <RefreshCw
-                  className={`${spinning ? "animate-spin" : ""} w-5 float-end text-icon transition-transform`}
+                  className={`${query.isFetching ? "animate-spin" : ""} w-5 float-end text-icon transition-transform`}
                 />
               </button>
             </div>
