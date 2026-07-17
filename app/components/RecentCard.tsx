@@ -7,7 +7,7 @@ import { useMemo } from "react";
 import { getRecentBlocks } from "~/queries/meterscan.queries";
 
 // Mobile Card Component
-const RecentCard = ({ showAll }: { showAll: boolean }) => {
+const RecentCard = () => {
   const { data } = useQuery({
     queryKey: ["recentBlocks"],
     queryFn: async () => {
@@ -25,17 +25,16 @@ const RecentCard = ({ showAll }: { showAll: boolean }) => {
       },
     };
   };
-  const visibleRows = useMemo(() => {
+  const rows = useMemo(() => {
     if (!data) return [];
 
-    const reversed = [...data].reverse();
-    return showAll ? reversed : reversed.slice(0, 5);
-  }, [data, showAll]);
+    return [...data].reverse();
+  }, [data]);
 
   return (
     <AnimatePresence mode="sync">
-      {visibleRows.length > 0 ? (
-        visibleRows.map((block, index) => (
+      {rows.length > 0 ? (
+        rows.map((block, index) => (
           <motion.div
             custom={index}
             initial="hidden"

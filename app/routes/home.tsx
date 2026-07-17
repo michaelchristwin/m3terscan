@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { refreshRecentBlocks } from "~/queries/meterscan.queries";
 import { motion } from "motion/react";
 import { Line } from "react-chartjs-2";
@@ -10,7 +9,7 @@ import { TrendingUp, RefreshCw } from "lucide-react";
 import { ErrorBoundary } from "react-error-boundary";
 import RecentBlocks from "~/components/RecentBlocks";
 import { QueryErrorResetBoundary, useQuery } from "@tanstack/react-query";
-import { Table, TableHead, TableHeader, TableRow } from "~/components/ui/table";
+
 import { queryClient } from "~/queries/query-client";
 
 export function meta() {
@@ -75,15 +74,6 @@ export default function Home() {
     },
   } satisfies ChartOptions<"line">;
 
-  const [showAll, setShowAll] = useState(false);
-
-  const tableHeaders = [
-    "PROPOSAL",
-    "PROPOSER",
-    "STATUS",
-    "DATE/TIME",
-    "ETHERSCAN",
-  ];
   const query = useQuery({
     queryKey: ["refreshRecentBlocks"],
     queryFn: async () => {
@@ -125,24 +115,16 @@ export default function Home() {
           className="bg-background-primary text-text-secondary rounded-xl p-4 relative"
         >
           <motion.div className="flex justify-end items-center mb-4">
-            <div className="flex justify-end w-fit space-x-3">
-              <button
-                onClick={() => setShowAll(!showAll)}
-                className="text-sm text-icon"
-              >
-                {showAll ? "See less" : "See more"}
-              </button>
-              <button
-                type="button"
-                className="rounded-full"
-                aria-label="Refresh"
-                onClick={() => query.refetch()}
-              >
-                <RefreshCw
-                  className={`${query.isFetching ? "animate-spin" : ""} w-5 float-end text-icon transition-transform`}
-                />
-              </button>
-            </div>
+            <button
+              type="button"
+              className="rounded-full"
+              aria-label="Refresh"
+              onClick={() => query.refetch()}
+            >
+              <RefreshCw
+                className={`${query.isFetching ? "animate-spin" : ""} w-5 float-end text-icon transition-transform`}
+              />
+            </button>
           </motion.div>
 
           <QueryErrorResetBoundary>
@@ -167,20 +149,10 @@ export default function Home() {
               >
                 <>
                   <div className="md:hidden space-y-3">
-                    <RecentCard showAll={showAll} />
+                    <RecentCard />
                   </div>
-                  <Table className="w-full table-fixed hidden md:table">
-                    <TableHeader>
-                      <TableRow className="text-left font-sans border-b border-background-secondary">
-                        {tableHeaders.map((item, i) => (
-                          <TableHead className="w-[20%]" key={i.toString()}>
-                            <small>{item}</small>
-                          </TableHead>
-                        ))}
-                      </TableRow>
-                    </TableHeader>
-                    <RecentBlocks showAll={showAll} />
-                  </Table>
+
+                  <RecentBlocks />
                 </>
               </ErrorBoundary>
             )}
