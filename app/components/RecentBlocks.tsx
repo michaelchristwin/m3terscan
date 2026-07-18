@@ -67,9 +67,11 @@ function RecentBlocks({}: RecentBlocksProps) {
 
     return rows.slice(start, end);
   }, [rows, currentPage]);
+
   useEffect(() => {
     setCurrentPage(1);
-  }, [rows]);
+  }, [rows, isRefetching]);
+
   if (isLoading) return <TableSkeleton2 />;
 
   if (isSuccess)
@@ -163,7 +165,7 @@ function RecentBlocks({}: RecentBlocksProps) {
                 </AnimatePresence>
               </TableBody>
             </Table>
-            <Pagination className="mx-auto mt-4">
+            <Pagination className="mx-auto mt-4 hidden md:flex">
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
