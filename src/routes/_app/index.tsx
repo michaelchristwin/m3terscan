@@ -1,0 +1,162 @@
+import { refreshRecentBlocks } from "~/queries/meterscan.queries";
+import { motion } from "motion/react";
+import { Line } from "react-chartjs-2";
+import useStyle from "~/hooks/useStyle";
+import RecentCard from "~/components/RecentCard";
+import Statistics from "~/components/Statistics";
+import { type ChartOptions } from "chart.js/auto";
+import { TrendingUp, RefreshCw } from "lucide-react";
+import { ErrorBoundary } from "react-error-boundary";
+import RecentBlocks from "~/components/RecentBlocks";
+import { QueryErrorResetBoundary, useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { queryClient } from "~/queries/query-client";
+
+export const Route = createFileRoute("/_app/")({
+  component: Index,
+});
+
+function Index() {
+  const icon = useStyle("--icon");
+  const data = {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    datasets: [
+      {
+        label: "First Line",
+        data: [10, 25, 15, 30, 22, 40],
+        borderColor: icon || "#FD8852",
+        backgroundColor: icon || "#FD8852",
+        borderWidth: 1,
+        pointRadius: 0,
+      },
+      {
+        label: "Second Line",
+        data: [5, 15, 10, 20, 12, 25],
+        borderColor: "#00FF00",
+        backgroundColor: "#00FF00",
+        borderDash: [6, 6], // <-- dashed line
+        borderWidth: 1,
+        pointRadius: 0,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top" as const,
+        labels: {
+          usePointStyle: true,
+          pointStyle: "circle",
+        },
+      },
+      tooltip: {
+        enabled: true,
+        mode: "nearest" as const, // ✅ literal type, not just string
+        intersect: false,
+        backgroundColor: "rgba(0,0,0,0.7)",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+      },
+    },
+    scales: {
+      x: { grid: { display: false } },
+      y: { grid: { display: false } },
+    },
+  } satisfies ChartOptions<"line">;
+
+  const query = useQuery({
+    queryKey: ["refreshRecentBlocks"],
+    queryFn: async () => {
+      await refreshRecentBlocks();
+      await queryClient.refetchQueries({
+        queryKey: ["recentBlocks"],
+        type: "active",
+        exact: true,
+      });
+    },
+    enabled: false,
+  });
+  return (
+    <main className="w-full h-full md:px-15 px-5 mt-10">
+      <title>M3terscan</title>
+      <meta
+        name="description"
+        content="M3terscan is a fast energy usage analytics platform that aggregates meter data into clear daily, weekly, and yearly insights for monitoring consumption and performance."
+      />
+      <Statistics />
+
+      <div className="mt-9.5 w-full">
+        <div className="gap-y-3.25">
+          <p className="text-[20px] font-normal">Total revenue</p>
+          <div className="gap-x-[3.41px] flex items-center">
+            <p className="font-medium text-[24px]">$25K</p>
+            <div className="flex items-center justify-center gap-x-0.5 w-[43.09px] h-[16.59px] bg-[#B1FF3B] rounded-[3.87px] p-[5.53px]">
+              <p className="font-light text-[8px] text-black">20.0%</p>
+              <TrendingUp size={8} />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="h-90 bg-background-primary p-6 rounded-2xl">
+        <Line data={data} options={options} />
+      </div>
+      <div className="mt-20 space-y-3">
+        <h3 className="text-xl">Recent Proposals</h3>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="bg-background-primary text-text-secondary rounded-xl p-4 relative"
+        >
+          <motion.div className="flex justify-end items-center mb-4">
+            <button
+              type="button"
+              className="rounded-full"
+              aria-label="Refresh"
+              onClick={() => query.refetch()}
+            >
+              <RefreshCw
+                className={`${query.isFetching ? "animate-spin" : ""} w-5 float-end text-icon transition-transform`}
+              />
+            </button>
+          </motion.div>
+
+          <QueryErrorResetBoundary>
+            {({ reset }) => (
+              <ErrorBoundary
+                onReset={reset}
+                fallbackRender={({ resetErrorBoundary }) => (
+                  <div className="w-full block">
+                    <div className="flex items-center space-x-2 mx-auto w-fit">
+                      <p className="text-red-500 text-sm italic">
+                        Something went wrong
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => resetErrorBoundary()}
+                      className="w-fit p-2 mx-auto block"
+                    >
+                      Try again
+                    </button>
+                  </div>
+                )}
+              >
+                <>
+                  <div className="md:hidden space-y-3">
+                    <RecentCard />
+                  </div>
+
+                  <RecentBlocks />
+                </>
+              </ErrorBoundary>
+            )}
+          </QueryErrorResetBoundary>
+        </motion.div>
+      </div>
+    </main>
+  );
+}

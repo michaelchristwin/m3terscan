@@ -1,0 +1,156 @@
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+scalar BigInt
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type ViewPageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+
+type Meta {
+  status: JSON
+}
+
+type Query {
+  commit(chainLength: BigInt!, txHash: String!): commit
+  commits(where: commitFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int, offset: Int): commitPage!
+  meterState(chainLength: BigInt!, txHash: String!, meterNo: Float!): meterState
+  meterStates(where: meterStateFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int, offset: Int): meterStatePage!
+  _meta: Meta
+}
+
+type commit {
+  chainLength: BigInt!
+  txHash: String!
+  blockTime: BigInt!
+  blockNumber: BigInt!
+  sender: String!
+  state(where: meterStateFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int, offset: Int): meterStatePage
+}
+
+type meterStatePage {
+  items: [meterState!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type meterState {
+  chainLength: BigInt!
+  txHash: String!
+  meterNo: Int!
+  account: BigInt!
+  nonce: BigInt!
+  commit: commit
+}
+
+input meterStateFilter {
+  AND: [meterStateFilter]
+  OR: [meterStateFilter]
+  chainLength: BigInt
+  chainLength_not: BigInt
+  chainLength_in: [BigInt]
+  chainLength_not_in: [BigInt]
+  chainLength_gt: BigInt
+  chainLength_lt: BigInt
+  chainLength_gte: BigInt
+  chainLength_lte: BigInt
+  txHash: String
+  txHash_not: String
+  txHash_in: [String]
+  txHash_not_in: [String]
+  txHash_contains: String
+  txHash_not_contains: String
+  txHash_starts_with: String
+  txHash_ends_with: String
+  txHash_not_starts_with: String
+  txHash_not_ends_with: String
+  meterNo: Int
+  meterNo_not: Int
+  meterNo_in: [Int]
+  meterNo_not_in: [Int]
+  meterNo_gt: Int
+  meterNo_lt: Int
+  meterNo_gte: Int
+  meterNo_lte: Int
+  account: BigInt
+  account_not: BigInt
+  account_in: [BigInt]
+  account_not_in: [BigInt]
+  account_gt: BigInt
+  account_lt: BigInt
+  account_gte: BigInt
+  account_lte: BigInt
+  nonce: BigInt
+  nonce_not: BigInt
+  nonce_in: [BigInt]
+  nonce_not_in: [BigInt]
+  nonce_gt: BigInt
+  nonce_lt: BigInt
+  nonce_gte: BigInt
+  nonce_lte: BigInt
+}
+
+type commitPage {
+  items: [commit!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input commitFilter {
+  AND: [commitFilter]
+  OR: [commitFilter]
+  chainLength: BigInt
+  chainLength_not: BigInt
+  chainLength_in: [BigInt]
+  chainLength_not_in: [BigInt]
+  chainLength_gt: BigInt
+  chainLength_lt: BigInt
+  chainLength_gte: BigInt
+  chainLength_lte: BigInt
+  txHash: String
+  txHash_not: String
+  txHash_in: [String]
+  txHash_not_in: [String]
+  txHash_contains: String
+  txHash_not_contains: String
+  txHash_starts_with: String
+  txHash_ends_with: String
+  txHash_not_starts_with: String
+  txHash_not_ends_with: String
+  blockTime: BigInt
+  blockTime_not: BigInt
+  blockTime_in: [BigInt]
+  blockTime_not_in: [BigInt]
+  blockTime_gt: BigInt
+  blockTime_lt: BigInt
+  blockTime_gte: BigInt
+  blockTime_lte: BigInt
+  blockNumber: BigInt
+  blockNumber_not: BigInt
+  blockNumber_in: [BigInt]
+  blockNumber_not_in: [BigInt]
+  blockNumber_gt: BigInt
+  blockNumber_lt: BigInt
+  blockNumber_gte: BigInt
+  blockNumber_lte: BigInt
+  sender: String
+  sender_not: String
+  sender_in: [String]
+  sender_not_in: [String]
+  sender_contains: String
+  sender_not_contains: String
+  sender_starts_with: String
+  sender_ends_with: String
+  sender_not_starts_with: String
+  sender_not_ends_with: String
+}
