@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "~/queries/query-client";
-import { Client, Provider } from "urql";
+import { Client, Provider, cacheExchange, fetchExchange } from "urql";
 import "./styles.css";
 
 // Import the generated route tree
@@ -11,7 +11,8 @@ import { routeTree } from "./routeTree.gen";
 
 const client = new Client({
   url: "https://ponder.m3ter.ing/graphql",
-  exchanges: [],
+  exchanges: [cacheExchange, fetchExchange],
+  preferGetMethod: false,
 });
 // Create a new router instance
 const router = createRouter({ routeTree });

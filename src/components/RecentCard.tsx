@@ -1,106 +1,82 @@
 import { format } from "date-fns";
 import { ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { Link } from "react-router";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationEllipsis,
-} from "~/components/ui/pagination";
-import { getRecentBlocks } from "~/queries/meterscan.queries";
+import { Link } from "@tanstack/react-router";
+import { useQuery } from "urql";
+import { useState } from "react";
 
-// Mobile Card Component
+import { PaginationBar } from "~/components/PaginationBar";
+import { commitsQuery } from "~/queries/meterscan.queries";
+
+const PAGE_SIZE = 10;
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.05, duration: 0.3 },
+  }),
+};
+
+const shorten = (hash: string) => `${hash.slice(0, 9)}…${hash.slice(-9)}`;
+
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="mb-3 last:mb-0">
+      <div className="text-xs text-text-secondary mb-1">{label}</div>
+      {children}
+    </div>
+  );
+}
+
+// Mobile card list
 const RecentCard = () => {
-  const { data, isRefetching } = useQuery({
-    queryKey: ["recentBlocks"],
-    queryFn: async () => {
-      return await getRecentBlocks();
-    },
+  const [page, setPage] = useState(1);
+
+  const [{ data, fetching }] = useQuery({
+    query: commitsQuery,
+    variables: { limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE },
   });
 
-  const cardVariants = (index: number) => {
-    return {
-      hidden: { opacity: 0, y: 20 },
-      visible: {
-        opacity: 1,
-        y: 0,
-        transition: { delay: index * 0.05, duration: 0.3 },
-      },
-    };
-  };
-  const ITEMS_PER_PAGE = 10;
-
-  const rows = useMemo(() => {
-    if (!data) return [];
-
-    return [...data].reverse();
-  }, [data]);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const totalPages = Math.ceil(rows.length / ITEMS_PER_PAGE);
-  const paginatedRows = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE;
-
-    return rows.slice(start, end);
-  }, [rows, currentPage]);
-  const paginationItems = useMemo(() => {
-    if (totalPages <= 5) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
-    }
-
-    const items: (number | "ellipsis")[] = [];
-
-    // Beginning
-    if (currentPage <= 3) {
-      items.push(1, 2, 3, "ellipsis", totalPages);
-      return items;
-    }
-
-    // End
-    if (currentPage >= totalPages - 2) {
-      items.push(1, "ellipsis", totalPages - 2, totalPages - 1, totalPages);
-      return items;
-    }
-
-    // Middle
-    items.push(
-      1,
-      "ellipsis",
-      currentPage - 1,
-      currentPage,
-      currentPage + 1,
-      "ellipsis",
-      totalPages,
+  if (fetching) {
+    return (
+      <div className="space-y-4" aria-busy="true">
+        {Array.from({ length: 3 }, (_, i) => (
+          <div
+            key={i}
+            className="h-56 animate-pulse rounded-lg bg-background-secondary"
+          />
+        ))}
+      </div>
     );
+  }
 
-    return items;
-  }, [currentPage, totalPages]);
+  if (!data) return null;
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [rows, isRefetching]);
+  const { items, totalCount } = data.commits;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+
   return (
-    <AnimatePresence mode="sync">
-      {rows.length > 0 ? (
-        <>
-          {paginatedRows.map((block, index) => (
+    <>
+      <AnimatePresence mode="sync">
+        {items.length > 0 ? (
+          items.map(({ sender, blockTime, txHash }, index) => (
             <motion.div
+              key={txHash}
               custom={index}
               initial="hidden"
               animate="visible"
-              key={index.toString()}
               exit="hidden"
-              variants={cardVariants(index)}
-              className="bg-background-primary border border-background-secondary rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
+              variants={cardVariants}
+              className="mb-4 bg-background-primary border border-background-secondary rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
             >
-              {/* Header with Status */}
               <div className="flex justify-between items-start mb-3 pb-3 border-b border-background-secondary">
                 <div className="flex-1 min-w-0">
                   <div className="text-xs text-text-secondary mb-1">
@@ -109,128 +85,74 @@ const RecentCard = () => {
                   <Link
                     aria-label="Open proposal page"
                     viewTransition
-                    to={`/proposal/${block.hash}`}
-                    prefetch="viewport"
+                    to="/proposal/$hash"
+                    params={{ hash: txHash }}
+                    preload="intent"
                     className="text-icon underline roboto-mono text-sm font-medium block truncate"
                   >
-                    {block.hash.slice(0, 9)}…{block.hash.slice(-9)}
+                    {shorten(txHash)}
                   </Link>
                 </div>
                 <span
                   className={`ml-3 px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
-                    block.transaction_status
+                    blockTime
                       ? "bg-success/10 text-success"
                       : "bg-invalid/10 text-invalid"
                   }`}
                 >
-                  Successful
+                  Accepted
                 </span>
               </div>
 
-              {/* From Address */}
-              <div className="mb-3">
-                <div className="text-xs text-text-secondary mb-1">Proposer</div>
-                <div className="text-sm">
-                  <span className="whitespace-nowrap roboto-mono md:hidden block">
-                    {`${block.from.slice(0, 9)}…${block.from.slice(-9)}`}
-                  </span>
+              <Field label="Proposer">
+                <div className="text-sm whitespace-nowrap roboto-mono">
+                  {shorten(sender)}
                 </div>
-              </div>
+              </Field>
 
-              {/* Timestamp */}
-              <div className="mb-3">
-                <div className="text-xs text-text-secondary mb-1">Time</div>
+              <Field label="Time">
                 <div className="text-sm text-text-primary">
                   {format(
-                    new Date(block.block_time),
+                    new Date(Number(blockTime) * 1000),
                     "MMM d, yyyy 'at' h:mm a",
                   )}
                 </div>
-              </div>
+              </Field>
 
-              {/* Etherscan Link */}
-              <div>
-                <div className="text-xs text-text-secondary mb-1">
-                  View on Etherscan
-                </div>
-                <Link
+              <Field label="View on Etherscan">
+                <a
                   aria-label="Open transaction in etherscan"
-                  viewTransition
-                  to={`https://sepolia.etherscan.io/tx/${block.hash}`}
+                  href={`https://sepolia.etherscan.io/tx/${txHash}`}
                   target="_blank"
-                  prefetch="viewport"
+                  rel="noreferrer"
                   className="inline-flex items-center space-x-2 text-[rgb(106,181,219)] underline roboto-mono text-sm"
                 >
-                  <span>
-                    {block.hash.slice(0, 9)}…{block.hash.slice(-9)}
-                  </span>
+                  <span>{shorten(txHash)}</span>
                   <ExternalLink size={14} />
-                </Link>
-              </div>
+                </a>
+              </Field>
             </motion.div>
-          ))}
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage > 1) {
-                      setCurrentPage((p) => p - 1);
-                    }
-                  }}
-                />
-              </PaginationItem>
+          ))
+        ) : (
+          <motion.div
+            key="empty"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="text-center py-8 text-sm text-text-secondary"
+          >
+            No blocks match your filters
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-              {paginationItems.map((item, index) =>
-                item === "ellipsis" ? (
-                  <PaginationItem key={`ellipsis-${index}`}>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                ) : (
-                  <PaginationItem key={item}>
-                    <PaginationLink
-                      href="#"
-                      isActive={currentPage === item}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setCurrentPage(item);
-                      }}
-                    >
-                      {item}
-                    </PaginationLink>
-                  </PaginationItem>
-                ),
-              )}
-
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage < totalPages) {
-                      setCurrentPage((p) => p + 1);
-                    }
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </>
-      ) : (
-        <motion.div
-          key="empty"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="text-center py-8 text-sm text-text-secondary"
-        >
-          No blocks match your filters
-        </motion.div>
-      )}
-    </AnimatePresence>
+      <PaginationBar
+        page={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
+    </>
   );
 };
 

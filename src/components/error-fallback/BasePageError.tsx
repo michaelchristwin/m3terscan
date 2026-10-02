@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useRouter } from "@tanstack/react-router";
 import { useState, type JSX } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { AlertCircle, ChevronDown } from "lucide-react";
@@ -9,7 +9,7 @@ export function BasePageError({
   resetErrorBoundary,
 }: FallbackProps): JSX.Element {
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <div className="flex min-h-[calc(100vh-100px)] flex-col items-center justify-center px-6 text-center">
@@ -48,6 +48,7 @@ export function BasePageError({
           >
             <div className="mt-3 w-full max-w-md rounded-md border border-[oklch(85%_0.06_25)] bg-[oklch(90%_0.05_25)] p-3 text-left">
               <pre className="text-xs leading-relaxed text-[oklch(35%_0.05_25)] whitespace-pre-wrap wrap-break-word">
+                {/* @ts-ignore */}
                 {error.message}
               </pre>
             </div>
@@ -65,7 +66,7 @@ export function BasePageError({
 
         <button
           className="rounded-md border px-4 py-2"
-          onClick={() => navigate(-1)}
+          onClick={() => router.history.back()}
         >
           Go Back
         </button>

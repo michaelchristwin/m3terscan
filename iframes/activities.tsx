@@ -7,13 +7,13 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { m3terClient } from "~/config/m3terClient";
+
 import { Suspense } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { formatAddress } from "~/lib/utils";
 import TableSkeleton from "~/components/skeletons/TableSkeleton";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useSearchParams } from "react-router";
+import { useSearchParams } from "";
 import { decodeParam } from "~/lib/query-utils";
 const MotionTableRow = motion.create(TableRow);
 

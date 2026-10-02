@@ -1,47 +1,59 @@
 import { graphql } from "../graphql";
+import { client } from "~/client/client.gen";
+import {
+  getDailyMeterMeterIdDailyGet,
+  getMonthOfYearMeterMeterIdMonthMonthYearGet,
+  getWeeksOfYearMeterMeterIdWeeksYearGet,
+  getActivitiesMeterMeterIdActivitiesGet,
+  getProposalProposalTxHashGet,
+} from "~/client/sdk.gen";
 import { queryOptions } from "@tanstack/react-query";
-import { Configuration, MeterApi, ProposalApi } from "~/api-sdk";
 
-const config = new Configuration({
-  basePath: import.meta.env.VITE_API_URL,
-});
+export const M3TERSCAN_API = import.meta.env.VITE_API_URL;
 
-const meterApi = new MeterApi(config);
-const proposalApi = new ProposalApi(config);
+client.setConfig({ baseUrl: M3TERSCAN_API });
 
 export const meterQueries = {
   getDaily: (meterId: number) =>
     queryOptions({
       queryKey: ["getDaily", meterId],
       queryFn: () =>
-        meterApi.getDailyMeterMeterIdDailyGet(meterId).then((r) => r.data),
+        getDailyMeterMeterIdDailyGet({ path: { meter_id: meterId } }).then(
+          (r) => r.data,
+        ),
     }),
 
   getMonthOfYear: (meterId: number, year: number, month: number) =>
     queryOptions({
       queryKey: ["getMonthOfYear", meterId, year, month],
       queryFn: () =>
-        meterApi
-          .getMonthOfYearMeterMeterIdMonthMonthYearGet(meterId, year, month)
-          .then((r) => r.data),
+        getMonthOfYearMeterMeterIdMonthMonthYearGet({
+          path: { meter_id: meterId, month, year },
+        }).then((r) => r.data),
     }),
 
   getWeeksOfYear: (meterId: number, year: number) =>
     queryOptions({
       queryKey: ["getWeeksOfYear", meterId, year],
       queryFn: () =>
-        meterApi
-          .getWeeksOfYearMeterMeterIdWeeksYearGet(meterId, year)
-          .then((r) => r.data),
+        getWeeksOfYearMeterMeterIdWeeksYearGet({
+          path: { meter_id: meterId, year },
+        }).then((r) => r.data),
     }),
 
   getActivities: (meterId: number, after?: string, limit?: number) =>
     queryOptions({
       queryKey: ["getActivities", meterId, after, limit],
       queryFn: () =>
-        meterApi
-          .getActivitiesMeterMeterIdActivitiesGet(meterId, after, limit)
-          .then((r) => r.data),
+        getActivitiesMeterMeterIdActivitiesGet({
+          path: {
+            meter_id: meterId,
+          },
+          query: {
+            after,
+            limit,
+          },
+        }).then((r) => r.data),
     }),
 };
 
@@ -50,13 +62,20 @@ export const proposalQueries = {
     queryOptions({
       queryKey: ["getProposals", txHash],
       queryFn: () =>
-        proposalApi.getProposalProposalTxHashGet(txHash).then((r) => r.data),
+        getProposalProposalTxHashGet({ path: { tx_hash: txHash } }).then(
+          (r) => r.data,
+        ),
     }),
 };
 
 export const commitsQuery = graphql(`
   query CommitsList($limit: Int = 10, $offset: Int = 0) {
-    commits(limit: $limit, offset: $offset) {
+    commits(
+      limit: $limit
+      offset: $offset
+      orderBy: "blockTime"
+      orderDirection: "DESC"
+    ) {
       items {
         txHash
         blockTime

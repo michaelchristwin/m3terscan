@@ -93,11 +93,12 @@ function Proposals({ hash }: { hash: string }) {
                 className="bg-card rounded-lg shadow-sm hover:shadow-md transition-shadow p-5"
               >
                 <Link
-                  prefetch="viewport"
-                  to={{
-                    pathname: `/m3ter/${meter.m3ter_no}`,
-                    search: searchParams.toString(),
+                  preload="intent"
+                  to={`/m3ter/$m3terId/charts`}
+                  params={{
+                    m3terId: meter.m3ter_no,
                   }}
+                  search={(prev) => ({ ...prev })}
                   className="flex items-center gap-3 mb-4 p-1 border-l-2 border-transparent transition-all duration-200 hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/20"
                 >
                   <M3terHead seed={meter.m3ter_no.toString()} size={40} />
@@ -174,11 +175,12 @@ function Proposals({ hash }: { hash: string }) {
                 className="p-4 hover:bg-slate-50 dark:hover:bg-slate-50/10 transition-colors"
               >
                 <Link
-                  to={{
-                    pathname: `/m3ter/${meter.m3ter_no}`,
-                    search: searchParams.toString(),
+                  preload="intent"
+                  to={`/m3ter/$m3terId/charts`}
+                  params={{
+                    m3terId: meter.m3ter_no,
                   }}
-                  prefetch="viewport"
+                  search={(prev) => ({ ...prev })}
                 >
                   <div className="flex items-center gap-4">
                     <M3terHead seed={meter.m3ter_no.toString()} size={40} />
@@ -269,15 +271,21 @@ function Proposals({ hash }: { hash: string }) {
                       tabIndex={0}
                       onClick={() =>
                         navigate({
-                          pathname: `/m3ter/${meter.m3ter_no}`,
-                          search: searchParams.toString(),
+                          to: "/m3ter/$m3terId/charts",
+                          params: {
+                            m3terId: meter.m3ter_no,
+                          },
+                          search: (prev) => ({ thm: prev }),
                         })
                       }
                       onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ")
                           navigate({
-                            pathname: `/m3ter/${meter.m3ter_no}`,
-                            search: searchParams.toString(),
+                            to: "/m3ter/$m3terId/charts",
+                            params: {
+                              m3terId: meter.m3ter_no,
+                            },
+                            search: (prev) => ({ thm: prev }),
                           });
                       }}
                       key={meter.m3ter_no}

@@ -8,14 +8,14 @@ const TableSkeleton = ({ rows = 5, columns = 5 }) => {
               <Skeleton
                 className={`h-4 ${
                   colIndex === 0
-                    ? "w-full max-w-[120px]"
+                    ? "w-full max-w-30"
                     : colIndex === 1
-                      ? "w-full max-w-[80px]"
+                      ? "w-full max-w-20"
                       : colIndex === 2
-                        ? "w-full max-w-[220px]"
+                        ? "w-full max-w-55"
                         : colIndex === 3
-                          ? "w-full max-w-[100px]"
-                          : "w-full max-w-[60px]"
+                          ? "w-full max-w-25"
+                          : "w-full max-w-15"
                 }`}
               />
             </td>

@@ -10,8 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
-import { Route as M3terRouteImport } from './routes/m3ter'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as M3terM3terIdRouteRouteImport } from './routes/m3ter/$m3terId/route'
 import { Route as AppProposalHashRouteImport } from './routes/_app/proposal/$hash'
 import { Route as AppProposalLatestRouteImport } from './routes/_app/proposal/latest'
 import { Route as M3terM3terIdActivitiesRouteImport } from './routes/m3ter/$m3terId/activities'
@@ -24,15 +24,15 @@ const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const M3terRoute = M3terRouteImport.update({
-  id: '/m3ter',
-  path: '/m3ter',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const M3terM3terIdRouteRoute = M3terM3terIdRouteRouteImport.update({
+  id: '/m3ter/$m3terId',
+  path: '/m3ter/$m3terId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppProposalHashRoute = AppProposalHashRouteImport.update({
   id: '/proposal/$hash',
@@ -45,34 +45,34 @@ const AppProposalLatestRoute = AppProposalLatestRouteImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 const M3terM3terIdActivitiesRoute = M3terM3terIdActivitiesRouteImport.update({
-  id: '/$m3terId/activities',
-  path: '/$m3terId/activities',
-  getParentRoute: () => M3terRoute,
+  id: '/activities',
+  path: '/activities',
+  getParentRoute: () => M3terM3terIdRouteRoute,
 } as any)
 const M3terM3terIdAskAiRoute = M3terM3terIdAskAiRouteImport.update({
-  id: '/$m3terId/ask-ai',
-  path: '/$m3terId/ask-ai',
-  getParentRoute: () => M3terRoute,
+  id: '/ask-ai',
+  path: '/ask-ai',
+  getParentRoute: () => M3terM3terIdRouteRoute,
 } as any)
 const M3terM3terIdChartsRoute = M3terM3terIdChartsRouteImport.update({
-  id: '/$m3terId/charts',
-  path: '/$m3terId/charts',
-  getParentRoute: () => M3terRoute,
+  id: '/charts',
+  path: '/charts',
+  getParentRoute: () => M3terM3terIdRouteRoute,
 } as any)
 const M3terM3terIdOverviewRoute = M3terM3terIdOverviewRouteImport.update({
-  id: '/$m3terId/overview',
-  path: '/$m3terId/overview',
-  getParentRoute: () => M3terRoute,
+  id: '/overview',
+  path: '/overview',
+  getParentRoute: () => M3terM3terIdRouteRoute,
 } as any)
 const M3terM3terIdTradesRoute = M3terM3terIdTradesRouteImport.update({
-  id: '/$m3terId/trades',
-  path: '/$m3terId/trades',
-  getParentRoute: () => M3terRoute,
+  id: '/trades',
+  path: '/trades',
+  getParentRoute: () => M3terM3terIdRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
-  '/m3ter': typeof M3terRouteWithChildren
+  '/m3ter/$m3terId': typeof M3terM3terIdRouteRouteWithChildren
   '/proposal/$hash': typeof AppProposalHashRoute
   '/proposal/latest': typeof AppProposalLatestRoute
   '/m3ter/$m3terId/activities': typeof M3terM3terIdActivitiesRoute
@@ -82,7 +82,7 @@ export interface FileRoutesByFullPath {
   '/m3ter/$m3terId/trades': typeof M3terM3terIdTradesRoute
 }
 export interface FileRoutesByTo {
-  '/m3ter': typeof M3terRouteWithChildren
+  '/m3ter/$m3terId': typeof M3terM3terIdRouteRouteWithChildren
   '/': typeof AppIndexRoute
   '/proposal/$hash': typeof AppProposalHashRoute
   '/proposal/latest': typeof AppProposalLatestRoute
@@ -95,7 +95,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
-  '/m3ter': typeof M3terRouteWithChildren
+  '/m3ter/$m3terId': typeof M3terM3terIdRouteRouteWithChildren
   '/_app/': typeof AppIndexRoute
   '/_app/proposal/$hash': typeof AppProposalHashRoute
   '/_app/proposal/latest': typeof AppProposalLatestRoute
@@ -109,7 +109,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/m3ter'
+    | '/m3ter/$m3terId'
     | '/proposal/$hash'
     | '/proposal/latest'
     | '/m3ter/$m3terId/activities'
@@ -119,7 +119,7 @@ export interface FileRouteTypes {
     | '/m3ter/$m3terId/trades'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/m3ter'
+    | '/m3ter/$m3terId'
     | '/'
     | '/proposal/$hash'
     | '/proposal/latest'
@@ -131,7 +131,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
-    | '/m3ter'
+    | '/m3ter/$m3terId'
     | '/_app/'
     | '/_app/proposal/$hash'
     | '/_app/proposal/latest'
@@ -144,7 +144,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
-  M3terRoute: typeof M3terRouteWithChildren
+  M3terM3terIdRouteRoute: typeof M3terM3terIdRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -156,19 +156,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/m3ter': {
-      id: '/m3ter'
-      path: '/m3ter'
-      fullPath: '/m3ter'
-      preLoaderRoute: typeof M3terRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_app/': {
       id: '/_app/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/m3ter/$m3terId': {
+      id: '/m3ter/$m3terId'
+      path: '/m3ter/$m3terId'
+      fullPath: '/m3ter/$m3terId'
+      preLoaderRoute: typeof M3terM3terIdRouteRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/proposal/$hash': {
       id: '/_app/proposal/$hash'
@@ -186,38 +186,38 @@ declare module '@tanstack/react-router' {
     }
     '/m3ter/$m3terId/activities': {
       id: '/m3ter/$m3terId/activities'
-      path: '/$m3terId/activities'
+      path: '/activities'
       fullPath: '/m3ter/$m3terId/activities'
       preLoaderRoute: typeof M3terM3terIdActivitiesRouteImport
-      parentRoute: typeof M3terRoute
+      parentRoute: typeof M3terM3terIdRouteRoute
     }
     '/m3ter/$m3terId/ask-ai': {
       id: '/m3ter/$m3terId/ask-ai'
-      path: '/$m3terId/ask-ai'
+      path: '/ask-ai'
       fullPath: '/m3ter/$m3terId/ask-ai'
       preLoaderRoute: typeof M3terM3terIdAskAiRouteImport
-      parentRoute: typeof M3terRoute
+      parentRoute: typeof M3terM3terIdRouteRoute
     }
     '/m3ter/$m3terId/charts': {
       id: '/m3ter/$m3terId/charts'
-      path: '/$m3terId/charts'
+      path: '/charts'
       fullPath: '/m3ter/$m3terId/charts'
       preLoaderRoute: typeof M3terM3terIdChartsRouteImport
-      parentRoute: typeof M3terRoute
+      parentRoute: typeof M3terM3terIdRouteRoute
     }
     '/m3ter/$m3terId/overview': {
       id: '/m3ter/$m3terId/overview'
-      path: '/$m3terId/overview'
+      path: '/overview'
       fullPath: '/m3ter/$m3terId/overview'
       preLoaderRoute: typeof M3terM3terIdOverviewRouteImport
-      parentRoute: typeof M3terRoute
+      parentRoute: typeof M3terM3terIdRouteRoute
     }
     '/m3ter/$m3terId/trades': {
       id: '/m3ter/$m3terId/trades'
-      path: '/$m3terId/trades'
+      path: '/trades'
       fullPath: '/m3ter/$m3terId/trades'
       preLoaderRoute: typeof M3terM3terIdTradesRouteImport
-      parentRoute: typeof M3terRoute
+      parentRoute: typeof M3terM3terIdRouteRoute
     }
   }
 }
@@ -236,7 +236,7 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
-interface M3terRouteChildren {
+interface M3terM3terIdRouteRouteChildren {
   M3terM3terIdActivitiesRoute: typeof M3terM3terIdActivitiesRoute
   M3terM3terIdAskAiRoute: typeof M3terM3terIdAskAiRoute
   M3terM3terIdChartsRoute: typeof M3terM3terIdChartsRoute
@@ -244,7 +244,7 @@ interface M3terRouteChildren {
   M3terM3terIdTradesRoute: typeof M3terM3terIdTradesRoute
 }
 
-const M3terRouteChildren: M3terRouteChildren = {
+const M3terM3terIdRouteRouteChildren: M3terM3terIdRouteRouteChildren = {
   M3terM3terIdActivitiesRoute: M3terM3terIdActivitiesRoute,
   M3terM3terIdAskAiRoute: M3terM3terIdAskAiRoute,
   M3terM3terIdChartsRoute: M3terM3terIdChartsRoute,
@@ -252,11 +252,12 @@ const M3terRouteChildren: M3terRouteChildren = {
   M3terM3terIdTradesRoute: M3terM3terIdTradesRoute,
 }
 
-const M3terRouteWithChildren = M3terRoute._addFileChildren(M3terRouteChildren)
+const M3terM3terIdRouteRouteWithChildren =
+  M3terM3terIdRouteRoute._addFileChildren(M3terM3terIdRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
-  M3terRoute: M3terRouteWithChildren,
+  M3terM3terIdRouteRoute: M3terM3terIdRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

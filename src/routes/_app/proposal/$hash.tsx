@@ -27,5 +27,3 @@ function Proposal() {
     </div>
   );
 }
-
-export default Proposal;

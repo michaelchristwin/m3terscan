@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
-import { useParams, Link, useSearch } from "@tanstack/react-router";
+import { useParams, Link } from "@tanstack/react-router";
 import {
   ChartLine,
   Activity,
@@ -48,14 +48,14 @@ const data = (m3terId: string) => {
   return navMain;
 };
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const {} = useSearch({ from: "/_app/" });
-  const { m3terId } = useParams({ from: "/_app/" });
+  const { m3terId } = useParams({ from: "/m3ter/$m3terId" });
 
   return (
     <Sidebar {...props}>
       <SidebarHeader className="h-25 p-3">
         <Link
-          to={{ pathname: "/", search: searchParams.toString() }}
+          to="/"
+          search={(prev) => ({ ...prev })}
           className="w-11.25 font-semibold text-[12px] h-11.25 rounded-full bg-background-primary flex items-center justify-center"
         >
           <img src="/m3terhead.webp" alt="M3terhead" className="w-10 h-10" />
@@ -67,7 +67,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuItem key={item.title} title={item.title}>
               <Link
                 to={item.url}
-                search={}
+                search={(prev) => ({ ...prev })}
                 className="text-[13px] gap-2.25 flex items-center"
               >
                 {({ isActive }) => (

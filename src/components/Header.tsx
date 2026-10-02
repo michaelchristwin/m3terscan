@@ -1,22 +1,18 @@
-import { Link, useSearchParams } from "react-router";
+import { Link } from "@tanstack/react-router";
 import { ModeToggle } from "./mode-toggle";
 
 function Header() {
-  const [searchParams] = useSearchParams();
   return (
     <header className="sticky top-0 z-50 backdrop-blur-sm bg-opacity-90 px-4 w-full h-10">
       <div className="mx-auto w-full">
         <div className="flex items-center justify-between gap-2 py-2 md:py-3">
           <div className="shrink-0">
             <Link
-              to={{ pathname: "/", search: searchParams.toString() }}
+              to="/"
+              search={(prev) => ({ ...prev })}
               className="w-11.5 font-semibold text-[12px] h-full rounded-full bg-background-primary flex items-center justify-center"
             >
-              <img
-                src="/m3terhead.webp"
-                alt="M3terhead"
-                className="w-9 h-9"
-              />
+              <img src="/m3terhead.webp" alt="M3terhead" className="w-9 h-9" />
             </Link>
           </div>
 

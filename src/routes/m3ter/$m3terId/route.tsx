@@ -7,7 +7,9 @@ import {
   SidebarTrigger,
 } from "~/components/ui/sidebar";
 
-export const Route = createFileRoute("/m3ter")({ component: M3terLayout });
+export const Route = createFileRoute("/m3ter/$m3terId")({
+  component: M3terLayout,
+});
 
 function M3terLayout() {
   return (
