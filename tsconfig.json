@@ -1,28 +1,40 @@
 {
-  "include": [
-    "**/*",
-    "**/.server/**/*",
-    "**/.client/**/*",
-    ".react-router/types/**/*"
-  ],
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "types": ["node", "vite/client"],
     "target": "ES2022",
-    "module": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+
+    "module": "ESNext",
     "moduleResolution": "bundler",
+
     "jsx": "react-jsx",
-    "rootDirs": [".", "./.react-router/types"],
-    "paths": {
-      "~/*": ["./app/*"]
-    },
-    "esModuleInterop": true,
+
+    "strict": true,
+    "noEmit": true,
+
     "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "erasableSyntaxOnly": true,
+
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noEmit": true,
+
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true
-  }
+
+    "types": ["vite/client", "node"],
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"]
+    },
+
+    "plugins": [
+      {
+        "name": "gql.tada/ts-plugin",
+        "schema": "./schema.graphql",
+        "tadaOutputLocation": "./graphql-env.d.ts"
+      }
+    ]
+  },
+  "include": ["./**/*"]
 }
