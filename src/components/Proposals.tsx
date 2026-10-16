@@ -10,11 +10,10 @@ import {
 } from "lucide-react";
 import { M3terHead } from "m3ters";
 import { useState } from "react";
-import { Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { proposalQueries } from "~/queries/meterscan.queries";
 
 function Proposals({ hash }: { hash: string }) {
-  const {} = useSearch({ from: "/_app/proposal/$hash" });
   const [view, setView] = useState("cards");
   const [search, setSearch] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
@@ -41,7 +40,7 @@ function Proposals({ hash }: { hash: string }) {
       </div>
     );
   if (isSuccess) {
-    const filteredData = data.filter((meter) =>
+    const filteredData = data?.filter((meter) =>
       meter.m3ter_no.toString().includes(search),
     );
     return (
@@ -87,7 +86,7 @@ function Proposals({ hash }: { hash: string }) {
         {/* Card View */}
         {view === "cards" && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {filteredData.map((meter) => (
+            {filteredData?.map((meter) => (
               <div
                 key={meter.m3ter_no}
                 className="bg-card rounded-lg shadow-sm hover:shadow-md transition-shadow p-5"
@@ -169,7 +168,7 @@ function Proposals({ hash }: { hash: string }) {
         {/* List View */}
         {view === "list" && (
           <div className="bg-background rounded-lg shadow-sm divide-y">
-            {filteredData.map((meter) => (
+            {filteredData?.map((meter) => (
               <div
                 key={meter.m3ter_no}
                 className="p-4 hover:bg-slate-50 dark:hover:bg-slate-50/10 transition-colors"
@@ -265,7 +264,7 @@ function Proposals({ hash }: { hash: string }) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
-                  {filteredData.map((meter) => (
+                  {filteredData?.map((meter) => (
                     <tr
                       role="link"
                       tabIndex={0}
@@ -341,7 +340,7 @@ function Proposals({ hash }: { hash: string }) {
         )}
 
         {/* No Results */}
-        {filteredData.length === 0 && (
+        {filteredData?.length === 0 && (
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
             <div className="text-slate-400 mb-2">
               <Search className="w-12 h-12 mx-auto" />

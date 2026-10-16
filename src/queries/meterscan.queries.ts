@@ -80,8 +80,23 @@ export const commitsQuery = graphql(`
         txHash
         blockTime
         sender
+        chainLength
       }
       totalCount
+    }
+  }
+`);
+
+export const proposalsQuery = graphql(`
+  query ProposalList($txHash: String!, $chainLength: BigInt!) {
+    commit(txHash: $txHash, chainLength: $chainLength) {
+      state {
+        items {
+          meterNo
+          account
+          nonce
+        }
+      }
     }
   }
 `);
