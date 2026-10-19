@@ -88,8 +88,8 @@ export const commitsQuery = graphql(`
 `);
 
 export const proposalsQuery = graphql(`
-  query ProposalList($txHash: String!, $chainLength: BigInt!) {
-    commit(txHash: $txHash, chainLength: $chainLength) {
+  query ProposalList($txHash: String!) {
+    commit(txHash: $txHash) {
       state {
         items {
           meterNo
