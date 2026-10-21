@@ -1,28 +1,12 @@
-import { useQueries } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import { Skeleton } from "./ui/skeleton";
-import { getRecentBlocks, getWorldState } from "~/queries/meterscan.queries";
+import { meterQueries } from "~/queries/meterscan.queries";
 
 function Statistics() {
-  const [worldState, recentBlocks] = useQueries({
-    queries: [
-      {
-        queryKey: ["getWorldState"],
-        queryFn: async () => {
-          return await getWorldState();
-        },
-      },
-      {
-        queryKey: ["recentBlocks"],
-        queryFn: async () => {
-          return await getRecentBlocks();
-        },
-      },
-    ],
-  });
-
-  const isLoading = worldState.isLoading || recentBlocks.isLoading;
-  const isSuccess = worldState.isSuccess && recentBlocks.isSuccess;
+  const { data, isLoading, isSuccess } = useQuery(
+    meterQueries.getLatestCommit(),
+  );
 
   if (isLoading)
     return (
@@ -33,13 +17,13 @@ function Statistics() {
       </div>
     );
 
-  if (isSuccess) {
-    const totatEnergy: number = worldState.data.reduce(
-      (sum: number, item: any) => sum + Number(item.account),
+  if (isSuccess && data) {
+    const totatEnergy: number = data.reduce(
+      (sum, item) => sum + Number(item.account) / 1e6,
       0,
     );
-    const totalNonces: number = worldState.data.reduce(
-      (sum: number, item: any) => sum + Number(item.nonce),
+    const totalNonces: number = data.reduce(
+      (sum, item) => sum + Number(item.nonce),
       0,
     );
     return (
@@ -65,7 +49,7 @@ function Statistics() {
             Total proposals
           </p>
           <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-stat-text">
-            {recentBlocks.data.length}
+            {data[0].chainLength}
           </p>
         </div>
 
@@ -74,7 +58,7 @@ function Statistics() {
             Total active m3ters
           </p>
           <p className="font-medium md:text-[25px] text-[20px] text-text-primary dark:text-stat-text">
-            {worldState.data.length} devices
+            {data.length} devices
           </p>
         </div>
 

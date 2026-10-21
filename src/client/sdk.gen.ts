@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ExecuteRecentBlocksRecentBlocksPostData, ExecuteRecentBlocksRecentBlocksPostResponses, GetActivitiesMeterMeterIdActivitiesGetData, GetActivitiesMeterMeterIdActivitiesGetErrors, GetActivitiesMeterMeterIdActivitiesGetResponses, GetDailyBatchDailyBatchGetData, GetDailyBatchDailyBatchGetErrors, GetDailyBatchDailyBatchGetResponses, GetDailyMeterMeterIdDailyGetData, GetDailyMeterMeterIdDailyGetErrors, GetDailyMeterMeterIdDailyGetResponses, GetMonthOfYearMeterMeterIdMonthMonthYearGetData, GetMonthOfYearMeterMeterIdMonthMonthYearGetErrors, GetMonthOfYearMeterMeterIdMonthMonthYearGetResponses, GetProposalProposalTxHashGetData, GetProposalProposalTxHashGetErrors, GetProposalProposalTxHashGetResponses, GetRecentBlocksRecentBlocksGetData, GetRecentBlocksRecentBlocksGetResponses, GetWeeklyMeterMeterIdWeeklyGetData, GetWeeklyMeterMeterIdWeeklyGetErrors, GetWeeklyMeterMeterIdWeeklyGetResponses, GetWeeksOfYearMeterMeterIdWeeksYearGetData, GetWeeksOfYearMeterMeterIdWeeksYearGetErrors, GetWeeksOfYearMeterMeterIdWeeksYearGetResponses, GetWorldStateWorldStateGetData, GetWorldStateWorldStateGetResponses, ReadRootGetData, ReadRootGetResponses } from './types.gen';
+import type { GetCommitsLatestData, GetCommitsLatestErrors, GetCommitsLatestResponses, OpenapiExecuteRecentBlocksRecentBlocksPostData, OpenapiExecuteRecentBlocksRecentBlocksPostResponses, OpenapiGetActivitiesMeterMeterIdActivitiesGetData, OpenapiGetActivitiesMeterMeterIdActivitiesGetErrors, OpenapiGetActivitiesMeterMeterIdActivitiesGetResponses, OpenapiGetDailyBatchDailyBatchGetData, OpenapiGetDailyBatchDailyBatchGetErrors, OpenapiGetDailyBatchDailyBatchGetResponses, OpenapiGetDailyMeterMeterIdDailyGetData, OpenapiGetDailyMeterMeterIdDailyGetErrors, OpenapiGetDailyMeterMeterIdDailyGetResponses, OpenapiGetMonthOfYearMeterMeterIdMonthMonthYearGetData, OpenapiGetMonthOfYearMeterMeterIdMonthMonthYearGetErrors, OpenapiGetMonthOfYearMeterMeterIdMonthMonthYearGetResponses, OpenapiGetProposalProposalTxHashGetData, OpenapiGetProposalProposalTxHashGetErrors, OpenapiGetProposalProposalTxHashGetResponses, OpenapiGetRecentBlocksRecentBlocksGetData, OpenapiGetRecentBlocksRecentBlocksGetResponses, OpenapiGetWeeklyMeterMeterIdWeeklyGetData, OpenapiGetWeeklyMeterMeterIdWeeklyGetErrors, OpenapiGetWeeklyMeterMeterIdWeeklyGetResponses, OpenapiGetWeeksOfYearMeterMeterIdWeeksYearGetData, OpenapiGetWeeksOfYearMeterMeterIdWeeksYearGetErrors, OpenapiGetWeeksOfYearMeterMeterIdWeeksYearGetResponses, OpenapiGetWorldStateWorldStateGetData, OpenapiGetWorldStateWorldStateGetResponses, OpenapiReadRootGetData, OpenapiReadRootGetResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -23,63 +23,63 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
  *
  * Welcome message to our users.
  */
-export const readRootGet = <ThrowOnError extends boolean = false>(options?: Options<ReadRootGetData, ThrowOnError>): RequestResult<ReadRootGetResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ReadRootGetResponses, unknown, ThrowOnError>({ url: '/', ...options });
+export const openapiReadRootGet = <ThrowOnError extends boolean = false>(options?: Options<OpenapiReadRootGetData, ThrowOnError>): RequestResult<OpenapiReadRootGetResponses, unknown, ThrowOnError> => (options?.client ?? client).get<OpenapiReadRootGetResponses, unknown, ThrowOnError>({ url: '/', ...options });
 
 /**
  * Get Recent Blocks
  *
  * Get latest blocks
  */
-export const getRecentBlocksRecentBlocksGet = <ThrowOnError extends boolean = false>(options?: Options<GetRecentBlocksRecentBlocksGetData, ThrowOnError>): RequestResult<GetRecentBlocksRecentBlocksGetResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetRecentBlocksRecentBlocksGetResponses, unknown, ThrowOnError>({ url: '/recent-blocks', ...options });
+export const openapiGetRecentBlocksRecentBlocksGet = <ThrowOnError extends boolean = false>(options?: Options<OpenapiGetRecentBlocksRecentBlocksGetData, ThrowOnError>): RequestResult<OpenapiGetRecentBlocksRecentBlocksGetResponses, unknown, ThrowOnError> => (options?.client ?? client).get<OpenapiGetRecentBlocksRecentBlocksGetResponses, unknown, ThrowOnError>({ url: '/recent-blocks', ...options });
 
 /**
  * Execute Recent Blocks
  *
  * Execute query for recent blocks on dune
  */
-export const executeRecentBlocksRecentBlocksPost = <ThrowOnError extends boolean = false>(options?: Options<ExecuteRecentBlocksRecentBlocksPostData, ThrowOnError>): RequestResult<ExecuteRecentBlocksRecentBlocksPostResponses, unknown, ThrowOnError> => (options?.client ?? client).post<ExecuteRecentBlocksRecentBlocksPostResponses, unknown, ThrowOnError>({ url: '/recent-blocks', ...options });
+export const openapiExecuteRecentBlocksRecentBlocksPost = <ThrowOnError extends boolean = false>(options?: Options<OpenapiExecuteRecentBlocksRecentBlocksPostData, ThrowOnError>): RequestResult<OpenapiExecuteRecentBlocksRecentBlocksPostResponses, unknown, ThrowOnError> => (options?.client ?? client).post<OpenapiExecuteRecentBlocksRecentBlocksPostResponses, unknown, ThrowOnError>({ url: '/recent-blocks', ...options });
 
 /**
  * Get World State
  *
  * Lorem ipsum
  */
-export const getWorldStateWorldStateGet = <ThrowOnError extends boolean = false>(options?: Options<GetWorldStateWorldStateGetData, ThrowOnError>): RequestResult<GetWorldStateWorldStateGetResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetWorldStateWorldStateGetResponses, unknown, ThrowOnError>({ url: '/world-state', ...options });
+export const openapiGetWorldStateWorldStateGet = <ThrowOnError extends boolean = false>(options?: Options<OpenapiGetWorldStateWorldStateGetData, ThrowOnError>): RequestResult<OpenapiGetWorldStateWorldStateGetResponses, unknown, ThrowOnError> => (options?.client ?? client).get<OpenapiGetWorldStateWorldStateGetResponses, unknown, ThrowOnError>({ url: '/world-state', ...options });
 
 /**
  * Get Daily Batch
  *
  * Get daily Batch
  */
-export const getDailyBatchDailyBatchGet = <ThrowOnError extends boolean = false>(options: Options<GetDailyBatchDailyBatchGetData, ThrowOnError>): RequestResult<GetDailyBatchDailyBatchGetResponses, GetDailyBatchDailyBatchGetErrors, ThrowOnError> => (options.client ?? client).get<GetDailyBatchDailyBatchGetResponses, GetDailyBatchDailyBatchGetErrors, ThrowOnError>({ url: '/daily-batch', ...options });
+export const openapiGetDailyBatchDailyBatchGet = <ThrowOnError extends boolean = false>(options: Options<OpenapiGetDailyBatchDailyBatchGetData, ThrowOnError>): RequestResult<OpenapiGetDailyBatchDailyBatchGetResponses, OpenapiGetDailyBatchDailyBatchGetErrors, ThrowOnError> => (options.client ?? client).get<OpenapiGetDailyBatchDailyBatchGetResponses, OpenapiGetDailyBatchDailyBatchGetErrors, ThrowOnError>({ url: '/daily-batch', ...options });
 
 /**
  * Get Daily
  *
  * Get daily energy usage aggregate.
  */
-export const getDailyMeterMeterIdDailyGet = <ThrowOnError extends boolean = false>(options: Options<GetDailyMeterMeterIdDailyGetData, ThrowOnError>): RequestResult<GetDailyMeterMeterIdDailyGetResponses, GetDailyMeterMeterIdDailyGetErrors, ThrowOnError> => (options.client ?? client).get<GetDailyMeterMeterIdDailyGetResponses, GetDailyMeterMeterIdDailyGetErrors, ThrowOnError>({ url: '/meter/{meter_id}/daily', ...options });
+export const openapiGetDailyMeterMeterIdDailyGet = <ThrowOnError extends boolean = false>(options: Options<OpenapiGetDailyMeterMeterIdDailyGetData, ThrowOnError>): RequestResult<OpenapiGetDailyMeterMeterIdDailyGetResponses, OpenapiGetDailyMeterMeterIdDailyGetErrors, ThrowOnError> => (options.client ?? client).get<OpenapiGetDailyMeterMeterIdDailyGetResponses, OpenapiGetDailyMeterMeterIdDailyGetErrors, ThrowOnError>({ url: '/meter/{meter_id}/daily', ...options });
 
 /**
  * Get Weekly
  *
  * Get weekly energy usage aggregate.
  */
-export const getWeeklyMeterMeterIdWeeklyGet = <ThrowOnError extends boolean = false>(options: Options<GetWeeklyMeterMeterIdWeeklyGetData, ThrowOnError>): RequestResult<GetWeeklyMeterMeterIdWeeklyGetResponses, GetWeeklyMeterMeterIdWeeklyGetErrors, ThrowOnError> => (options.client ?? client).get<GetWeeklyMeterMeterIdWeeklyGetResponses, GetWeeklyMeterMeterIdWeeklyGetErrors, ThrowOnError>({ url: '/meter/{meter_id}/weekly', ...options });
+export const openapiGetWeeklyMeterMeterIdWeeklyGet = <ThrowOnError extends boolean = false>(options: Options<OpenapiGetWeeklyMeterMeterIdWeeklyGetData, ThrowOnError>): RequestResult<OpenapiGetWeeklyMeterMeterIdWeeklyGetResponses, OpenapiGetWeeklyMeterMeterIdWeeklyGetErrors, ThrowOnError> => (options.client ?? client).get<OpenapiGetWeeklyMeterMeterIdWeeklyGetResponses, OpenapiGetWeeklyMeterMeterIdWeeklyGetErrors, ThrowOnError>({ url: '/meter/{meter_id}/weekly', ...options });
 
 /**
  * Get Weeks Of Year
  *
  * Get energy usage of all weeks of specified year.
  */
-export const getWeeksOfYearMeterMeterIdWeeksYearGet = <ThrowOnError extends boolean = false>(options: Options<GetWeeksOfYearMeterMeterIdWeeksYearGetData, ThrowOnError>): RequestResult<GetWeeksOfYearMeterMeterIdWeeksYearGetResponses, GetWeeksOfYearMeterMeterIdWeeksYearGetErrors, ThrowOnError> => (options.client ?? client).get<GetWeeksOfYearMeterMeterIdWeeksYearGetResponses, GetWeeksOfYearMeterMeterIdWeeksYearGetErrors, ThrowOnError>({ url: '/meter/{meter_id}/weeks/{year}', ...options });
+export const openapiGetWeeksOfYearMeterMeterIdWeeksYearGet = <ThrowOnError extends boolean = false>(options: Options<OpenapiGetWeeksOfYearMeterMeterIdWeeksYearGetData, ThrowOnError>): RequestResult<OpenapiGetWeeksOfYearMeterMeterIdWeeksYearGetResponses, OpenapiGetWeeksOfYearMeterMeterIdWeeksYearGetErrors, ThrowOnError> => (options.client ?? client).get<OpenapiGetWeeksOfYearMeterMeterIdWeeksYearGetResponses, OpenapiGetWeeksOfYearMeterMeterIdWeeksYearGetErrors, ThrowOnError>({ url: '/meter/{meter_id}/weeks/{year}', ...options });
 
 /**
  * Get Month Of Year
  *
  * Get daily energy usage for a given month in a specified year.
  */
-export const getMonthOfYearMeterMeterIdMonthMonthYearGet = <ThrowOnError extends boolean = false>(options: Options<GetMonthOfYearMeterMeterIdMonthMonthYearGetData, ThrowOnError>): RequestResult<GetMonthOfYearMeterMeterIdMonthMonthYearGetResponses, GetMonthOfYearMeterMeterIdMonthMonthYearGetErrors, ThrowOnError> => (options.client ?? client).get<GetMonthOfYearMeterMeterIdMonthMonthYearGetResponses, GetMonthOfYearMeterMeterIdMonthMonthYearGetErrors, ThrowOnError>({ url: '/meter/{meter_id}/month/{month}/{year}', ...options });
+export const openapiGetMonthOfYearMeterMeterIdMonthMonthYearGet = <ThrowOnError extends boolean = false>(options: Options<OpenapiGetMonthOfYearMeterMeterIdMonthMonthYearGetData, ThrowOnError>): RequestResult<OpenapiGetMonthOfYearMeterMeterIdMonthMonthYearGetResponses, OpenapiGetMonthOfYearMeterMeterIdMonthMonthYearGetErrors, ThrowOnError> => (options.client ?? client).get<OpenapiGetMonthOfYearMeterMeterIdMonthMonthYearGetResponses, OpenapiGetMonthOfYearMeterMeterIdMonthMonthYearGetErrors, ThrowOnError>({ url: '/meter/{meter_id}/month/{month}/{year}', ...options });
 
 /**
  * Get Activities
@@ -89,7 +89,7 @@ export const getMonthOfYearMeterMeterIdMonthMonthYearGet = <ThrowOnError extends
  * :param m3ter_id: Description
  * :type m3ter_id: int
  */
-export const getActivitiesMeterMeterIdActivitiesGet = <ThrowOnError extends boolean = false>(options: Options<GetActivitiesMeterMeterIdActivitiesGetData, ThrowOnError>): RequestResult<GetActivitiesMeterMeterIdActivitiesGetResponses, GetActivitiesMeterMeterIdActivitiesGetErrors, ThrowOnError> => (options.client ?? client).get<GetActivitiesMeterMeterIdActivitiesGetResponses, GetActivitiesMeterMeterIdActivitiesGetErrors, ThrowOnError>({ url: '/meter/{meter_id}/activities', ...options });
+export const openapiGetActivitiesMeterMeterIdActivitiesGet = <ThrowOnError extends boolean = false>(options: Options<OpenapiGetActivitiesMeterMeterIdActivitiesGetData, ThrowOnError>): RequestResult<OpenapiGetActivitiesMeterMeterIdActivitiesGetResponses, OpenapiGetActivitiesMeterMeterIdActivitiesGetErrors, ThrowOnError> => (options.client ?? client).get<OpenapiGetActivitiesMeterMeterIdActivitiesGetResponses, OpenapiGetActivitiesMeterMeterIdActivitiesGetErrors, ThrowOnError>({ url: '/meter/{meter_id}/activities', ...options });
 
 /**
  * Get Proposal
@@ -103,4 +103,6 @@ export const getActivitiesMeterMeterIdActivitiesGet = <ThrowOnError extends bool
  * :type tx_hash: str
  * :return: List of proposal meter readings
  */
-export const getProposalProposalTxHashGet = <ThrowOnError extends boolean = false>(options: Options<GetProposalProposalTxHashGetData, ThrowOnError>): RequestResult<GetProposalProposalTxHashGetResponses, GetProposalProposalTxHashGetErrors, ThrowOnError> => (options.client ?? client).get<GetProposalProposalTxHashGetResponses, GetProposalProposalTxHashGetErrors, ThrowOnError>({ url: '/proposal/{tx_hash}', ...options });
+export const openapiGetProposalProposalTxHashGet = <ThrowOnError extends boolean = false>(options: Options<OpenapiGetProposalProposalTxHashGetData, ThrowOnError>): RequestResult<OpenapiGetProposalProposalTxHashGetResponses, OpenapiGetProposalProposalTxHashGetErrors, ThrowOnError> => (options.client ?? client).get<OpenapiGetProposalProposalTxHashGetResponses, OpenapiGetProposalProposalTxHashGetErrors, ThrowOnError>({ url: '/proposal/{tx_hash}', ...options });
+
+export const getCommitsLatest = <ThrowOnError extends boolean = false>(options?: Options<GetCommitsLatestData, ThrowOnError>): RequestResult<GetCommitsLatestResponses, GetCommitsLatestErrors, ThrowOnError> => (options?.client ?? client).get<GetCommitsLatestResponses, GetCommitsLatestErrors, ThrowOnError>({ url: '/commits/latest', ...options });

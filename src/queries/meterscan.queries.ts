@@ -1,26 +1,29 @@
 import { graphql } from "../graphql";
-import { client } from "~/client/client.gen";
+import { client as m3terscanClient } from "~/client/m3terscan/client.gen";
+import { client as ponderClient } from "~/client/ponder/client.gen";
 import {
   getDailyMeterMeterIdDailyGet,
   getMonthOfYearMeterMeterIdMonthMonthYearGet,
   getWeeksOfYearMeterMeterIdWeeksYearGet,
   getActivitiesMeterMeterIdActivitiesGet,
   getProposalProposalTxHashGet,
-} from "~/client/sdk.gen";
+} from "~/client/m3terscan/sdk.gen";
+import { getCommitsLatest } from "~/client/ponder/sdk.gen";
 import { queryOptions } from "@tanstack/react-query";
 
 export const M3TERSCAN_API = import.meta.env.VITE_API_URL;
 
-client.setConfig({ baseUrl: M3TERSCAN_API });
+m3terscanClient.setConfig({ baseUrl: M3TERSCAN_API });
+ponderClient.setConfig({ baseUrl: "https://ponder.m3ter.ing/api/v1" });
 
 export const meterQueries = {
   getDaily: (meterId: number) =>
     queryOptions({
       queryKey: ["getDaily", meterId],
       queryFn: () =>
-        getDailyMeterMeterIdDailyGet({ path: { meter_id: meterId } }).then(
-          (r) => r.data,
-        ),
+        getDailyMeterMeterIdDailyGet({
+          path: { meter_id: meterId },
+        }).then((r) => r.data),
     }),
 
   getMonthOfYear: (meterId: number, year: number, month: number) =>
@@ -54,6 +57,11 @@ export const meterQueries = {
             limit,
           },
         }).then((r) => r.data),
+    }),
+  getLatestCommit: () =>
+    queryOptions({
+      queryKey: ["getLatestCommit"],
+      queryFn: () => getCommitsLatest().then((r) => r.data),
     }),
 };
 
