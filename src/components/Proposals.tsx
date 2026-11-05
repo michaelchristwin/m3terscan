@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "urql";
 import {
   Search,
   Copy,
@@ -10,17 +10,17 @@ import {
 } from "lucide-react";
 import { M3terHead } from "m3ters";
 import { useState } from "react";
-import { Link, useNavigate, useSearch } from "@tanstack/react-router";
-import { proposalQueries } from "~/queries/meterscan.queries";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { proposalsQuery } from "~/queries/meterscan.queries";
 
 function Proposals({ hash }: { hash: string }) {
-  const {} = useSearch({ from: "/_app/proposal/$hash" });
   const [view, setView] = useState("cards");
   const [search, setSearch] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
-  const { data, isLoading, isSuccess } = useQuery(
-    proposalQueries.getProposals(hash),
-  );
+  const [{ data: commitData, fetching }] = useQuery({
+    query: proposalsQuery,
+    variables: { txHash: hash },
+  });
 
   const navigate = useNavigate();
 
@@ -29,7 +29,7 @@ function Proposals({ hash }: { hash: string }) {
     setCopied(id);
     setTimeout(() => setCopied(null), 2000);
   };
-  if (isLoading)
+  if (fetching)
     return (
       <div className="w-full flex justify-center items-center h-[calc(100vh-100px)]">
         <div className="block">
@@ -40,9 +40,9 @@ function Proposals({ hash }: { hash: string }) {
         </div>
       </div>
     );
-  if (isSuccess) {
-    const filteredData = data.filter((meter) =>
-      meter.m3ter_no.toString().includes(search),
+  if (commitData) {
+    const filteredData = commitData.commit?.state?.items.filter((meter) =>
+      meter.meterNo.toString().includes(search),
     );
     return (
       <div className="max-w-7xl mx-auto">
@@ -87,27 +87,27 @@ function Proposals({ hash }: { hash: string }) {
         {/* Card View */}
         {view === "cards" && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {filteredData.map((meter) => (
+            {filteredData?.map((meter) => (
               <div
-                key={meter.m3ter_no}
+                key={meter.meterNo}
                 className="bg-card rounded-lg shadow-sm hover:shadow-md transition-shadow p-5"
               >
                 <Link
                   preload="intent"
                   to={`/m3ter/$m3terId/charts`}
                   params={{
-                    m3terId: meter.m3ter_no,
+                    m3terId: meter.meterNo,
                   }}
                   search={(prev) => ({ ...prev })}
                   className="flex items-center gap-3 mb-4 p-1 border-l-2 border-transparent transition-all duration-200 hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/20"
                 >
-                  <M3terHead seed={meter.m3ter_no.toString()} size={40} />
+                  <M3terHead seed={meter.meterNo.toString()} size={40} />
                   <div>
                     <div className="text-xs text-slate-500 dark:text-slate-200 uppercase tracking-wide">
                       M3ter ID
                     </div>
                     <div className="font-semibold text-slate-800 dark:text-slate-400">
-                      {meter.m3ter_no}
+                      {meter.meterNo}
                     </div>
                   </div>
                 </Link>
@@ -117,18 +117,18 @@ function Proposals({ hash }: { hash: string }) {
                     <div className="text-xs text-slate-500 mb-1">Account</div>
                     <div className="flex items-center gap-2">
                       <code className="flex-1 text-sm bg-slate-50 dark:bg-slate-600 px-2 py-1 rounded border border-slate-200">
-                        {meter.account}
+                        {(Number(meter.account) / 1e6).toString()}
                       </code>
                       <button
                         onClick={() =>
                           copyToClipboard(
-                            meter.account,
-                            `${meter.m3ter_no}-account`,
+                            (Number(meter.account) / 1e6).toString(),
+                            `${meter.meterNo}-account`,
                           )
                         }
                         className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-100/10 rounded transition-colors"
                       >
-                        {copied === `${meter.m3ter_no}-account` ? (
+                        {copied === `${meter.meterNo}-account` ? (
                           <Check className="w-4 h-4 text-green-600" />
                         ) : (
                           <Copy className="w-4 h-4 text-slate-400" />
@@ -147,12 +147,12 @@ function Proposals({ hash }: { hash: string }) {
                         onClick={() =>
                           copyToClipboard(
                             meter.nonce.toString(),
-                            `${meter.m3ter_no}-nonce`,
+                            `${meter.meterNo}-nonce`,
                           )
                         }
                         className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-100/10 rounded transition-colors"
                       >
-                        {copied === `${meter.m3ter_no}-nonce` ? (
+                        {copied === `${meter.meterNo}-nonce` ? (
                           <Check className="w-4 h-4 text-green-600" />
                         ) : (
                           <Copy className="w-4 h-4 text-slate-400" />
@@ -169,21 +169,21 @@ function Proposals({ hash }: { hash: string }) {
         {/* List View */}
         {view === "list" && (
           <div className="bg-background rounded-lg shadow-sm divide-y">
-            {filteredData.map((meter) => (
+            {filteredData?.map((meter) => (
               <div
-                key={meter.m3ter_no}
+                key={meter.meterNo}
                 className="p-4 hover:bg-slate-50 dark:hover:bg-slate-50/10 transition-colors"
               >
                 <Link
                   preload="intent"
                   to={`/m3ter/$m3terId/charts`}
                   params={{
-                    m3terId: meter.m3ter_no,
+                    m3terId: meter.meterNo,
                   }}
                   search={(prev) => ({ ...prev })}
                 >
                   <div className="flex items-center gap-4">
-                    <M3terHead seed={meter.m3ter_no.toString()} size={40} />
+                    <M3terHead seed={meter.meterNo.toString()} size={40} />
 
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
@@ -192,18 +192,18 @@ function Proposals({ hash }: { hash: string }) {
                         </div>
                         <div className="flex items-center gap-2">
                           <code className="text-sm bg-slate-50 dark:bg-slate-600 px-2 py-1 rounded border border-slate-200">
-                            {meter.account}
+                            {(Number(meter.account) / 1e6).toString()}
                           </code>
                           <button
                             onClick={() =>
                               copyToClipboard(
-                                meter.account,
-                                `${meter.m3ter_no}-account-list`,
+                                (Number(meter.account) / 1e6).toString(),
+                                `${meter.meterNo}-account-list`,
                               )
                             }
                             className="p-1 hover:bg-slate-100 dark:hover:bg-slate-100/10 rounded transition-colors"
                           >
-                            {copied === `${meter.m3ter_no}-account-list` ? (
+                            {copied === `${meter.meterNo}-account-list` ? (
                               <Check className="w-4 h-4 text-green-600" />
                             ) : (
                               <Copy className="w-4 h-4 text-slate-400" />
@@ -222,12 +222,12 @@ function Proposals({ hash }: { hash: string }) {
                             onClick={() =>
                               copyToClipboard(
                                 meter.nonce.toString(),
-                                `${meter.m3ter_no}-nonce-list`,
+                                `${meter.meterNo}-nonce-list`,
                               )
                             }
                             className="p-1 hover:bg-slate-100 dark:hover:bg-slate-100/10 rounded transition-colors"
                           >
-                            {copied === `${meter.m3ter_no}-nonce-list` ? (
+                            {copied === `${meter.meterNo}-nonce-list` ? (
                               <Check className="w-4 h-4 text-green-600" />
                             ) : (
                               <Copy className="w-4 h-4 text-slate-400" />
@@ -265,7 +265,7 @@ function Proposals({ hash }: { hash: string }) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
-                  {filteredData.map((meter) => (
+                  {filteredData?.map((meter) => (
                     <tr
                       role="link"
                       tabIndex={0}
@@ -273,7 +273,7 @@ function Proposals({ hash }: { hash: string }) {
                         navigate({
                           to: "/m3ter/$m3terId/charts",
                           params: {
-                            m3terId: meter.m3ter_no,
+                            m3terId: meter.meterNo,
                           },
                           search: (prev) => ({ thm: prev }),
                         })
@@ -283,28 +283,28 @@ function Proposals({ hash }: { hash: string }) {
                           navigate({
                             to: "/m3ter/$m3terId/charts",
                             params: {
-                              m3terId: meter.m3ter_no,
+                              m3terId: meter.meterNo,
                             },
                             search: (prev) => ({ thm: prev }),
                           });
                       }}
-                      key={meter.m3ter_no}
+                      key={meter.meterNo}
                       className="hover:bg-slate-50 dark:hover:bg-slate-50/10 cursor-pointer"
                     >
                       <td className="md:px-6 px-2 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
                           <M3terHead
-                            seed={meter.m3ter_no.toString()}
+                            seed={meter.meterNo.toString()}
                             size={40}
                           />
                           <span className="font-medium text-slate-900 dark:text-slate-200">
-                            {meter.m3ter_no}
+                            {meter.meterNo}
                           </span>
                         </div>
                       </td>
                       <td className="md:px-6 px-2 py-4 whitespace-nowrap">
                         <code className="text-sm bg-slate-50 dark:bg-slate-600 px-2 py-1 rounded border border-slate-200">
-                          {meter.account}
+                          {(Number(meter.account) / 1e6).toString()}
                         </code>
                       </td>
                       <td className="md:px-6 px-2 py-4 whitespace-nowrap">
@@ -317,14 +317,14 @@ function Proposals({ hash }: { hash: string }) {
                           <button
                             onClick={() =>
                               copyToClipboard(
-                                meter.account,
-                                `${meter.m3ter_no}-account-table`,
+                                (Number(meter.account) / 1e6).toString(),
+                                `${meter.meterNo}-account-table`,
                               )
                             }
                             className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-100/10 rounded transition-colors"
                             title="Copy Account"
                           >
-                            {copied === `${meter.m3ter_no}-account-table` ? (
+                            {copied === `${meter.meterNo}-account-table` ? (
                               <Check className="w-4 h-4 text-green-600" />
                             ) : (
                               <Copy className="w-4 h-4 text-slate-400" />
@@ -341,7 +341,7 @@ function Proposals({ hash }: { hash: string }) {
         )}
 
         {/* No Results */}
-        {filteredData.length === 0 && (
+        {filteredData?.length === 0 && (
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
             <div className="text-slate-400 mb-2">
               <Search className="w-12 h-12 mx-auto" />

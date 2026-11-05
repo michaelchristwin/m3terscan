@@ -1,51 +1,30 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { Bar } from "react-chartjs-2";
 import { meterQueries } from "~/queries/meterscan.queries";
+import { BarChartSkeleton } from "~/components/skeletons/BarChartSkeleton";
 
 function IframeBarChart({
   m3terId,
-  colorHigh = null,
-  colorLow = null,
+  colorHigh,
+  colorLow,
   colorScheme,
   dark,
 }: {
   m3terId: string;
-  colorLow: string | null;
-  colorHigh?: string | null;
+  colorLow?: string;
+  colorHigh?: string;
   colorScheme: string;
-  dark: string | null;
+  dark?: string;
 }) {
   const {
     data: chartData,
     isRefetching,
-    error,
-  } = useSuspenseQuery(meterQueries.getDaily(Number(m3terId)));
-
-  const colors = chartData.map((entry, index) => {
-    if (index === 0) return colorHigh || "#28B750"; // first bar default green
-    return entry.total_energy < chartData[index - 1].total_energy
-      ? colorLow || "#EB822A"
-      : colorHigh || "#28B750";
-  });
-  const barChartData = {
-    labels: chartData.map((d) =>
-      new Date(d.hour_start_utc).toLocaleTimeString([], {
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    ),
-    datasets: [
-      {
-        label: "Energy used",
-        data: chartData.map((d) => d.total_energy),
-        backgroundColor: colors,
-        borderRadius: 4, // rounded bars
-      },
-    ],
-  };
+    isLoading,
+    isSuccess,
+  } = useQuery(meterQueries.getDaily(Number(m3terId)));
+  if (isLoading) return <BarChartSkeleton />;
 
   const barChartOptions = {
     responsive: true,
@@ -73,60 +52,85 @@ function IframeBarChart({
     },
   };
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      style={{
-        backgroundColor:
-          colorScheme === "dark" && dark ? dark : "var(--background)",
-        color:
-          colorScheme === "dark" && dark ? "white" : "var(--text-secondary)",
-      }}
-    >
-      <div className="flex items-center mb-6">
-        <h3
-          style={{
-            color:
-              colorScheme === "dark" && dark
-                ? "white"
-                : "var(--text-foreground)",
-          }}
-          className="text-[16px]"
-        >
-          Energy usage by hour
-        </h3>
-      </div>
-      <div className="h-105 relative">
-        {isRefetching && (
-          <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
-            <div className="flex flex-col items-center gap-3">
-              <LoaderCircle className="h-7.5 w-7.5 md:h-10 md:w-10 text-icon animate-spin" />
-              <p className="text-sm text-neutral-400">Updating data...</p>
-            </div>
-          </div>
-        )}
-        {!error && chartData.length > 0 && (
-          <>
-            <div className="h-95 w-full">
-              <Bar data={barChartData} options={barChartOptions} />
-            </div>
-            <div className="flex w-full items-center gap-x-5 mt-5.75 pl-17.5">
-              <div className="flex items-center gap-x-1.5">
-                <div className="w-1.75 h-1.75 bg-[#28B750] rounded-full" />
-                <span className="text-[12px]">High</span>
+  if (isSuccess) {
+    const colors = chartData?.map((entry, index) => {
+      if (index === 0) return colorHigh || "#28B750"; // first bar default green
+      return entry.total_energy < chartData[index - 1].total_energy
+        ? colorLow || "#EB822A"
+        : colorHigh || "#28B750";
+    });
+    const barChartData = {
+      labels: chartData?.map((d) =>
+        new Date(d.hour_start_utc).toLocaleTimeString([], {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      ),
+      datasets: [
+        {
+          label: "Energy used",
+          data: chartData?.map((d) => d.total_energy),
+          backgroundColor: colors,
+          borderRadius: 4, // rounded bars
+        },
+      ],
+    };
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        style={{
+          backgroundColor:
+            colorScheme === "dark" && dark ? dark : "var(--background)",
+          color:
+            colorScheme === "dark" && dark ? "white" : "var(--text-secondary)",
+        }}
+      >
+        <div className="flex items-center mb-6">
+          <h3
+            style={{
+              color:
+                colorScheme === "dark" && dark
+                  ? "white"
+                  : "var(--text-foreground)",
+            }}
+            className="text-[16px]"
+          >
+            Energy usage by hour
+          </h3>
+        </div>
+        <div className="h-105 relative">
+          {isRefetching && (
+            <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10 rounded-lg">
+              <div className="flex flex-col items-center gap-3">
+                <LoaderCircle className="h-7.5 w-7.5 md:h-10 md:w-10 text-icon animate-spin" />
+                <p className="text-sm text-neutral-400">Updating data...</p>
               </div>
-              <div className="flex items-center gap-x-1.5">
-                <div className="w-1.75 h-1.75 bg-[#EB822A] rounded-full" />
-                <span className="text-[12px]">Low</span>
-              </div>
             </div>
-          </>
-        )}
-      </div>
-    </motion.div>
-  );
+          )}
+          {isSuccess && (
+            <>
+              <div className="h-95 w-full">
+                <Bar data={barChartData} options={barChartOptions} />
+              </div>
+              <div className="flex w-full items-center gap-x-5 mt-5.75 pl-17.5">
+                <div className="flex items-center gap-x-1.5">
+                  <div className="w-1.75 h-1.75 bg-[#28B750] rounded-full" />
+                  <span className="text-[12px]">High</span>
+                </div>
+                <div className="flex items-center gap-x-1.5">
+                  <div className="w-1.75 h-1.75 bg-[#EB822A] rounded-full" />
+                  <span className="text-[12px]">Low</span>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </motion.div>
+    );
+  }
 }
 
 export default IframeBarChart;

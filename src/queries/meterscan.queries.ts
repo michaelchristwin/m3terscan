@@ -1,26 +1,29 @@
 import { graphql } from "../graphql";
-import { client } from "~/client/client.gen";
+import { client as m3terscanClient } from "~/client/m3terscan/client.gen";
+import { client as ponderClient } from "~/client/ponder/client.gen";
 import {
   getDailyMeterMeterIdDailyGet,
   getMonthOfYearMeterMeterIdMonthMonthYearGet,
   getWeeksOfYearMeterMeterIdWeeksYearGet,
   getActivitiesMeterMeterIdActivitiesGet,
   getProposalProposalTxHashGet,
-} from "~/client/sdk.gen";
+} from "~/client/m3terscan/sdk.gen";
+import { getCommitsLatest } from "~/client/ponder/sdk.gen";
 import { queryOptions } from "@tanstack/react-query";
 
 export const M3TERSCAN_API = import.meta.env.VITE_API_URL;
 
-client.setConfig({ baseUrl: M3TERSCAN_API });
+m3terscanClient.setConfig({ baseUrl: M3TERSCAN_API });
+ponderClient.setConfig({ baseUrl: "https://ponder.m3ter.ing/api/v1" });
 
 export const meterQueries = {
   getDaily: (meterId: number) =>
     queryOptions({
       queryKey: ["getDaily", meterId],
       queryFn: () =>
-        getDailyMeterMeterIdDailyGet({ path: { meter_id: meterId } }).then(
-          (r) => r.data,
-        ),
+        getDailyMeterMeterIdDailyGet({
+          path: { meter_id: meterId },
+        }).then((r) => r.data),
     }),
 
   getMonthOfYear: (meterId: number, year: number, month: number) =>
@@ -55,6 +58,11 @@ export const meterQueries = {
           },
         }).then((r) => r.data),
     }),
+  getLatestCommit: () =>
+    queryOptions({
+      queryKey: ["getLatestCommit"],
+      queryFn: () => getCommitsLatest().then((r) => r.data),
+    }),
 };
 
 export const proposalQueries = {
@@ -80,38 +88,23 @@ export const commitsQuery = graphql(`
         txHash
         blockTime
         sender
+        chainLength
       }
       totalCount
     }
   }
 `);
 
-export async function getRecentBlocks() {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/recent-blocks`,
-    {
-      method: "GET",
-    },
-  );
-  const data = await response.json();
-  return data;
-}
-
-export async function refreshRecentBlocks() {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/recent-blocks`,
-    {
-      method: "POST",
-    },
-  );
-
-  return response;
-}
-
-export async function getWorldState() {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/world-state`, {
-    method: "GET",
-  });
-  const data = await response.json();
-  return data;
-}
+export const proposalsQuery = graphql(`
+  query ProposalList($txHash: String!) {
+    commit(txHash: $txHash) {
+      state {
+        items {
+          meterNo
+          account
+          nonce
+        }
+      }
+    }
+  }
+`);

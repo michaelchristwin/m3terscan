@@ -10,7 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as IframesRouteRouteImport } from './routes/iframes/route'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as IframesActivitiesRouteImport } from './routes/iframes/activities'
+import { Route as IframesBarChartRouteImport } from './routes/iframes/bar-chart'
+import { Route as IframesMapRouteImport } from './routes/iframes/map'
 import { Route as M3terM3terIdRouteRouteImport } from './routes/m3ter/$m3terId/route'
 import { Route as AppProposalHashRouteImport } from './routes/_app/proposal/$hash'
 import { Route as AppProposalLatestRouteImport } from './routes/_app/proposal/latest'
@@ -24,10 +28,30 @@ const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IframesRouteRoute = IframesRouteRouteImport.update({
+  id: '/iframes',
+  path: '/iframes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const IframesActivitiesRoute = IframesActivitiesRouteImport.update({
+  id: '/activities',
+  path: '/activities',
+  getParentRoute: () => IframesRouteRoute,
+} as any)
+const IframesBarChartRoute = IframesBarChartRouteImport.update({
+  id: '/bar-chart',
+  path: '/bar-chart',
+  getParentRoute: () => IframesRouteRoute,
+} as any)
+const IframesMapRoute = IframesMapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => IframesRouteRoute,
 } as any)
 const M3terM3terIdRouteRoute = M3terM3terIdRouteRouteImport.update({
   id: '/m3ter/$m3terId',
@@ -71,8 +95,12 @@ const M3terM3terIdTradesRoute = M3terM3terIdTradesRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/iframes': typeof IframesRouteRouteWithChildren
   '/': typeof AppIndexRoute
   '/m3ter/$m3terId': typeof M3terM3terIdRouteRouteWithChildren
+  '/iframes/activities': typeof IframesActivitiesRoute
+  '/iframes/bar-chart': typeof IframesBarChartRoute
+  '/iframes/map': typeof IframesMapRoute
   '/proposal/$hash': typeof AppProposalHashRoute
   '/proposal/latest': typeof AppProposalLatestRoute
   '/m3ter/$m3terId/activities': typeof M3terM3terIdActivitiesRoute
@@ -82,7 +110,11 @@ export interface FileRoutesByFullPath {
   '/m3ter/$m3terId/trades': typeof M3terM3terIdTradesRoute
 }
 export interface FileRoutesByTo {
+  '/iframes': typeof IframesRouteRouteWithChildren
   '/m3ter/$m3terId': typeof M3terM3terIdRouteRouteWithChildren
+  '/iframes/activities': typeof IframesActivitiesRoute
+  '/iframes/bar-chart': typeof IframesBarChartRoute
+  '/iframes/map': typeof IframesMapRoute
   '/': typeof AppIndexRoute
   '/proposal/$hash': typeof AppProposalHashRoute
   '/proposal/latest': typeof AppProposalLatestRoute
@@ -94,8 +126,12 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/iframes': typeof IframesRouteRouteWithChildren
   '/_app': typeof AppRouteWithChildren
   '/m3ter/$m3terId': typeof M3terM3terIdRouteRouteWithChildren
+  '/iframes/activities': typeof IframesActivitiesRoute
+  '/iframes/bar-chart': typeof IframesBarChartRoute
+  '/iframes/map': typeof IframesMapRoute
   '/_app/': typeof AppIndexRoute
   '/_app/proposal/$hash': typeof AppProposalHashRoute
   '/_app/proposal/latest': typeof AppProposalLatestRoute
@@ -108,8 +144,12 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/iframes'
     | '/'
     | '/m3ter/$m3terId'
+    | '/iframes/activities'
+    | '/iframes/bar-chart'
+    | '/iframes/map'
     | '/proposal/$hash'
     | '/proposal/latest'
     | '/m3ter/$m3terId/activities'
@@ -119,7 +159,11 @@ export interface FileRouteTypes {
     | '/m3ter/$m3terId/trades'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/iframes'
     | '/m3ter/$m3terId'
+    | '/iframes/activities'
+    | '/iframes/bar-chart'
+    | '/iframes/map'
     | '/'
     | '/proposal/$hash'
     | '/proposal/latest'
@@ -130,8 +174,12 @@ export interface FileRouteTypes {
     | '/m3ter/$m3terId/trades'
   id:
     | '__root__'
+    | '/iframes'
     | '/_app'
     | '/m3ter/$m3terId'
+    | '/iframes/activities'
+    | '/iframes/bar-chart'
+    | '/iframes/map'
     | '/_app/'
     | '/_app/proposal/$hash'
     | '/_app/proposal/latest'
@@ -143,6 +191,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IframesRouteRoute: typeof IframesRouteRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
   M3terM3terIdRouteRoute: typeof M3terM3terIdRouteRouteWithChildren
 }
@@ -156,12 +205,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/iframes': {
+      id: '/iframes'
+      path: '/iframes'
+      fullPath: '/iframes'
+      preLoaderRoute: typeof IframesRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app/': {
       id: '/_app/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/iframes/activities': {
+      id: '/iframes/activities'
+      path: '/activities'
+      fullPath: '/iframes/activities'
+      preLoaderRoute: typeof IframesActivitiesRouteImport
+      parentRoute: typeof IframesRouteRoute
+    }
+    '/iframes/bar-chart': {
+      id: '/iframes/bar-chart'
+      path: '/bar-chart'
+      fullPath: '/iframes/bar-chart'
+      preLoaderRoute: typeof IframesBarChartRouteImport
+      parentRoute: typeof IframesRouteRoute
+    }
+    '/iframes/map': {
+      id: '/iframes/map'
+      path: '/map'
+      fullPath: '/iframes/map'
+      preLoaderRoute: typeof IframesMapRouteImport
+      parentRoute: typeof IframesRouteRoute
     }
     '/m3ter/$m3terId': {
       id: '/m3ter/$m3terId'
@@ -222,6 +299,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface IframesRouteRouteChildren {
+  IframesActivitiesRoute: typeof IframesActivitiesRoute
+  IframesBarChartRoute: typeof IframesBarChartRoute
+  IframesMapRoute: typeof IframesMapRoute
+}
+
+const IframesRouteRouteChildren: IframesRouteRouteChildren = {
+  IframesActivitiesRoute: IframesActivitiesRoute,
+  IframesBarChartRoute: IframesBarChartRoute,
+  IframesMapRoute: IframesMapRoute,
+}
+
+const IframesRouteRouteWithChildren = IframesRouteRoute._addFileChildren(
+  IframesRouteRouteChildren,
+)
+
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppProposalHashRoute: typeof AppProposalHashRoute
@@ -256,6 +349,7 @@ const M3terM3terIdRouteRouteWithChildren =
   M3terM3terIdRouteRoute._addFileChildren(M3terM3terIdRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IframesRouteRoute: IframesRouteRouteWithChildren,
   AppRoute: AppRouteWithChildren,
   M3terM3terIdRouteRoute: M3terM3terIdRouteRouteWithChildren,
 }

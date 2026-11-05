@@ -22,9 +22,9 @@ type Meta {
 }
 
 type Query {
-  commit(chainLength: BigInt!, txHash: String!): commit
+  commit(txHash: String!): commit
   commits(where: commitFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int, offset: Int): commitPage!
-  meterState(chainLength: BigInt!, txHash: String!, meterNo: Float!): meterState
+  meterState(txHash: String!, meterNo: Float!): meterState
   meterStates(where: meterStateFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int, offset: Int): meterStatePage!
   _meta: Meta
 }

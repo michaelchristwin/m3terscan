@@ -1,7 +1,11 @@
 import { motion } from "motion/react";
-import Map, { Marker } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
+import Map, { Marker } from "react-map-gl/maplibre";
+import { createFileRoute } from "@tanstack/react-router";
 
+export const Route = createFileRoute("/iframes/map")({
+  component: Page,
+});
 function Page() {
   const latitude = 9.0765;
   const longitude = 7.3986;
@@ -46,5 +50,3 @@ function Page() {
     </motion.div>
   );
 }
-
-export default Page;
