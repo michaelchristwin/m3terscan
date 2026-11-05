@@ -1,16 +1,14 @@
-import { refreshRecentBlocks } from "~/queries/meterscan.queries";
 import { motion } from "motion/react";
 import { Line } from "react-chartjs-2";
 import useStyle from "~/hooks/useStyle";
 import RecentCard from "~/components/RecentCard";
 import Statistics from "~/components/Statistics";
 import { type ChartOptions } from "chart.js/auto";
-import { TrendingUp, RefreshCw } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { ErrorBoundary } from "react-error-boundary";
 import RecentBlocks from "~/components/RecentBlocks";
-import { QueryErrorResetBoundary, useQuery } from "@tanstack/react-query";
+import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { queryClient } from "~/queries/query-client";
 
 export const Route = createFileRoute("/_app/")({
   component: Index,
@@ -67,18 +65,6 @@ function Index() {
     },
   } satisfies ChartOptions<"line">;
 
-  const query = useQuery({
-    queryKey: ["refreshRecentBlocks"],
-    queryFn: async () => {
-      await refreshRecentBlocks();
-      await queryClient.refetchQueries({
-        queryKey: ["recentBlocks"],
-        type: "active",
-        exact: true,
-      });
-    },
-    enabled: false,
-  });
   return (
     <main className="w-full h-full md:px-15 px-5 mt-10">
       <title>M3terscan</title>
@@ -112,19 +98,6 @@ function Index() {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="bg-background-primary text-text-secondary rounded-xl p-4 relative"
         >
-          <motion.div className="flex justify-end items-center mb-4">
-            <button
-              type="button"
-              className="rounded-full"
-              aria-label="Refresh"
-              onClick={() => query.refetch()}
-            >
-              <RefreshCw
-                className={`${query.isFetching ? "animate-spin" : ""} w-5 float-end text-icon transition-transform`}
-              />
-            </button>
-          </motion.div>
-
           <QueryErrorResetBoundary>
             {({ reset }) => (
               <ErrorBoundary
